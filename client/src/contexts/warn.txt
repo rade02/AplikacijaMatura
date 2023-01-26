@@ -1,0 +1,1 @@
+EVERY component inside of context provider rerenders when state changes inside of it!!
