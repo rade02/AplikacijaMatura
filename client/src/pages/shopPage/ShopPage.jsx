@@ -1,4 +1,4 @@
-import './ShopPage.css';
+import './ShopPage.scss';
 import { useState } from 'react';
 import { ShopContextProvider } from '../../contexts/ShopContext';
 import ShopContent from './ShopContentComponent';

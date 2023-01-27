@@ -7,12 +7,6 @@ const AddToCartButton = ({ props, setShowNotif }) => {
 	const { cart, setCart, state, setState } = useContext(ShopContext);
 	const [appearance, setAppearance] = useState('addToCart');
 
-	// TODO: dodaj obvestilo spodaj desno ko dodamo nov izdelek, o skupni ceni in dodajanju
-	// TODO: ce je preveliko stevilo ga das na maksimalno število ki je na voljo
-	// TODO: mogoce: dodaj button odstrani ko je dosezeno najvecje stevilo izdelkov
-	// TODO: onemogoči button Prikaži več če so prikazani vsi izdelki
-	console.log('props.selectedProduct');
-	console.log(props.selectedProduct);
 	useEffect(() => {
 		if (props.selectedProduct.kolicina <= 0) {
 			setAppearance('addToCart');

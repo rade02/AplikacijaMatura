@@ -8,7 +8,7 @@ const ShopNavbar = () => {
 	const { user } = useContext(UserContext);
 
 	return (
-		<div className='shopNavbar'>
+		<header className='shopNavbar'>
 			<div className='shopNavbarHeading'>
 				{state.active === 'shopping' ? (
 					<label>
@@ -37,7 +37,7 @@ const ShopNavbar = () => {
 					{user.uporabnisko_ime}
 				</button>
 			</div>
-		</div>
+		</header>
 	);
 };
 /*

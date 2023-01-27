@@ -4,19 +4,16 @@ import { ShopContext } from '../../../contexts/ShopContext';
 import AddToCartButton from './AddToCartButtonComponent';
 
 const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
-	// TODO: mogoča povečava slike
-	// TODO: add to cart
 	const { cart, setCart, state, setState } = useContext(ShopContext);
-	console.log('state');
-	console.log(state);
+	console.log(selectedProduct.popust);
 	return (
 		<div className='productsMenu'>
 			<div className='productDiv'>
 				<div className='productField'>
 					<div className='productTitle'>
 						<h2>
-							{`[#${state.props.selectedProduct.ID_izdelka}] `}
-							{state.props.selectedProduct.ime}
+							{`[#${selectedProduct.ID_izdelka}] `}
+							{selectedProduct.ime}
 						</h2>
 					</div>
 					<div>
@@ -24,19 +21,19 @@ const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
 							<img src='' alt='ni slike'></img>
 						</div>
 						<div className='productDescription'>
-							<div className='category'>{state.props.selectedProduct.kategorija}</div>
+							<div className='category'>{selectedProduct.kategorija}</div>
 							<br></br>
-							<div className='productInfos'>{state.props.selectedProduct.informacije}</div>
+							<div className='productInfos'>{selectedProduct.informacije}</div>
 							<br></br>
 							<div>
-								{state.props.selectedProduct.kosov_na_voljo === 0 ? (
+								{selectedProduct.kosov_na_voljo === 0 ? (
 									<div className='lowQuantity'>Razprodano</div>
-								) : state.props.selectedProduct.kosov_na_voljo < 4 ? (
+								) : selectedProduct.kosov_na_voljo < 4 ? (
 									<div className='lowQuantity'>
-										Na voljo le še {state.props.selectedProduct.kosov_na_voljo}{' '}
-										{state.props.selectedProduct.kosov_na_voljo === 1
+										Na voljo le še {selectedProduct.kosov_na_voljo}{' '}
+										{selectedProduct.kosov_na_voljo === 1
 											? 'izdelek'
-											: state.props.selectedProduct.kosov_na_voljo === 2
+											: selectedProduct.kosov_na_voljo === 2
 											? 'izdelka'
 											: 'izdelki'}
 										!
@@ -46,13 +43,25 @@ const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
 								)}
 							</div>
 							<br></br>
-							<div>{state.props.selectedProduct.cena_za_kos} € (UPOŠTEVAMO POPUST)</div>
-							<br></br>
-							{state.props.selectedProduct.popust === 0 ? (
+							<div
+								className={
+									selectedProduct.popust === 0 ? 'productInformations' : 'productPriceStrikethrough'
+								}>
+								{selectedProduct.cena_za_kos.toFixed(2)} €
+							</div>
+							{selectedProduct.popust === 0 ? (
 								<></>
 							) : (
-								<div>{state.props.selectedProduct.popust} % popust</div>
+								<div className='discount2'>{selectedProduct.popust} % popust</div>
 							)}
+							{selectedProduct.popust > 0 ? (
+								<div className='productInformations'>
+									{(selectedProduct.cena_za_kos * (1 - selectedProduct.popust / 100.0)).toFixed(2)} €
+								</div>
+							) : (
+								<></>
+							)}
+							<br></br>
 							<br></br>From cart: {state.fromCart.toString()}
 							<div className='productButtonsDiv'>
 								<AddToCartButton
@@ -87,7 +96,7 @@ const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
 											className='addToCart'
 											onClick={(e) => {
 												e.preventDefault();
-												setCart([...cart, state.props.ID_izdelka]);
+												setCart([...cart, ID_izdelka]);
 											}}>
 											<div>Dodaj v</div>
 											<div>
