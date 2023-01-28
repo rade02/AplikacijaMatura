@@ -15,7 +15,7 @@ const CartProduct = ({ props }) => {
 						e.preventDefault();
 						setState({ props: props.product, active: 'product', fromCart: true });
 					}}>
-					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.informacije}
+					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.kratek_opis}
 				</div>
 				<div className='productLaneDetailInfo'>
 					<div>{parseFloat(props.product.cena_za_kos).toFixed(2)} €</div>

@@ -7,6 +7,23 @@ const AddToCartButton = ({ props, setShowNotif }) => {
 	const { cart, setCart, state, setState } = useContext(ShopContext);
 	const [appearance, setAppearance] = useState('addToCart');
 
+	if (props.produkt === null) {
+		return <div>Button but props.produkt is null</div>;
+	}
+	return (
+		<>
+			{props.produkt.kolicina}
+			<button
+				onClick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					props.produkt.kolicina++;
+					props.setProdukt({ ...props.produkt, kolicina: props.produkt.kolicina });
+				}}></button>
+		</>
+	);
+
+	/*
 	useEffect(() => {
 		if (props.selectedProduct.kolicina <= 0) {
 			setAppearance('addToCart');
@@ -33,8 +50,12 @@ const AddToCartButton = ({ props, setShowNotif }) => {
 					if (appearance !== 'noMoreAvailable') {
 						e.stopPropagation();
 
+						console.log('props.selectedProductkolicina');
+						console.log(props.selectedProduct.kolicina);
+
 						if (props.selectedProduct.kolicina > 0) {
-							// increment
+							console.log('props.selectedProduct.kolicina > 0');
+							// increment product kolicina in cart
 							cart.forEach((product) => {
 								if (product.ID_izdelka === props.selectedProduct.ID_izdelka) {
 									product.kolicina = product.kolicina + 1;
@@ -57,13 +78,14 @@ const AddToCartButton = ({ props, setShowNotif }) => {
 								[state.props.kolicina]: state.props.kolicina++,
 							});
 						} else {
-							// add
-							//console.log(props);
-							setCart([...cart, props.selectedProduct]);
+							console.log('props.selectedProduct.kolicina <= 0');
+							// add product to cart
+							console.log(cart);
 							props.setSelectedProduct({
 								...props.selectedProduct,
 								kolicina: props.selectedProduct.kolicina++,
 							});
+							setCart([...cart, props.selectededProduct]);
 						}
 					}
 				}}>
@@ -81,7 +103,7 @@ const AddToCartButton = ({ props, setShowNotif }) => {
 				)}
 			</div>
 		</div>
-	);
+	);*/
 	/*
 	{appearance === 'noMoreAvailable' ? (
 					<button

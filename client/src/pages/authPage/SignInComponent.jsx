@@ -37,7 +37,7 @@ const SignInComponent = () => {
 					});
 					let userData = { ...data.data, geslo: typedPassword };
 					// into context:
-					setUser(userData);
+					setUser({ ...userData, uporabnisko_ime: typedUsername });
 					setIsAuth(true);
 				} else {
 					setTypedUsername('');

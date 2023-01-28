@@ -1,31 +1,26 @@
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
 import AddToCartButton from './AddToCartButtonComponent';
 import { ShopContext } from '../../../contexts/ShopContext';
 import AddingNotification from './AddingNotification';
 
-const Product = ({ displayedProduct, selectedProduct, setSelectedProduct }) => {
-	const { state, setState } = useContext(ShopContext);
+const Product = ({ prikazi, setPrikazi, taProdukt, izbranProdukt, setIzbranProdukt }) => {
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
+
+	useMemo(() => {
+		setIzbranProdukt(taProdukt);
+	}, [taProdukt, setIzbranProdukt]);
 
 	return (
 		<div
 			className='productCard'
 			onClick={(e) => {
 				e.preventDefault();
-				console.log(displayedProduct);
-				setSelectedProduct(displayedProduct);
-				setState({
-					props: {
-						...state.props,
-						displayedProduct: displayedProduct,
-						selectedProduct: selectedProduct,
-						setSelectedProduct: setSelectedProduct,
-					},
-					active: 'product',
-					fromCart: false,
-				});
+				//console.log('taProdukt');
+				//console.log(taProdukt);
+				setIzbranProdukt(taProdukt);
+				setPrikazi('produkt');
 			}}>
 			<div>
 				<div className='productPicture'>
@@ -33,42 +28,35 @@ const Product = ({ displayedProduct, selectedProduct, setSelectedProduct }) => {
 				</div>
 				<hr></hr>
 				<div className='productInfo'>
-					<div className='category'>{displayedProduct.kategorija}</div>
+					<div className='category'>{taProdukt.kategorija}</div>
 					<div className='o'>
 						<div className='productInfoBox'>
-							<Link state={displayedProduct} className='linksToProducts'>
+							<div state={taProdukt} className='linksToProducts'>
 								<div className='productInformationsName'>
-									<b>{displayedProduct.ime}</b>
+									<b>{taProdukt.ime}</b>
 								</div>
-							</Link>
-							<div className='productInformations'>{displayedProduct.kratek_opis}</div>
+							</div>
+							<div className='productInformations'>{taProdukt.kratek_opis}</div>
 							<div className='prices'>
 								<div
 									className={
-										displayedProduct.popust === 0
-											? 'productInformations'
-											: 'productPriceStrikethrough'
+										taProdukt.popust === 0 ? 'productInformations' : 'productPriceStrikethrough'
 									}>
-									{displayedProduct.cena_za_kos.toFixed(2)} €
+									{taProdukt.cena_za_kos.toFixed(2)} €
 								</div>
-								{displayedProduct.popust > 0 ? (
-									<div>
-										{(displayedProduct.cena_za_kos * (1 - displayedProduct.popust / 100.0)).toFixed(
-											2
-										)}{' '}
-										€
-									</div>
+								{taProdukt.popust > 0 ? (
+									<div>{(taProdukt.cena_za_kos * (1 - taProdukt.popust / 100.0)).toFixed(2)} €</div>
 								) : (
 									<></>
 								)}
 							</div>
 
-							{displayedProduct.kosov_na_voljo < 4 ? (
+							{taProdukt.kosov_na_voljo < 4 ? (
 								<div className='lowQuantity'>
-									Na voljo le še {displayedProduct.kosov_na_voljo}{' '}
-									{displayedProduct.kosov_na_voljo === 1
+									Na voljo le še {taProdukt.kosov_na_voljo}{' '}
+									{taProdukt.kosov_na_voljo === 1
 										? 'izdelek'
-										: displayedProduct.kosov_na_voljo === 2
+										: taProdukt.kosov_na_voljo === 2
 										? 'izdelka'
 										: 'izdelki'}
 									!
@@ -77,8 +65,8 @@ const Product = ({ displayedProduct, selectedProduct, setSelectedProduct }) => {
 								<div className='OKQuantity'>Na voljo še več kot 3 izdelki.</div>
 							)}
 
-							{displayedProduct.popust > 0 ? (
-								<div className='discount'>{displayedProduct.popust} % popust: €</div>
+							{taProdukt.popust > 0 ? (
+								<div className='discount'>{taProdukt.popust} % popust: €</div>
 							) : (
 								<></>
 							)}
@@ -88,9 +76,10 @@ const Product = ({ displayedProduct, selectedProduct, setSelectedProduct }) => {
 				</div>
 				<AddToCartButton
 					props={{
-						displayedProduct: displayedProduct, // zacetni podatki (iz baze)
-						selectedProduct: selectedProduct, // spremenjeni podatki
-						setSelectedProduct: setSelectedProduct,
+						prikazi: prikazi,
+						setPrikazi: setPrikazi,
+						produkt: taProdukt,
+						setProdukt: setIzbranProdukt,
 					}}
 				/>
 			</div>
@@ -105,7 +94,7 @@ export default Product;
 /*
 	PROPS
 	{
-    "displayedProduct": {
+    "produkt": {
         "ID_izdelka": 1,
         "ime": "Samsung S21 FE 5G",
         "kategorija": "mobilni telefon",
@@ -118,7 +107,7 @@ export default Product;
         "kolicina": 0
     },
     "props": {
-        "displayedProducts": [
+        "produkts": [
             {
                 "ID_izdelka": 8,
                 "ime": "Acer Nitro 5 prenosnik",

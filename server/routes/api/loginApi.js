@@ -27,7 +27,7 @@ router.get('/user', async (req, res) => {
 
 	try {
 		let userDataArray = await pool.query(
-			`select uporabnisko_ime, elektronski_naslov, ime, priimek, ulica_in_hisna_stevilka, kraj, postna_stevilka, podjetje from Stranke where uporabnisko_ime = ?`,
+			`select uporabnisko_ime, elektronski_naslov, ime, priimek, ulica_in_hisna_stevilka, kraj, postna_stevilka, podjetje from Stranke_in_zaposleni where uporabnisko_ime = ?`,
 			[un]
 		);
 		userDataArray = userDataArray[0][0];
@@ -42,9 +42,10 @@ router.get('/email', async (req, res) => {
 	const em = req.query.email;
 
 	try {
-		let userDataArray = await pool.query(`select ID_stranke from Stranke where elektronski_naslov = ?`, [
-			em,
-		]);
+		let userDataArray = await pool.query(
+			`select ID_stranke from Stranke_in_zaposleni where elektronski_naslov = ?`,
+			[em]
+		);
 		userDataArray = userDataArray[0][0];
 		res.status(200).send(userDataArray);
 	} catch (onRejectedError) {
@@ -57,7 +58,7 @@ router.post('/updt', async (req, res) => {
 	const updatedUser = req.body;
 	try {
 		let response = await pool.query(
-			`update Stranke set ime = ?, priimek = ?, ulica_in_hisna_stevilka = ?, kraj = ?, postna_stevilka = ?, telefonska_stevilka = ?, podjetje = ?
+			`update Stranke_in_zaposleni set ime = ?, priimek = ?, ulica_in_hisna_stevilka = ?, kraj = ?, postna_stevilka = ?, telefonska_stevilka = ?, podjetje = ?
 			 where uporabnisko_ime = ?;`,
 			[
 				updatedUser.ime,
@@ -110,7 +111,7 @@ router.post('/newUser', async (req, res) => {
 			geslo,
 		]);
 		let response2 = await pool.query(
-			`insert into Stranke (uporabnisko_ime, elektronski_naslov, ime, priimek, ulica_in_hisna_stevilka, kraj, postna_stevilka, telefonska_stevilka, podjetje) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			`insert into Stranke_in_zaposleni (uporabnisko_ime, elektronski_naslov, ime, priimek, ulica_in_hisna_stevilka, kraj, postna_stevilka, telefonska_stevilka, podjetje) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			[
 				uporabnisko_ime,
 				elektronski_naslov,
@@ -139,6 +140,29 @@ router.delete('/del', async (req, res) => {
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);
+	}
+});
+
+router.get('/vloga', async (req, res) => {
+	const username = req.query.uporabnisko_ime;
+	try {
+		let response = await pool.query(`select vloga from Uporabniki where uporabnisko_ime = ?`, [username]);
+
+		res.status(200).send(response[0][0].vloga.toString());
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+router.post('/vloga', async (req, res) => {
+	const username = req.body.uporabnisko_ime;
+	try {
+		let response = await pool.query(`update Uporabniki set vloga = 2 where uporabnisko_ime = ?`, [username]);
+
+		res.status(200).send('Ponovno poskusite s prijavo');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`server error`);
 	}
 });
 

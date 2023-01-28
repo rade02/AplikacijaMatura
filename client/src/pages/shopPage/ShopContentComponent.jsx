@@ -12,18 +12,19 @@ const ShopContent = () => {
 	const { state } = useContext(ShopContext);
 
 	const PORT = 3005; // !!!
-	const [displayedProducts, setDisplayedProductsProducts] = useState([]);
-	const [noProducts, setNoProducts] = useState(true);
-	const [error, setError] = useState(false);
-	const [selectedProduct, setSelectedProduct] = useState({}); // za prikaz na product info page ce pridemo iz product component
+	const [prikazi, setPrikazi] = useState('nakupovanje');
+	const [prikazaniProdukti, setPrikazaniProdukti] = useState([]);
+	const [niProduktov, setNiProduktov] = useState(true);
+	const [napaka, setNapaka] = useState(false);
+	const [izbranProdukt, setIzbranProdukt] = useState({}); // za prikaz na product info page ce pridemo iz product component
 	//const [fetchNumber] = useState(6); mogoče potem opcija za koliko jih prikaze na stran
 
-	const fetchProducts = async () => {
+	const pridobiProdukte = async () => {
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/`, {
 				params: {
 					number: 6,
-					noDups: displayedProducts.map((a) => a.ID_izdelka),
+					noDups: prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
 			// dodamo vsakemu izdelku kolicino v kosarici
@@ -31,39 +32,50 @@ const ShopContent = () => {
 				...product,
 				kolicina: 0,
 			}));
-			setDisplayedProductsProducts([...displayedProducts, ...response]);
-			setNoProducts(false);
+			setPrikazaniProdukti([...prikazaniProdukti, ...response]);
+			setNiProduktov(false);
 		} catch (error) {
 			console.log(error);
-			setError(true);
+			setNapaka(true);
 		}
 	};
 
 	useEffect(() => {
-		fetchProducts();
+		pridobiProdukte();
 	}, []);
 
-	if (state.active === 'shopping') {
+	console.log('izbranProdukt @ Content');
+	console.log(izbranProdukt);
+	if (prikazi === 'nakupovanje') {
 		return (
 			<Shopping
 				props={{
-					displayedProducts: displayedProducts,
-					noProducts: noProducts,
-					error: error,
-					fetchProducts: fetchProducts,
-					selectedProduct: selectedProduct,
-					setSelectedProduct: setSelectedProduct,
+					setPrikazi: setPrikazi,
+					prikazaniProdukti: prikazaniProdukti,
+					niProduktov: niProduktov,
+					napaka: napaka,
+					pridobiProdukte: pridobiProdukte,
+					izbranProdukt: izbranProdukt,
+					setIzbranProdukt: setIzbranProdukt,
 				}}
 			/>
 		);
-	} else if (state.active === 'cart') {
-		return <Cart selectedProduct={selectedProduct} setSelectedProduct={setSelectedProduct} />;
-	} else if (state.active === 'checkout') {
-		return <Checkout />;
-	} else if (state.active === 'product') {
-		return <ProductInfo selectedProduct={selectedProduct} setSelectedProduct={setSelectedProduct} />;
-	} else if (state.active === 'cardInput') {
-		return <CardInput />;
+	} else if (prikazi === 'kosarica') {
+		return (
+			<Cart izbranProdukt={izbranProdukt} setIzbranProdukt={setIzbranProdukt} setPrikazi={setPrikazi} />
+		);
+	} else if (prikazi === 'blagajna') {
+		return <Checkout setPrikazi={setPrikazi} />;
+	} else if (prikazi === 'produkt') {
+		return (
+			<ProductInfo
+				izbranProdukt={izbranProdukt}
+				setIzbranProdukt={setIzbranProdukt}
+				setPrikazi={setPrikazi}
+			/>
+		);
+	} else if (prikazi === 'vnosKartice') {
+		return <CardInput setPrikazi={setPrikazi} />;
 	} else {
 		return <Error />;
 	}

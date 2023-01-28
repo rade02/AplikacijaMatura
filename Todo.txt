@@ -1,0 +1,26 @@
+// TODO: fix addToCartBtn
+// TODO:
+// TODO:
+// TODO:
+// TODO: 
+// TODO:
+// TODO: upoštevaj popust pri obracunavanju cene (ze ko dodamo v cart?)
+// TODO:
+// TODO: ko pridemo na cart preveri avtomatski, če kateri izdelek več ni na voljo in obvesti ter ga odstrani
+// TODO: pred nakupom (klikom na plačilo) še enkrat preveri ali je v bazi še dovolj artiklov, če ni opozori da je zmanjkalo artiklov
+// TODO: prikazi tudi na product info page popust
+// TODO: dodaj obvestilo spodaj desno ko dodamo nov izdelek, o skupni ceni in dodajanju
+// TODO: ce je preveliko stevilo ga das na maksimalno število ki je na voljo
+// TODO: onemogoči button Prikaži več če so prikazani vsi izdelki
+// TODO: mogoča povečava slike na product info
+// TODO: zaposleni in njihovi podatki (tudi sporocila o narocilih - moznost prevzema narocila in nato potrditev in posiljanje racuna)
+// TODO: daj port kot globalno dostopno spremenljivko
+// TODO:
+// TODO:
+// TODO:
+// TODO: fix header on shop page (navbar sticky (fixed position))
+// TODO:
+// TODO:
+// TODO:
+// TODO:
+// TODO:

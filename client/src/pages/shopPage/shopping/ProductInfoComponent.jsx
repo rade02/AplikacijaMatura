@@ -1,19 +1,19 @@
 import { ShoppingCart, CaretCircleLeft } from 'phosphor-react';
-import { useContext } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { ShopContext } from '../../../contexts/ShopContext';
 import AddToCartButton from './AddToCartButtonComponent';
 
-const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
-	const { cart, setCart, state, setState } = useContext(ShopContext);
-	console.log(selectedProduct.popust);
+const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt }) => {
+	const { cart, setCart, state } = useContext(ShopContext);
+
 	return (
 		<div className='productsMenu'>
 			<div className='productDiv'>
 				<div className='productField'>
 					<div className='productTitle'>
 						<h2>
-							{`[#${selectedProduct.ID_izdelka}] `}
-							{selectedProduct.ime}
+							{`[#${izbranProdukt.ID_izdelka}] `}
+							{izbranProdukt.ime}
 						</h2>
 					</div>
 					<div>
@@ -21,19 +21,19 @@ const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
 							<img src='' alt='ni slike'></img>
 						</div>
 						<div className='productDescription'>
-							<div className='category'>{selectedProduct.kategorija}</div>
+							<div className='category'>{izbranProdukt.kategorija}</div>
 							<br></br>
-							<div className='productInfos'>{selectedProduct.informacije}</div>
+							<div className='productInfos'>{izbranProdukt.informacije}</div>
 							<br></br>
 							<div>
-								{selectedProduct.kosov_na_voljo === 0 ? (
+								{izbranProdukt.kosov_na_voljo === 0 ? (
 									<div className='lowQuantity'>Razprodano</div>
-								) : selectedProduct.kosov_na_voljo < 4 ? (
+								) : izbranProdukt.kosov_na_voljo < 4 ? (
 									<div className='lowQuantity'>
-										Na voljo le še {selectedProduct.kosov_na_voljo}{' '}
-										{selectedProduct.kosov_na_voljo === 1
+										Na voljo le še {izbranProdukt.kosov_na_voljo}{' '}
+										{izbranProdukt.kosov_na_voljo === 1
 											? 'izdelek'
-											: selectedProduct.kosov_na_voljo === 2
+											: izbranProdukt.kosov_na_voljo === 2
 											? 'izdelka'
 											: 'izdelki'}
 										!
@@ -45,38 +45,39 @@ const ProductInfo = ({ selectedProduct, setSelectedProduct }) => {
 							<br></br>
 							<div
 								className={
-									selectedProduct.popust === 0 ? 'productInformations' : 'productPriceStrikethrough'
+									izbranProdukt.popust === 0 ? 'productInformations' : 'productPriceStrikethrough'
 								}>
-								{selectedProduct.cena_za_kos.toFixed(2)} €
+								{izbranProdukt.cena_za_kos.toFixed(2)} €
 							</div>
-							{selectedProduct.popust === 0 ? (
+							{izbranProdukt.popust === 0 ? (
 								<></>
 							) : (
-								<div className='discount2'>{selectedProduct.popust} % popust</div>
+								<div className='discount2'>{izbranProdukt.popust} % popust</div>
 							)}
-							{selectedProduct.popust > 0 ? (
+							{izbranProdukt.popust > 0 ? (
 								<div className='productInformations'>
-									{(selectedProduct.cena_za_kos * (1 - selectedProduct.popust / 100.0)).toFixed(2)} €
+									{(izbranProdukt.cena_za_kos * (1 - izbranProdukt.popust / 100.0)).toFixed(2)} €
 								</div>
 							) : (
 								<></>
 							)}
 							<br></br>
-							<br></br>From cart: {state.fromCart.toString()}
 							<div className='productButtonsDiv'>
 								<AddToCartButton
 									props={{
-										displayedProduct: state.props,
-										selectedProduct: selectedProduct,
-										setSelectedProduct: setSelectedProduct,
+										produkt: izbranProdukt,
+										setProdukt: setIzbranProdukt,
+										//displayedProduct: null,
+										//izbranProdukt: izbranProdukt,
+										//setizbranProdukt: setizbranProdukt,
 									}}
 								/>
 								<button
 									className='backButton'
 									onClick={(e) => {
 										e.preventDefault();
-										if (state.fromCart) setState({ ...state, active: 'cart' });
-										else setState({ ...state, active: 'shopping' });
+										if (state.fromCart) setPrikazi('kosarica');
+										else setPrikazi('nakupovanje');
 									}}>
 									<CaretCircleLeft size={25} />
 									<div>Nazaj</div>

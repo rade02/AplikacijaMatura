@@ -7,6 +7,7 @@ const router = express.Router();
 import pool from './dbConnection.js';
 import productsApiRoutes from './routes/api/productsApi.js';
 import loginApiRoutes from './routes/api/loginApi.js';
+import adminApiRoutes from './routes/api/adminApi.js';
 
 const app = express();
 app.listen(process.env.PORT, () => {
@@ -18,3 +19,4 @@ app.use(express.json());
 // products api routes
 app.use('/api/products', productsApiRoutes);
 app.use('/api/login', loginApiRoutes);
+app.use('/api/admin', adminApiRoutes);

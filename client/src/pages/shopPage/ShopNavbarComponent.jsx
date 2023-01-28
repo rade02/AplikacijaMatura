@@ -3,12 +3,12 @@ import { useContext, useState } from 'react';
 import { ShopContext } from '../../contexts/ShopContext';
 import { UserContext } from '../../contexts/UserContext';
 
-const ShopNavbar = () => {
+const ShopNavbar = ({ visible }) => {
 	const { state, setState } = useContext(ShopContext);
 	const { user } = useContext(UserContext);
 
 	return (
-		<header className='shopNavbar'>
+		<header className={visible === 0 ? 'shopNavbarTop' : visible === 1 ? 'invisibleNavbar' : 'shopNavbar'}>
 			<div className='shopNavbarHeading'>
 				{state.active === 'shopping' ? (
 					<label>
@@ -31,7 +31,7 @@ const ShopNavbar = () => {
 					className='cartButton'
 					onClick={(e) => {
 						e.preventDefault();
-						setState({ ...state, active: 'cart' });
+						setState({ ...state, action: 'cart' });
 					}}>
 					<ShoppingCart size={25} style={{ marginRight: '8px' }} />
 					{user.uporabnisko_ime}

@@ -12,3 +12,67 @@
 	padding: 10px 30px 10px 30px;
 	text-align: left;
 }
+
+hr {
+	border: 0.5px rgba(128, 128, 128, 0.587) solid;
+}
+.userLine {
+	display: flex;
+	flex-direction: row;
+	min-width: 500px;
+	justify-content: flex-start;
+	align-items: center;
+}
+.userLineHeader {
+	display: flex;
+	flex-direction: row;
+	min-width: 500px;
+	justify-content: flex-start;
+	align-items: center;
+}
+.userLine input {
+	width: 20px;
+}
+.userLine input,
+.userLine div,
+.userLineHeader div {
+	margin: 0px 10px 0px 10px;
+}
+.userLine div:nth-child(1),
+.userLineHeader div:nth-child(1) {
+	width: 150px;
+	padding-left: 10px;
+	text-align: left;
+}
+.userLine div:nth-child(2),
+.userLineHeader div:nth-child(2) {
+	width: 150px;
+	padding-left: 10px;
+	text-align: left;
+}
+.userLine div:nth-child(3),
+.userLineHeader div:nth-child(3) {
+	width: 150px;
+	padding-left: 10px;
+	text-align: left;
+}
+.admin {
+	background-color: rgb(223, 223, 145);
+	display: flex;
+	flex-direction: row;
+}
+.racunovodja {
+	background-color: rgb(240, 222, 178);
+	display: flex;
+	flex-direction: row;
+}
+.zaposleni {
+	background-color: rgb(198, 250, 189);
+	display: flex;
+	flex-direction: row;
+}
+.stranka {
+	background-color: rgb(205, 205, 205);
+	display: flex;
+	flex-direction: row;
+}
