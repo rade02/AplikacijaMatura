@@ -29,16 +29,23 @@ const SignInComponent = () => {
 						password: typedPassword,
 					},
 				});
-
-				if (response.data) {
-					// get all user's data from DB using request:
-					var data = await axios.get(`http://localhost:${PORT}/api/login/user`, {
-						params: { username: typedUsername },
-					});
-					let userData = { ...data.data, geslo: typedPassword };
-					// into context:
-					setUser({ ...userData, uporabnisko_ime: typedUsername });
-					setIsAuth(true);
+				if (typeof response.data !== 'boolean') {
+					if (response.data.omogocen === 0) {
+						setTypedUsername('');
+						setTypedPassword('');
+						un.current = '';
+						pwd.current = '';
+						setMsg('Vaš profil je bil onemogočen');
+					} else {
+						// get all user's data from DB using request:
+						var data = await axios.get(`http://localhost:${PORT}/api/login/user`, {
+							params: { username: typedUsername },
+						});
+						let userData = { ...data.data, geslo: typedPassword };
+						// into context:
+						setUser({ ...userData, uporabnisko_ime: typedUsername });
+						setIsAuth(true);
+					}
 				} else {
 					setTypedUsername('');
 					setTypedPassword('');

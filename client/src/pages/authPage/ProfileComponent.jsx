@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import NotificationCard from './NotificationCardComponent';
 import UrediProfil from './UrediProfilC';
+import Pregled from './PregledC';
+import PodatkiOOsebi from './PodatkiOOsebiC';
 
 const Profile = () => {
 	const PORT = 3005; // !!!
@@ -12,10 +14,12 @@ const Profile = () => {
 	const [vloga, setVloga] = useState(null);
 	const [msg, setMsg] = useState('');
 	const [stanjeAdmin, setStanjeAdmin] = useState(0);
-	const [uporabniki, setUporabniki] = useState(null);
+	const [prejsnjeStanjeAdmin, setPrejsnjeStanjeAdmin] = useState(0);
+	const [tabela, setTabela] = useState(null);
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
+	const [filterZaposleni, setFilterZaposleni] = useState(-1);
 	// TODO: ime je link in lahko si ogledamo vse podatke ki so shranjeni v bazi o osebah
-	const [zaposleni, setZaposleni] = useState(null);
+	const [oseba, setOseba] = useState(null);
 
 	// TODO: na domaci strani naredi okno ki se pojavi ob izbrisu profila
 	// TODO: PREVERI CE JE VNOS PRAVILEN (int, date ...)
@@ -66,22 +70,22 @@ const Profile = () => {
 							e.preventDefault();
 							setStanjeAdmin(3);
 						}}>
-						Pregled zaposlenih
-					</button>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(4);
-						}}>
-						Pregled strank
+						Pregled oseb
 					</button>
 					<hr />
 					<button
 						onClick={(e) => {
 							e.preventDefault();
+							setStanjeAdmin(4);
+						}}>
+						Dodajanje uporabnikov
+					</button>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
 							setStanjeAdmin(5);
 						}}>
-						Pregled izdelkov
+						Dodajanje oseb
 					</button>
 					<hr />
 					<button
@@ -89,8 +93,9 @@ const Profile = () => {
 							e.preventDefault();
 							setStanjeAdmin(6);
 						}}>
-						Pregled računov
+						Pregled izdelkov/računov
 					</button>
+					<hr />
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -128,351 +133,62 @@ const Profile = () => {
 			const pridobiInfoOUporabnikih = async () => {
 				try {
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/uporabniki`);
-					setUporabniki(r.data);
+					setTabela(r.data);
 				} catch (error) {
 					console.log('Prišlo je do napake');
 				}
 			};
-			if (uporabniki === null) pridobiInfoOUporabnikih();
+			if (tabela === null) pridobiInfoOUporabnikih();
 			return (
-				<>
-					<h2>Pregled uporabnikov</h2>
-					<div>
-						{uporabniki === null ? (
-							<>Napaka</>
-						) : (
-							<>
-								<select
-									onClick={(e) => {
-										e.preventDefault();
-										console.log(e.target.value);
-										setFilterUporabniki(parseInt(e.target.value));
-									}}>
-									<option key='-1' value='-1'>
-										Vsi
-									</option>
-									<option key='0' value='0'>
-										Administratorji
-									</option>
-									<option key='3' value='3'>
-										Računovodje
-									</option>
-									<option key='1' value='1'>
-										Zaposleni
-									</option>
-									<option key='2' value='2'>
-										Stranke
-									</option>
-								</select>
-								<div className='userLineHeader'>
-									<div>Uporabniško ime</div>
-									<div>Geslo</div>
-									<div>Vloga</div>
-								</div>
-								{uporabniki.map((u) => {
-									if (filterUporabniki === -1) {
-										return (
-											<div key={u.uporabnisko_ime}>
-												<hr />
-												<div className='userLine'>
-													<div>{u.uporabnisko_ime}</div>
-													<div>{u.geslo}</div>
-													<div
-														className={
-															u.vloga === 0
-																? 'admin'
-																: u.vloga === 3
-																? 'racunovodja'
-																: u.vloga === 1
-																? 'zaposleni'
-																: 'stranka'
-														}>
-														<input
-															disabled={u.vloga === 0 ? 'disabled' : ''}
-															onChange={async (e) => {
-																e.preventDefault();
-																if (
-																	e.target.value !== '' &&
-																	typeof parseInt(e.target.value) === 'number'
-																) {
-																	try {
-																		let res = await axios.post(
-																			`http://localhost:${PORT}/api/admin/updtVloga`,
-																			{
-																				uporabnisko_ime: u.uporabnisko_ime,
-																				vloga: e.target.value,
-																			}
-																		);
-																		if (res.data === 'success') setUporabniki(null);
-																	} catch (error) {
-																		console.log(error);
-																	}
-																}
-															}}
-															type='text'
-															defaultValue={u.vloga}
-															maxLength='1'></input>
-														<div>
-															{u.vloga === 0
-																? '(admin)'
-																: u.vloga === 3
-																? '(racunovodja)'
-																: u.vloga === 1
-																? '(zaposleni)'
-																: '(stranka)'}
-														</div>
-													</div>
-												</div>
-											</div>
-										);
-									} else {
-										if (parseInt(u.vloga) === filterUporabniki) {
-											return (
-												<>
-													<hr />
-													<div className='userLine'>
-														<div>{u.uporabnisko_ime}</div>
-														<div>{u.geslo}</div>
-														<div
-															className={
-																u.vloga === 0
-																	? 'admin'
-																	: u.vloga === 3
-																	? 'racunovodja'
-																	: u.vloga === 1
-																	? 'zaposleni'
-																	: 'stranka'
-															}>
-															<input
-																disabled={u.vloga === 0 ? 'disabled' : ''}
-																onChange={async (e) => {
-																	e.preventDefault();
-																	if (
-																		e.target.value !== '' &&
-																		typeof parseInt(e.target.value) === 'number'
-																	) {
-																		try {
-																			let res = await axios.post(
-																				`http://localhost:${PORT}/api/admin/updtVloga`,
-																				{
-																					uporabnisko_ime: u.uporabnisko_ime,
-																					vloga: e.target.value,
-																				}
-																			);
-																			if (res.data === 'success') setUporabniki(null);
-																		} catch (error) {
-																			console.log(error);
-																		}
-																	}
-																}}
-																type='text'
-																defaultValue={u.vloga}
-																maxLength='1'></input>
-															<div>
-																{u.vloga === 0
-																	? '(admin)'
-																	: u.vloga === 3
-																	? '(racunovodja)'
-																	: u.vloga === 1
-																	? '(zaposleni)'
-																	: '(stranka)'}
-															</div>
-														</div>
-													</div>
-												</>
-											);
-										} else {
-											return <></>;
-										}
-									}
-								})}
-								<hr />
-								<button
-									onClick={(e) => {
-										e.preventDefault();
-										setStanjeAdmin(0);
-									}}>
-									Nazaj
-								</button>
-							</>
-						)}
-					</div>
-				</>
+				<Pregled
+					props={{
+						naslov: 'Pregled uporabnikov',
+						naslovnaVrstica: ['Uporabniško ime', 'Geslo', 'Vloga', 'Omogocen', 'Spremeni'],
+						tabela: tabela,
+						setTabela: setTabela,
+						filter: filterUporabniki,
+						setFilter: setFilterUporabniki,
+						opcije: [
+							{ ime: 'Vsi', vrednost: -1 },
+							{ ime: 'Administratorji', vrednost: 0 },
+							{ ime: 'Računovodje', vrednost: 3 },
+							{ ime: 'Zaposleni', vrednost: 1 },
+							{ ime: 'Stranke', vrednost: 2 },
+						],
+						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+						stanjeAdmin: stanjeAdmin,
+						setStanjeAdmin: setStanjeAdmin,
+						setOseba: setOseba,
+					}}
+				/>
 			);
 		} else if (parseInt(stanjeAdmin) === 3) {
-			const pridobiInfoOZaposlenih = async () => {
+			// pregled oseb
+			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/zaposleni`);
-					setZaposleni(r.data);
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`);
+					setTabela(r.data);
 				} catch (error) {
 					console.log('Prišlo je do napake');
 				}
 			};
-			if (zaposleni === null) pridobiInfoOZaposlenih();
+			if (tabela === null) pridobiInfoOOsebah();
 			return (
-				<>
-					<h2>Pregled zaposlenih</h2>
-					<div>
-						{zaposleni === null ? (
-							<>Napaka</>
-						) : (
-							<>
-								<select
-									onClick={(e) => {
-										e.preventDefault();
-										console.log(e.target.value);
-										setFilterUporabniki(parseInt(e.target.value));
-									}}>
-									<option key='-1' value='-1'>
-										Vsi
-									</option>
-									<option key='0' value='0'>
-										Administratorji
-									</option>
-									<option key='3' value='3'>
-										Računovodje
-									</option>
-									<option key='1' value='1'>
-										Zaposleni
-									</option>
-									<option key='2' value='2'>
-										Stranke
-									</option>
-								</select>
-								<div className='userLineHeader'>
-									<div>ID</div>
-									<div>Ime</div>
-									<div>Priimek</div>
-								</div>
-								{zaposleni.map((u) => {
-									if (filterUporabniki === -1) {
-										return (
-											<div key={u.uporabnisko_ime}>
-												<hr />
-												<div className='userLine'>
-													<div>{u.uporabnisko_ime}</div>
-													<div>{u.geslo}</div>
-													<div
-														className={
-															u.vloga === 0
-																? 'admin'
-																: u.vloga === 3
-																? 'racunovodja'
-																: u.vloga === 1
-																? 'zaposleni'
-																: 'stranka'
-														}>
-														<input
-															disabled={u.vloga === 0 ? 'disabled' : ''}
-															onChange={async (e) => {
-																e.preventDefault();
-																if (
-																	e.target.value !== '' &&
-																	typeof parseInt(e.target.value) === 'number'
-																) {
-																	try {
-																		let res = await axios.post(
-																			`http://localhost:${PORT}/api/admin/updtVloga`,
-																			{
-																				uporabnisko_ime: u.uporabnisko_ime,
-																				vloga: e.target.value,
-																			}
-																		);
-																		if (res.data === 'success') setUporabniki(null);
-																	} catch (error) {
-																		console.log(error);
-																	}
-																}
-															}}
-															type='text'
-															defaultValue={u.vloga}
-															maxLength='1'></input>
-														<div>
-															{u.vloga === 0
-																? '(admin)'
-																: u.vloga === 3
-																? '(racunovodja)'
-																: u.vloga === 1
-																? '(zaposleni)'
-																: '(stranka)'}
-														</div>
-													</div>
-												</div>
-											</div>
-										);
-									} else {
-										if (parseInt(u.vloga) === filterUporabniki) {
-											return (
-												<>
-													<hr />
-													<div className='userLine'>
-														<div>{u.uporabnisko_ime}</div>
-														<div>{u.geslo}</div>
-														<div
-															className={
-																u.vloga === 0
-																	? 'admin'
-																	: u.vloga === 3
-																	? 'racunovodja'
-																	: u.vloga === 1
-																	? 'zaposleni'
-																	: 'stranka'
-															}>
-															<input
-																disabled={u.vloga === 0 ? 'disabled' : ''}
-																onChange={async (e) => {
-																	e.preventDefault();
-																	if (
-																		e.target.value !== '' &&
-																		typeof parseInt(e.target.value) === 'number'
-																	) {
-																		try {
-																			let res = await axios.post(
-																				`http://localhost:${PORT}/api/admin/updtVloga`,
-																				{
-																					uporabnisko_ime: u.uporabnisko_ime,
-																					vloga: e.target.value,
-																				}
-																			);
-																			if (res.data === 'success') setUporabniki(null);
-																		} catch (error) {
-																			console.log(error);
-																		}
-																	}
-																}}
-																type='text'
-																defaultValue={u.vloga}
-																maxLength='1'></input>
-															<div>
-																{u.vloga === 0
-																	? '(admin)'
-																	: u.vloga === 3
-																	? '(racunovodja)'
-																	: u.vloga === 1
-																	? '(zaposleni)'
-																	: '(stranka)'}
-															</div>
-														</div>
-													</div>
-												</>
-											);
-										} else {
-											return <></>;
-										}
-									}
-								})}
-								<hr />
-								<button
-									onClick={(e) => {
-										e.preventDefault();
-										setStanjeAdmin(0);
-									}}>
-									Nazaj
-								</button>
-							</>
-						)}
-					</div>
-				</>
+				<Pregled
+					props={{
+						naslov: 'Pregled oseb',
+						naslovnaVrstica: ['ID', 'Uporabniško ime', 'Elektronski naslov', 'Ime', 'Priimek'],
+						tabela: tabela,
+						setTabela: setTabela,
+						filter: filterUporabniki,
+						setFilter: setFilterUporabniki,
+						opcije: null,
+						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+						stanjeAdmin: stanjeAdmin,
+						setStanjeAdmin: setStanjeAdmin,
+						setOseba: setOseba,
+					}}
+				/>
 			);
 		} else if (parseInt(stanjeAdmin) === 4) {
 			return (
@@ -490,7 +206,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 5) {
 			return (
 				<>
-					<h2>Pregled izdelkov</h2>
+					<h2>Dodajanje uporabnikov</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -503,7 +219,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 6) {
 			return (
 				<>
-					<h2>Pregled računov</h2>
+					<h2>Dodajanje zaposlenih</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -516,7 +232,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 7) {
 			return (
 				<>
-					<h2>Pregled naročil</h2>
+					<h2>Dodajanje strank</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -529,6 +245,45 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 8) {
 			return (
 				<>
+					<h2>Pregled izdelkov</h2>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 9) {
+			return (
+				<>
+					<h2>Pregled računov</h2>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 10) {
+			return (
+				<>
+					<h2>Pregled naročil</h2>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 11) {
+			return (
+				<>
 					<h2>Upravljanje s podatkovno bazo (geslo)</h2>
 					<button
 						onClick={(e) => {
@@ -538,6 +293,15 @@ const Profile = () => {
 						Nazaj
 					</button>
 				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 12) {
+			// prikazi osebo
+			return (
+				<PodatkiOOsebi
+					oseba={oseba}
+					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
+					setStanjeAdmin={setStanjeAdmin}
+				/>
 			);
 		}
 	} else if (parseInt(vloga) === 2) {

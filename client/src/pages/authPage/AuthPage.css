@@ -13,58 +13,61 @@
 	text-align: left;
 }
 
-hr {
-	border: 0.5px rgba(128, 128, 128, 0.587) solid;
+.izbirnoPolje {
+	background-color: rgb(255, 255, 255);
+	margin: 10px;
+	padding: 4px;
+	border: 1px solid black;
+	border-radius: 0px;
+	font-size: 14px;
+	font-weight: 500;
+	width: auto;
+	min-width: 140px;
 }
-.userLine {
+.izbirnoPolje:hover {
+	border: 1px solid black;
+	cursor: pointer;
+}
+
+.tabela {
+	background-color: white;
+	border: 3px solid transparent;
+	margin: 20px 0px 20px 0px;
+}
+.tabela,
+td,
+th,
+tr {
+	border: 1px dotted grey;
+	border-collapse: collapse;
+}
+
+.vrstica:hover {
+	background-color: rgba(240, 240, 240, 0.727);
+	border: 1px solid rgb(39, 107, 255);
+	cursor: pointer;
+}
+td,
+th {
+	min-width: max-content;
+	margin: 3px;
+	padding: 2px 3px 2px 3px;
+	text-align: left;
+}
+td input {
+	z-index: 1000;
+	width: 15px;
+	margin: 0px 3px 0px 3px;
+}
+td > div {
 	display: flex;
 	flex-direction: row;
-	min-width: 500px;
-	justify-content: flex-start;
-	align-items: center;
-}
-.userLineHeader {
-	display: flex;
-	flex-direction: row;
-	min-width: 500px;
-	justify-content: flex-start;
-	align-items: center;
-}
-.userLine input {
-	width: 20px;
-}
-.userLine input,
-.userLine div,
-.userLineHeader div {
-	margin: 0px 10px 0px 10px;
-}
-.userLine div:nth-child(1),
-.userLineHeader div:nth-child(1) {
-	width: 150px;
-	padding-left: 10px;
-	text-align: left;
-}
-.userLine div:nth-child(2),
-.userLineHeader div:nth-child(2) {
-	width: 150px;
-	padding-left: 10px;
-	text-align: left;
-}
-.userLine div:nth-child(3),
-.userLineHeader div:nth-child(3) {
-	width: 150px;
-	padding-left: 10px;
-	text-align: left;
 }
 .admin {
-	background-color: rgb(223, 223, 145);
-	display: flex;
-	flex-direction: row;
+	background-color: rgba(223, 223, 145, 0.468);
 }
 .racunovodja {
 	background-color: rgb(240, 222, 178);
-	display: flex;
-	flex-direction: row;
 }
 .zaposleni {
 	background-color: rgb(198, 250, 189);
@@ -75,4 +78,8 @@ hr {
 	background-color: rgb(205, 205, 205);
 	display: flex;
 	flex-direction: row;
+}
+.omogocanje:hover {
+	text-decoration: underline;
+	color: red;
 }

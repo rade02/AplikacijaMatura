@@ -38,11 +38,27 @@ router.post('/updtVloga', async (req, res) => {
 	}
 });
 
-router.get('/zaposleni', async (req, res) => {
+router.get('/osebe', async (req, res) => {
 	try {
-		let response = await pool.query(`select * from Stranke_in_zaposleni where oddelek is not null`);
-		console.log(response[0]);
+		let response = await pool.query(`select * from Stranke_in_zaposleni`);
+		//console.log(response[0]);
 		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/omogoci', async (req, res) => {
+	const uporabnisko_ime = req.body.uporabnisko_ime;
+	const omogoci = req.body.omogoci;
+	try {
+		let response = await pool.query(`update Uporabniki set omogocen = ? where uporabnisko_ime = ?`, [
+			omogoci,
+			uporabnisko_ime,
+		]);
+
+		res.status(200).send('success');
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);
