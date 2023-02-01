@@ -1,7 +1,7 @@
 // TODO: fix addToCartBtn
 // TODO:
 // TODO:
-// TODO:
+// TODO:	spremeni form za registracijo
 // TODO: 
 // TODO:
 // TODO: upoštevaj popust pri obracunavanju cene (ze ko dodamo v cart?)

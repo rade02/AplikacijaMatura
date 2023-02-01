@@ -39,13 +39,16 @@ router.post('/updtVloga', async (req, res) => {
 });
 
 router.get('/osebe', async (req, res) => {
+	const kriterij = req.query.iskalniKriterij;
+	const niz = req.query.iskalniNiz;
+
 	try {
-		let response = await pool.query(`select * from Stranke_in_zaposleni`);
-		//console.log(response[0]);
+		let response = await pool.query(`select * from Stranke_in_zaposleni where ${kriterij} = ?`, [niz]);
+
 		res.status(200).send(response[0]);
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
-		res.status(400).send(`error`);
+		res.status(400).send(`error ${onRejectedErrorsqlMessage}`);
 	}
 });
 

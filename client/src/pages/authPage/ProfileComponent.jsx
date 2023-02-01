@@ -4,8 +4,9 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import NotificationCard from './NotificationCardComponent';
 import UrediProfil from './UrediProfilC';
-import Pregled from './PregledC';
-import PodatkiOOsebi from './PodatkiOOsebiC';
+import Pregled from './PregledInDodajanja/PregledC';
+import PodatkiOOsebi from './PregledInDodajanja/PodatkiOOsebiC';
+import DodajanjeUporabnikov from './PregledInDodajanja/DodajanjeUporabnikovC';
 
 const Profile = () => {
 	const PORT = 3005; // !!!
@@ -17,7 +18,6 @@ const Profile = () => {
 	const [prejsnjeStanjeAdmin, setPrejsnjeStanjeAdmin] = useState(0);
 	const [tabela, setTabela] = useState(null);
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
-	const [filterZaposleni, setFilterZaposleni] = useState(-1);
 	// TODO: ime je link in lahko si ogledamo vse podatke ki so shranjeni v bazi o osebah
 	const [oseba, setOseba] = useState(null);
 
@@ -139,6 +139,7 @@ const Profile = () => {
 				}
 			};
 			if (tabela === null) pridobiInfoOUporabnikih();
+			console.log(stanjeAdmin);
 			return (
 				<Pregled
 					props={{
@@ -166,10 +167,12 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`);
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
 					setTabela(r.data);
 				} catch (error) {
-					console.log('Prišlo je do napake');
+					console.log(`Prišlo je do napake: ${error}`);
 				}
 			};
 			if (tabela === null) pridobiInfoOOsebah();
@@ -193,7 +196,8 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 4) {
 			return (
 				<>
-					<h2>Pregled strank</h2>
+					<h2>Dodajanje uporabnikov</h2>
+					<DodajanjeUporabnikov />
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -206,7 +210,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 5) {
 			return (
 				<>
-					<h2>Dodajanje uporabnikov</h2>
+					<h2>Dodajanje oseb</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -219,7 +223,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 6) {
 			return (
 				<>
-					<h2>Dodajanje zaposlenih</h2>
+					<h2>Pregled izdelkov/računov</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -232,7 +236,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 7) {
 			return (
 				<>
-					<h2>Dodajanje strank</h2>
+					<h2>Pregled naročil</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -245,7 +249,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 8) {
 			return (
 				<>
-					<h2>Pregled izdelkov</h2>
+					<h2>Upravljanje z bazo podatkov</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -256,45 +260,6 @@ const Profile = () => {
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 9) {
-			return (
-				<>
-					<h2>Pregled računov</h2>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
-						}}>
-						Nazaj
-					</button>
-				</>
-			);
-		} else if (parseInt(stanjeAdmin) === 10) {
-			return (
-				<>
-					<h2>Pregled naročil</h2>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
-						}}>
-						Nazaj
-					</button>
-				</>
-			);
-		} else if (parseInt(stanjeAdmin) === 11) {
-			return (
-				<>
-					<h2>Upravljanje s podatkovno bazo (geslo)</h2>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
-						}}>
-						Nazaj
-					</button>
-				</>
-			);
-		} else if (parseInt(stanjeAdmin) === 12) {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi

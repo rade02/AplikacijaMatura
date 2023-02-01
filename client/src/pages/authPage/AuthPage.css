@@ -64,20 +64,16 @@ td > div {
 	flex-direction: row;
 }
 .admin {
-	background-color: rgba(223, 223, 145, 0.468);
+	background-color: rgba(170, 255, 11, 0.753);
 }
 .racunovodja {
 	background-color: rgb(240, 222, 178);
 }
 .zaposleni {
-	background-color: rgb(198, 250, 189);
-	display: flex;
-	flex-direction: row;
+	background-color: rgb(22, 176, 247);
 }
 .stranka {
-	background-color: rgb(205, 205, 205);
-	display: flex;
-	flex-direction: row;
+	background-color: rgb(255, 151, 16);
 }
 .omogocanje:hover {
 	text-decoration: underline;
