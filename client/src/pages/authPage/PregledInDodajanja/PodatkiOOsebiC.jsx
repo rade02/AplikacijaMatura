@@ -27,6 +27,7 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin }) => {
 				<div
 					style={{
 						padding: '10px',
+						textAlign: 'left',
 					}}>
 					{Object.keys(oseba).map((pr) => {
 						return <div>{pr}:</div>;

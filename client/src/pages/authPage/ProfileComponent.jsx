@@ -196,8 +196,11 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 4) {
 			return (
 				<>
-					<h2>Dodajanje uporabnikov</h2>
-					<DodajanjeUporabnikov />
+					<DodajanjeUporabnikov
+						props={{
+							naslov: 'Dodajanje uporabnikov',
+						}}
+					/>
 					<button
 						onClick={(e) => {
 							e.preventDefault();

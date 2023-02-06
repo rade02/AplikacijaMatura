@@ -307,6 +307,7 @@ const SignUpComponent = () => {
 							<></>
 						)}
 					</div>
+
 					<div>
 						<label>Ponovite geslo:</label>
 						<br />
