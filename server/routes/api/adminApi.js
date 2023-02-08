@@ -104,7 +104,7 @@ router.post('/dodajUporabnika', async (req, res) => {
 			omogocen,
 		]);
 		let response2 = await pool.query(
-			`insert into Stranke_in_zaposleni values ('default',?,?,?,?,?,?,?,?,?,?,?)`,
+			`insert into Stranke_in_zaposleni values (default,?,?,?,?,?,?,?,?,?,?,?)`,
 			[
 				uporabnisko_ime,
 				elektronski_naslov,

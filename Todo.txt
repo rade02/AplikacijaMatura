@@ -15,12 +15,13 @@
 // TODO: 
 // TODO: zaposleni in njihovi podatki (tudi sporocila o narocilih - moznost prevzema narocila in nato potrditev in posiljanje racuna)
 // TODO: daj port kot globalno dostopno spremenljivko
-// TODO: 
-// TODO: dodaj omejitve pri dodajanju uporabnikov
-// TODO: 
+// TODO: popravi poštno in telefonsko številko, plačo (število in decimalna pika) pri vnosu na registraciji in pri adminu
+// TODO: popravi stran od uporabnikov
+// TODO: popravi notification card ki se ne pojavlja
 // TODO: fix header on shop page (navbar sticky (fixed position))
-// TODO: 
+// TODO: fix radio buttons on dodajanjeUporabnikov
 // TODO: dodaj tabelo z vlogami
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: mogoča povečava slike na product info
+// TODO: dodaj datoteko z sql stavki v mapo na github

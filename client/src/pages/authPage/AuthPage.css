@@ -29,6 +29,11 @@
 	cursor: pointer;
 }
 
+.naslov {
+	font-size: 28px;
+	font-weight: 700;
+	margin: 50px 0px 15px 0px;
+}
 .tabela {
 	background-color: white;
 	border: 3px solid transparent;
@@ -77,5 +82,50 @@ td > div {
 }
 .omogocanje:hover {
 	text-decoration: underline;
+	color: red;
+}
+
+.obrazecZaVnosUporabnika {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	min-width: 500px;
+	width: fit-content;
+	margin: 20px;
+}
+.obrazecZaVnosUporabnika > table {
+	min-width: 400px;
+	border-radius: 5px;
+	border-collapse: collapse;
+	margin: 15px;
+}
+.obrazecZaVnosUporabnika > table tr {
+	border: none;
+}
+.obrazecZaVnosUporabnika > table td {
+	border: none;
+}
+.obrazecZaVnosUporabnika > table .opisPodatka {
+	min-width: max-content;
+	width: 160px;
+	padding: 3px;
+	font-size: 18px;
+}
+.obrazecZaVnosUporabnika > table .podatek {
+	min-width: max-content;
+	width: 175px;
+	padding: 3px;
+	font-size: 17px;
+}
+.tekstovnoPolje {
+	min-width: 150px;
+	font-size: 18px;
+	background-color: white;
+	border: 1px solid black;
+	border-radius: 13px;
+	padding: 3px 10px 3px 10px;
+}
+.sporociloONapaki {
 	color: red;
 }

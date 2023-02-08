@@ -45,7 +45,7 @@ router.get('/email', async (req, res) => {
 
 	try {
 		let userDataArray = await pool.query(
-			`select ID_stranke from Stranke_in_zaposleni where elektronski_naslov = ?`,
+			`select ID from Stranke_in_zaposleni where elektronski_naslov = ?`,
 			[em]
 		);
 		userDataArray = userDataArray[0][0];

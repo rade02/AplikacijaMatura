@@ -87,7 +87,8 @@ hr {
 .bar #right {
 	border-right: none;
 }
-.links {
+.links,
+.links > label {
 	color: white;
 	text-decoration: none;
 	cursor: pointer;
@@ -96,6 +97,11 @@ hr {
 	align-items: center;
 	font-size: 15px;
 }
+.links:hover,
+.links > label:hover {
+	color: rgba(243, 241, 241, 0.979);
+}
+
 .profilePic {
 	width: 25px;
 	height: 25px;

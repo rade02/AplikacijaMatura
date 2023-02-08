@@ -80,18 +80,11 @@ const Profile = () => {
 						}}>
 						Dodajanje uporabnikov
 					</button>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(5);
-						}}>
-						Dodajanje oseb
-					</button>
 					<hr />
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setStanjeAdmin(6);
+							setStanjeAdmin(5);
 						}}>
 						Pregled izdelkov/računov
 					</button>
@@ -99,14 +92,14 @@ const Profile = () => {
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setStanjeAdmin(7);
+							setStanjeAdmin(6);
 						}}>
 						Pregled naročil
 					</button>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setStanjeAdmin(8);
+							setStanjeAdmin(7);
 						}}>
 						Upravljanje s podatkovno bazo (geslo)
 					</button>
@@ -213,7 +206,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 5) {
 			return (
 				<>
-					<h2>Dodajanje oseb</h2>
+					<h2>Pregled izdelkov/računov</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -226,7 +219,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 6) {
 			return (
 				<>
-					<h2>Pregled izdelkov/računov</h2>
+					<h2>Pregled naročil</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -239,19 +232,6 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 7) {
 			return (
 				<>
-					<h2>Pregled naročil</h2>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
-						}}>
-						Nazaj
-					</button>
-				</>
-			);
-		} else if (parseInt(stanjeAdmin) === 8) {
-			return (
-				<>
 					<h2>Upravljanje z bazo podatkov</h2>
 					<button
 						onClick={(e) => {
@@ -262,7 +242,7 @@ const Profile = () => {
 					</button>
 				</>
 			);
-		} else if (parseInt(stanjeAdmin) === 9) {
+		} else if (parseInt(stanjeAdmin) === 8) {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
