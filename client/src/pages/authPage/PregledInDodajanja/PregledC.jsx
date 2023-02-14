@@ -34,12 +34,12 @@ const Pregled = ({ props }) => {
 									onChange={(e) => {
 										e.preventDefault();
 
-										if (e.target.value === '') {
+										/*if (e.target.value === '') {
 											setIskalniNiz(1);
 											setIskalniKriterij(1);
-										} else {
-											setIskalniNiz(e.target.value);
-										}
+										} else {*/
+										setIskalniNiz(e.target.value);
+										//}
 									}}
 									placeholder='Vnesite iskalni niz'></input>
 								<button

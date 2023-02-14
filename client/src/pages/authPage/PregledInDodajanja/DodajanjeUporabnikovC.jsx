@@ -169,7 +169,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 										setVneseniPodatki({ ...vneseniPodatki, uporabnisko_ime: e.target.value });
 									}}
 									className='tekstovnoPolje'></input>
-								{sporociloONapaki.uimeS === null ? (
+								{sporociloONapaki.uimeS ? (
 									<></>
 								) : (
 									<div className='sporociloONapaki'>{sporociloONapaki.uimeS}</div>
@@ -261,8 +261,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 									type='radio'
 									id='Radmin'
 									name='vloga'
-									onClick={(e) => {
-										e.preventDefault();
+									onChange={(e) => {
 										setVneseniPodatki({ ...vneseniPodatki, vloga: 0 });
 									}}
 									checked={vneseniPodatki.vloga === 0 ? 'checked' : ''}></input>
@@ -273,8 +272,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 									type='radio'
 									id='Rzaposleni'
 									name='vloga'
-									onClick={(e) => {
-										e.preventDefault();
+									onChange={(e) => {
 										setVneseniPodatki({ ...vneseniPodatki, vloga: 1 });
 									}}
 									checked={vneseniPodatki.vloga === 1 ? 'checked' : ''}></input>
@@ -285,8 +283,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 									type='radio'
 									id='Rstranka'
 									name='vloga'
-									onClick={(e) => {
-										e.preventDefault();
+									onChange={(e) => {
 										setVneseniPodatki({ ...vneseniPodatki, vloga: 2 });
 									}}
 									checked={vneseniPodatki.vloga === 2 ? 'checked' : ''}></input>
@@ -297,8 +294,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 									type='radio'
 									id='Rracunovodja'
 									name='vloga'
-									onClick={(e) => {
-										e.preventDefault();
+									onChange={(e) => {
 										setVneseniPodatki({ ...vneseniPodatki, vloga: 3 });
 									}}
 									checked={vneseniPodatki.vloga === 3 ? 'checked' : ''}></input>
@@ -315,7 +311,6 @@ const DodajanjeUporabnikov = ({ props }) => {
 									id='Romogocen'
 									name='omogocen'
 									onClick={(e) => {
-										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, omogocen: true });
 									}}
 									checked={vneseniPodatki.omogocen ? 'checked' : ''}></input>
@@ -327,7 +322,6 @@ const DodajanjeUporabnikov = ({ props }) => {
 									id='Ronemogocen'
 									name='omogocen'
 									onClick={(e) => {
-										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, omogocen: false });
 									}}
 									checked={vneseniPodatki.omogocen ? '' : 'checked'}></input>

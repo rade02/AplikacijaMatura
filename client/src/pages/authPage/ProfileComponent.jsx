@@ -7,6 +7,8 @@ import UrediProfil from './UrediProfilC';
 import Pregled from './PregledInDodajanja/PregledC';
 import PodatkiOOsebi from './PregledInDodajanja/PodatkiOOsebiC';
 import DodajanjeUporabnikov from './PregledInDodajanja/DodajanjeUporabnikovC';
+import PregledRacunov from './PregledInDodajanja/PregledRacunovC';
+import PregledIzdelkov from './PregledInDodajanja/PregledIzdelkovC';
 
 const Profile = () => {
 	const PORT = 3005; // !!!
@@ -19,7 +21,7 @@ const Profile = () => {
 	const [tabela, setTabela] = useState(null);
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
 	// TODO: ime je link in lahko si ogledamo vse podatke ki so shranjeni v bazi o osebah
-	const [oseba, setOseba] = useState(null);
+	const [oseba, setOseba] = useState(null); // podatki o osebi
 
 	// TODO: na domaci strani naredi okno ki se pojavi ob izbrisu profila
 	// TODO: PREVERI CE JE VNOS PRAVILEN (int, date ...)
@@ -86,20 +88,27 @@ const Profile = () => {
 							e.preventDefault();
 							setStanjeAdmin(5);
 						}}>
-						Pregled izdelkov/računov
+						Pregled izdelkov
 					</button>
-					<hr />
 					<button
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(6);
 						}}>
-						Pregled naročil
+						Pregled računov
 					</button>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(7);
+						}}>
+						Pregled naročil
+					</button>
+					<hr />
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(8);
 						}}>
 						Upravljanje s podatkovno bazo (geslo)
 					</button>
@@ -160,9 +169,7 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`);
 					setTabela(r.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -206,7 +213,14 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 5) {
 			return (
 				<>
-					<h2>Pregled izdelkov/računov</h2>
+					<PregledIzdelkov
+						props={{
+							naslov: 'Pregled izdelkov',
+							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
+							tabela: tabela,
+							setTabela: setTabela,
+						}}
+					/>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -217,9 +231,38 @@ const Profile = () => {
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 6) {
+			const pridobiInfoORacunih = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiInfoORacunih();
 			return (
 				<>
-					<h2>Pregled naročil</h2>
+					<PregledRacunov
+						props={{
+							naslov: 'Pregled računov',
+							naslovnaVrstica: [
+								'ID',
+								'ID naročila',
+								'Kupec',
+								'Prejemnik',
+								'Datum valute',
+								'Za plačilo',
+								'Plačano',
+							],
+							tabela: tabela,
+							setTabela: setTabela,
+							filter: filterUporabniki,
+							setFilter: setFilterUporabniki,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+						}}
+					/>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -232,7 +275,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 7) {
 			return (
 				<>
-					<h2>Upravljanje z bazo podatkov</h2>
+					<h2>Pregled naročil</h2>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
@@ -243,6 +286,19 @@ const Profile = () => {
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 8) {
+			return (
+				<>
+					<h2>Upravljanje z bazo podatkov</h2>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi

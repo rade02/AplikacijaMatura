@@ -6,7 +6,7 @@
 // TODO: 
 // TODO: upoštevaj popust pri obracunavanju cene (ze ko dodamo v cart?)
 // TODO: 
-// TODO: ko pridemo na cart preveri avtomatski, če kateri izdelek več ni na voljo in obvesti ter ga odstrani
+// TODO: ko pridemo na cart preveri avtomatsko, če kateri izdelek več ni na voljo in obvesti ter ga odstrani
 // TODO: pred nakupom (klikom na plačilo) še enkrat preveri ali je v bazi še dovolj artiklov, če ni opozori da je zmanjkalo artiklov
 // TODO: prikazi tudi na product info page popust
 // TODO: dodaj obvestilo spodaj desno ko dodamo nov izdelek, o skupni ceni in dodajanju
@@ -19,7 +19,7 @@
 // TODO: popravi stran od uporabnikov
 // TODO: popravi notification card ki se ne pojavlja
 // TODO: fix header on shop page (navbar sticky (fixed position))
-// TODO: fix radio buttons on dodajanjeUporabnikov
+// TODO: filtriranje po datumu in ceni racunov
 // TODO: dodaj tabelo z vlogami
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: dodaj pri try catch error message in jih prikazi
