@@ -4,7 +4,7 @@ import '../AuthPage.css';
 
 const TabelskaVrstica = ({ props }) => {
 	const PORT = 3005; // !!!
-	console.log(props.element);
+	//console.log(props.element);
 	if (props.naslov === 'Pregled oseb') {
 		return (
 			<tr
@@ -21,6 +21,78 @@ const TabelskaVrstica = ({ props }) => {
 				<td>{props.element.elektronski_naslov}</td>
 				<td>{props.element.ime}</td>
 				<td>{props.element.priimek}</td>
+			</tr>
+		);
+	} else if (props.naslov === 'Pregled računov') {
+		return (
+			<tr
+				key={props.element.ID_racuna}
+				className='vrstica'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setOseba(props.element);
+					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+					props.setStanjeAdmin(9);
+				}}>
+				<td>{props.element.ID_racuna}</td>
+				<td>{props.element.ID_narocila}</td>
+				<td>{props.element.kupec}</td>
+				<td>{props.element.prejemnik}</td>
+				<td>{props.element.datum_valute}</td>
+				<td>{props.element.za_placilo}</td>
+				<td>{props.element.placano}</td>
+			</tr>
+		);
+	} else if (props.naslov === 'Pregled izdelkov') {
+		return (
+			<tr
+				key={props.element.ID_izdelka}
+				className='vrstica'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setOseba(props.element);
+					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+					props.setStanjeAdmin(9);
+				}}>
+				<td>{props.element.ID_izdelka}</td>
+				<td>{props.element.ime}</td>
+				<td>{props.element.kategorija}</td>
+				<td>{props.element.cena_za_kos}</td>
+				<td>{props.element.kosov_na_voljo}</td>
+				<td>{props.element.popust}</td>
+			</tr>
+		);
+	} else if (props.naslov === 'Pregled naročil') {
+		return (
+			<tr
+				key={props.element.ID_narocila}
+				className='vrstica'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setOseba(props.element);
+					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+					props.setStanjeAdmin(9);
+				}}>
+				<td>{props.element.ID_narocila}</td>
+				<td>{props.element.datum}</td>
+				<td>{props.element.ID_stranke}</td>
+				<td>{props.element.opravljeno}</td>
+			</tr>
+		);
+	} else if (props.naslov === 'Upravljanje z bazo podatkov') {
+		return (
+			<tr
+				key={props.element}
+				className='vrstica'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setOseba(props.element);
+					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+					props.setStanjeAdmin(9);
+				}}>
+				{Object.keys(props.element).map((key) => {
+					return <td>{props.element[key]}</td>;
+				})}
 			</tr>
 		);
 	}
@@ -48,7 +120,7 @@ const TabelskaVrstica = ({ props }) => {
 				}>
 				<div>
 					<input
-						disabled={props.element.vloga === 0 ? 'disabled' : ''}
+						disabled={props.element.uporabnisko_ime === 'admin' ? 'disabled' : ''} // komu ne moremo spremeniti vloge
 						onClick={(e) => {
 							e.preventDefault();
 							e.stopPropagation();

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const DodajanjeUporabnikov = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -78,7 +78,8 @@ const DodajanjeUporabnikov = ({ props }) => {
 							oddelek: null,
 							placa: 0.0,
 						});
-						setSporociloONapaki(null);
+						e.target.reset();
+						setSporociloONapaki({ uimeS: '', gesloS: '', enaslovS: '', dbS: '' });
 					} else {
 						let opozorilo = '';
 						if (OKuporabniskoIme !== 2) {
@@ -128,7 +129,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 														if (result.data === '') {
 															setSporociloONapaki({
 																...sporociloONapaki,
-																uimeS: null,
+																uimeS: '',
 															});
 															setOKuporabniskoIme(2);
 														} else {

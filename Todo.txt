@@ -12,16 +12,26 @@
 // TODO: dodaj obvestilo spodaj desno ko dodamo nov izdelek, o skupni ceni in dodajanju
 // TODO: ce je preveliko stevilo ga das na maksimalno število ki je na voljo
 // TODO: onemogoči button Prikaži več če so prikazani vsi izdelki
-// TODO: 
+// TODO: upper case in lower case pri prijavi ne razlikuje
 // TODO: zaposleni in njihovi podatki (tudi sporocila o narocilih - moznost prevzema narocila in nato potrditev in posiljanje racuna)
 // TODO: daj port kot globalno dostopno spremenljivko
 // TODO: popravi poštno in telefonsko številko, plačo (število in decimalna pika) pri vnosu na registraciji in pri adminu
 // TODO: popravi stran od uporabnikov
 // TODO: popravi notification card ki se ne pojavlja
 // TODO: fix header on shop page (navbar sticky (fixed position))
-// TODO: filtriranje po datumu in ceni racunov
-// TODO: dodaj tabelo z vlogami
+// TODO: DODAJ ZAPOSLENEGA IN RAČUNOVODJO
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: mogoča povečava slike na product info
 // TODO: dodaj datoteko z sql stavki v mapo na github
+// TODO: dodajanje izdelkov
+// TODO: dodajanje računov ???
+// TODO: datum valute je za en dan nazaj
+// TODO: DODAJ MOŽNOSTI SPREMINJANJA PODATKOV ZA PREGLEDE
+// TODO: pri profile componentu spremeni setOseba v setPodrobnosti
+// TODO: pri podatkiOOsebi (podrobnosti) se ob preveč besedila odrezejo info
+// TODO: dodaj button za nazaj tudi zgoraj da lahko ce je veliko podatkov gremo prej nazaj
+// TODO: pri dodajanju izdelkov ujemi izjeme ce pride do vnosa crk pri številčnem vnosu
+
+
+// TODO: dodaj tabelo z vlogami

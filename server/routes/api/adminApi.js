@@ -38,20 +38,6 @@ router.post('/updtVloga', async (req, res) => {
 	}
 });
 
-router.get('/osebe', async (req, res) => {
-	//const kriterij = req.query.iskalniKriterij;
-	//const niz = req.query.iskalniNiz;
-
-	try {
-		let response = await pool.query(`select * from Stranke_in_zaposleni;`); // where ${kriterij} = ?', [niz]);
-
-		res.status(200).send(response[0]);
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
-		res.status(400).send(`error ${onRejectedErrorsqlMessage}`);
-	}
-});
-
 router.post('/omogoci', async (req, res) => {
 	const uporabnisko_ime = req.body.uporabnisko_ime;
 	const omogoci = req.body.omogoci;
@@ -80,6 +66,88 @@ router.post('/omogoci', async (req, res) => {
 	}
 });*/
 
+// pregled
+router.get('/osebe', async (req, res) => {
+	const kriterij = req.query.iskalniKriterij;
+	const niz = req.query.iskalniNiz;
+
+	try {
+		let response = await pool.query(`select * from Stranke_in_zaposleni where ${kriterij} = ?`, [niz]);
+
+		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error ${onRejectedError.sqlMessage}`);
+	}
+});
+
+router.get('/racuni', async (req, res) => {
+	const kriterij = req.query.iskalniKriterij;
+	const niz = req.query.iskalniNiz;
+
+	try {
+		let response = await pool.query(`select * from Racuni where ${kriterij} = ?`, [niz]);
+
+		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/izdelki', async (req, res) => {
+	const kriterij = req.query.iskalniKriterij;
+	const niz = req.query.iskalniNiz;
+
+	try {
+		let response = await pool.query(`select * from Izdelki where ${kriterij} = ?`, [niz]);
+
+		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/narocila', async (req, res) => {
+	const kriterij = req.query.iskalniKriterij;
+	const niz = req.query.iskalniNiz;
+
+	try {
+		let response = await pool.query(`select * from Narocila where ${kriterij} = ?`, [niz]);
+
+		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/PBzacetna', async (req, res) => {
+	try {
+		let response = await pool.query(`show tables;`);
+
+		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/PB', async (req, res) => {
+	const poizvedba = req.query.poizvedba;
+
+	try {
+		let response = await pool.query(`${poizvedba}`);
+		//console.log(Object.keys(response[0][0]));
+		res.status(200).send({ data: response[0], keys: Object.keys(response[0][0]) });
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+// dodajanje
 router.post('/dodajUporabnika', async (req, res) => {
 	const uporabnisko_ime = req.body.uporabnisko_ime;
 	const geslo = req.body.geslo;
@@ -127,11 +195,29 @@ router.post('/dodajUporabnika', async (req, res) => {
 	}
 });
 
-router.get('/racuni', async (req, res) => {
-	try {
-		let response = await pool.query(`select * from Racuni`);
+router.post('/dodajIzdelek', async (req, res) => {
+	const ime = req.body.ime;
+	const kategorija = req.body.kategorija;
+	const cena_za_kos = req.body.cena_za_kos;
+	const kosov_na_voljo = req.body.kosov_na_voljo;
+	const kratek_opis = req.body.kratek_opis;
+	const informacije = req.body.informacije;
+	const popust = req.body.popust;
+	const slika = req.body.slika;
 
-		res.status(200).send(response[0]);
+	try {
+		let response = await pool.query(`insert into Izdelki values (default,?,?,?,?,?,?,?,?)`, [
+			ime,
+			kategorija,
+			cena_za_kos,
+			kosov_na_voljo,
+			kratek_opis,
+			informacije,
+			popust,
+			slika,
+		]);
+
+		res.status(200).send('uspešna operacija');
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);

@@ -9,6 +9,9 @@ import PodatkiOOsebi from './PregledInDodajanja/PodatkiOOsebiC';
 import DodajanjeUporabnikov from './PregledInDodajanja/DodajanjeUporabnikovC';
 import PregledRacunov from './PregledInDodajanja/PregledRacunovC';
 import PregledIzdelkov from './PregledInDodajanja/PregledIzdelkovC';
+import PregledNarocil from './PregledInDodajanja/PregledNarocilC';
+import PregledPB from './PregledInDodajanja/PregledPBC';
+import DodajanjeIzdelkov from './PregledInDodajanja/DodajanjeIzdelkovC';
 
 const Profile = () => {
 	const PORT = 3005; // !!!
@@ -82,25 +85,32 @@ const Profile = () => {
 						}}>
 						Dodajanje uporabnikov
 					</button>
-					<hr />
 					<button
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(5);
+						}}>
+						Dodajanje izdelkov
+					</button>
+					<hr />
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(6);
 						}}>
 						Pregled izdelkov
 					</button>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setStanjeAdmin(6);
+							setStanjeAdmin(7);
 						}}>
 						Pregled računov
 					</button>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setStanjeAdmin(7);
+							setStanjeAdmin(8);
 						}}>
 						Pregled naročil
 					</button>
@@ -108,7 +118,7 @@ const Profile = () => {
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setStanjeAdmin(8);
+							setStanjeAdmin(9);
 						}}>
 						Upravljanje s podatkovno bazo (geslo)
 					</button>
@@ -169,7 +179,9 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`);
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
 					setTabela(r.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -211,14 +223,12 @@ const Profile = () => {
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 5) {
+			// DODAJANJE IZDELKOV
 			return (
 				<>
-					<PregledIzdelkov
+					<DodajanjeIzdelkov
 						props={{
-							naslov: 'Pregled izdelkov',
-							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
-							tabela: tabela,
-							setTabela: setTabela,
+							naslov: 'Dodajanje izdelkov',
 						}}
 					/>
 					<button
@@ -231,9 +241,67 @@ const Profile = () => {
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 6) {
+			// DODAJANJE RAČUNOV
+			/*return (
+				<>
+					<DodajanjeUporabnikov
+						props={{
+							naslov: 'Dodajanje uporabnikov',
+						}}
+					/>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);*/
+		} else if (parseInt(stanjeAdmin) === 7) {
+			const pridobiInfoOIzdelkih = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiInfoOIzdelkih();
+			return (
+				<>
+					<PregledIzdelkov
+						props={{
+							naslov: 'Pregled izdelkov',
+							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
+							tabela: tabela,
+							setTabela: setTabela,
+							filter: filterUporabniki,
+							setFilter: setFilterUporabniki,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
+						}}
+					/>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+							setTabela(null);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 8) {
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {});
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
 					setTabela(r.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -261,44 +329,92 @@ const Profile = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
 						}}
 					/>
 					<button
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
-						}}>
-						Nazaj
-					</button>
-				</>
-			);
-		} else if (parseInt(stanjeAdmin) === 7) {
-			return (
-				<>
-					<h2>Pregled naročil</h2>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
-						}}>
-						Nazaj
-					</button>
-				</>
-			);
-		} else if (parseInt(stanjeAdmin) === 8) {
-			return (
-				<>
-					<h2>Upravljanje z bazo podatkov</h2>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
+							setTabela(null);
 						}}>
 						Nazaj
 					</button>
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 9) {
+			const pridobiInfoONarocilih = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiInfoONarocilih();
+			return (
+				<>
+					<PregledNarocil
+						props={{
+							naslov: 'Pregled naročil',
+							naslovnaVrstica: ['ID', 'Datum', 'ID stranke', 'Opravljeno'],
+							tabela: tabela,
+							setTabela: setTabela,
+							filter: filterUporabniki,
+							setFilter: setFilterUporabniki,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
+						}}
+					/>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+							setTabela(null);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 10) {
+			const pridobiInfoOPB = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/PBzacetna`);
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiInfoOPB();
+			return (
+				<>
+					<PregledPB
+						props={{
+							naslov: 'Upravljanje z bazo podatkov',
+							naslovnaVrstica: ['tabele'],
+							tabela: tabela,
+							setTabela: setTabela,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
+						}}
+					/>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+							setTabela(null);
+						}}>
+						Nazaj
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 11) {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi

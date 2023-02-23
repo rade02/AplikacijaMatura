@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
+import TabelskaVrstica from './TabelskaVrsticaC';
 
 const PregledRacunov = ({ props }) => {
 	const PORT = 3005; // !!!
-	const [iskalniKriterij, setIskalniKriterij] = useState('ID');
+	const [iskalniKriterij, setIskalniKriterij] = useState('ID_racuna');
 	const [iskalniNiz, setIskalniNiz] = useState(0);
 	return (
 		<>
@@ -13,7 +14,6 @@ const PregledRacunov = ({ props }) => {
 					<>Nalaganje...</>
 				) : (
 					<>
-						{JSON.stringify(props.tabela)}
 						<div>
 							<label>Iskanje po: </label>
 							<select
@@ -31,14 +31,27 @@ const PregledRacunov = ({ props }) => {
 								onChange={(e) => {
 									e.preventDefault();
 
-									setIskalniNiz(e.target.value);
+									if (e.target.value === '') {
+										setIskalniNiz(1);
+										setIskalniKriterij(1);
+									} else {
+										setIskalniNiz(e.target.value);
+									}
 								}}
-								placeholder='Vnesite iskalni niz'></input>
+								placeholder={
+									iskalniKriterij === 'placano' || 'datum_valute'
+										? 'LLLL-MM-DD'
+										: 'Vnesite iskalni niz'
+								}></input>
 							<button
 								onClick={async (e) => {
 									e.preventDefault();
+									//console.log('iskalniKriterij');
+									//console.log(iskalniKriterij);
+									//console.log('iskalniNiz');
+									//console.log(iskalniNiz);
 									try {
-										let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
+										let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
 											params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
 										});
 										props.setTabela(r.data);
@@ -48,6 +61,51 @@ const PregledRacunov = ({ props }) => {
 								}}>
 								Išči
 							</button>
+							<table>
+								<tbody>
+									<tr style={{ backgroundColor: 'rgba(240, 240, 240, 0.727)' }}>
+										{props.naslovnaVrstica.map((he) => {
+											return <th key={he}>{he}</th>;
+										})}
+									</tr>
+									{props.tabela.map((el) => {
+										console.log('----------------');
+										console.log(el);
+										if (props.filter === -1) {
+											// prikazi vse
+											return (
+												<TabelskaVrstica
+													props={{
+														naslov: props.naslov,
+														element: el,
+														setOseba: props.setOseba,
+														setPrejsnjeStanjeAdmin: props.setPrejsnjeStanjeAdmin,
+														stanjeAdmin: props.stanjeAdmin,
+														setStanjeAdmin: props.setStanjeAdmin,
+														setTabela: props.setTabela,
+													}}
+												/>
+											);
+										} else {
+											// prikazi filtrirano
+											if (el.vloga === props.filter)
+												return (
+													<TabelskaVrstica
+														props={{
+															element: el,
+															setOseba: props.setOseba,
+															setPrejsnjeStanjeAdmin: props.setPrejsnjeStanjeAdmin,
+															stanjeAdmin: props.stanjeAdmin,
+															setStanjeAdmin: props.setStanjeAdmin,
+															setTabela: props.setTabela,
+														}}
+													/>
+												);
+											return <></>;
+										}
+									})}
+								</tbody>
+							</table>
 						</div>
 					</>
 				)}

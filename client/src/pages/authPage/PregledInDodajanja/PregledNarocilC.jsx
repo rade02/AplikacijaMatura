@@ -2,9 +2,9 @@ import { useState } from 'react';
 import axios from 'axios';
 import TabelskaVrstica from './TabelskaVrsticaC';
 
-const PregledIzdelkov = ({ props }) => {
+const PregledNarocil = ({ props }) => {
 	const PORT = 3005; // !!!
-	const [iskalniKriterij, setIskalniKriterij] = useState('ID_izdelka');
+	const [iskalniKriterij, setIskalniKriterij] = useState('ID_narocila');
 	const [iskalniNiz, setIskalniNiz] = useState(0);
 	return (
 		<>
@@ -21,10 +21,10 @@ const PregledIzdelkov = ({ props }) => {
 									e.preventDefault();
 									setIskalniKriterij(e.target.value);
 								}}>
-								<option value='ID_izdelka'>ID-ju izdelka</option>
-								<option value='ime'>imenu</option>
-								<option value='kategorija'>Kategoriji</option>
-								<option value='popust'>Popustu</option>
+								<option value='ID_narocila'>ID-ju naročila</option>
+								<option value='datum'>Datumu</option>
+								<option value='ID_stranke'>ID-ju stranke</option>
+								<option value='opravljeno'>Opravljenosti</option>
 							</select>
 							<input
 								type='text'
@@ -47,7 +47,7 @@ const PregledIzdelkov = ({ props }) => {
 									//console.log('iskalniNiz');
 									//console.log(iskalniNiz);
 									try {
-										let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
+										let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
 											params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
 										});
 										props.setTabela(r.data);
@@ -110,4 +110,4 @@ const PregledIzdelkov = ({ props }) => {
 	);
 };
 
-export default PregledIzdelkov;
+export default PregledNarocil;

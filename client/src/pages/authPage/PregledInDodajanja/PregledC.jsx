@@ -16,6 +16,7 @@ const Pregled = ({ props }) => {
 				) : (
 					<>
 						{props.opcije === null ? ( // prikazemo moznost filtriranja
+							// za pregled oseb
 							<div>
 								<label>Iskanje po: </label>
 								<select
@@ -34,17 +35,21 @@ const Pregled = ({ props }) => {
 									onChange={(e) => {
 										e.preventDefault();
 
-										/*if (e.target.value === '') {
+										if (e.target.value === '') {
 											setIskalniNiz(1);
 											setIskalniKriterij(1);
-										} else {*/
-										setIskalniNiz(e.target.value);
-										//}
+										} else {
+											setIskalniNiz(e.target.value);
+										}
 									}}
 									placeholder='Vnesite iskalni niz'></input>
 								<button
 									onClick={async (e) => {
 										e.preventDefault();
+										//console.log('iskalniKriterij');
+										//console.log(iskalniKriterij);
+										//console.log('iskalniNiz');
+										//console.log(iskalniNiz);
 										try {
 											let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
 												params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
@@ -58,6 +63,7 @@ const Pregled = ({ props }) => {
 								</button>
 							</div>
 						) : (
+							// za pregled uporabnikov
 							<select
 								className='izbirnoPolje'
 								onClick={(e) => {
@@ -103,6 +109,7 @@ const Pregled = ({ props }) => {
 											return (
 												<tr>
 													{Object.keys(el).map((key) => {
+														// pri pregledu oseb
 														if (
 															key === 'ID' ||
 															key === 'uporabnisko_ime' ||
