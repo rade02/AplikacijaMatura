@@ -13,6 +13,38 @@
 	text-align: left;
 }
 
+.moznostiProfila {
+	display: flex;
+	flex-direction: row;
+	background-color: rgb(186, 240, 240);
+}
+.backBtn {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid grey;
+	background-color: transparent;
+	margin: 25px 0px 15px 0px;
+}
+.backBtn:hover {
+	background-color: grey;
+	color: white;
+	cursor: pointer;
+}
+
+.podrobniPodatki {
+	display: flex;
+	flex-direction: row;
+	margin: 20px;
+	padding: 10px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	background-color: rgba(255, 235, 205, 0.322);
+	width: fit-content;
+	max-width: 700px;
+}
+
 .izbirnoPolje {
 	background-color: rgb(255, 255, 255);
 	margin: 10px;

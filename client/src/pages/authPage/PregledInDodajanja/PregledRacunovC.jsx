@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import TabelskaVrstica from './TabelskaVrsticaC';
+import { CaretCircleLeft } from 'phosphor-react';
 
 const PregledRacunov = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -15,6 +16,18 @@ const PregledRacunov = ({ props }) => {
 				) : (
 					<>
 						<div>
+							<button
+								className='backBtn'
+								onClick={(e) => {
+									e.preventDefault();
+									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+									props.setStanjeAdmin(0);
+									props.setTabela(null);
+									props.setFilter(-1);
+								}}>
+								<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+								<div>Nazaj</div>
+							</button>
 							<label>Iskanje po: </label>
 							<select
 								onClick={(e) => {

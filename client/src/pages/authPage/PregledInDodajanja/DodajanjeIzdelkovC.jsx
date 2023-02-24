@@ -169,7 +169,6 @@ const DodajanjeIzdelkov = ({ props }) => {
 							<td className='opisPodatka'>Kratek opis</td>
 							<td className='podatek'>
 								<input
-									required
 									type='text'
 									onChange={(e) => {
 										e.preventDefault();
@@ -196,7 +195,6 @@ const DodajanjeIzdelkov = ({ props }) => {
 							<td className='opisPodatka'>Informacije</td>
 							<td className='podatek'>
 								<input
-									required
 									type='text'
 									onChange={(e) => {
 										e.preventDefault();
@@ -210,7 +208,6 @@ const DodajanjeIzdelkov = ({ props }) => {
 							<td className='opisPodatka'>Popust</td>
 							<td className='podatek'>
 								<input
-									required
 									type='text'
 									onChange={(e) => {
 										e.preventDefault();
@@ -245,7 +242,6 @@ const DodajanjeIzdelkov = ({ props }) => {
 							<td className='opisPodatka'>Slika</td>
 							<td className='podatek'>
 								<input
-									required
 									type='text'
 									onChange={(e) => {
 										e.preventDefault();

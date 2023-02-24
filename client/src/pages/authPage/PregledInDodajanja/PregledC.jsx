@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { CaretCircleLeft } from 'phosphor-react';
 import { useRef, useState } from 'react';
 import TabelskaVrstica from './TabelskaVrsticaC';
 
@@ -18,6 +19,18 @@ const Pregled = ({ props }) => {
 						{props.opcije === null ? ( // prikazemo moznost filtriranja
 							// za pregled oseb
 							<div>
+								<button
+									className='backBtn'
+									onClick={(e) => {
+										e.preventDefault();
+										props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+										props.setStanjeAdmin(0);
+										props.setTabela(null);
+										props.setFilter(-1);
+									}}>
+									<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+									<div>Nazaj</div>
+								</button>
 								<label>Iskanje po: </label>
 								<select
 									onClick={(e) => {
@@ -64,21 +77,35 @@ const Pregled = ({ props }) => {
 							</div>
 						) : (
 							// za pregled uporabnikov
-							<select
-								className='izbirnoPolje'
-								onClick={(e) => {
-									e.preventDefault();
-									props.setFilter(parseInt(e.target.value));
-								}}>
-								{props.opcije.map((o) => {
-									return (
-										<option key={o.vrednost} value={o.vrednost}>
-											{o.ime}
-										</option>
-									);
-								})}
-								)
-							</select>
+							<>
+								<button
+									className='backBtn'
+									onClick={(e) => {
+										e.preventDefault();
+										props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+										props.setStanjeAdmin(0);
+										props.setTabela(null);
+										props.setFilter(-1);
+									}}>
+									<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+									<div>Nazaj</div>
+								</button>
+								<select
+									className='izbirnoPolje'
+									onClick={(e) => {
+										e.preventDefault();
+										props.setFilter(parseInt(e.target.value));
+									}}>
+									{props.opcije.map((o) => {
+										return (
+											<option key={o.vrednost} value={o.vrednost}>
+												{o.ime}
+											</option>
+										);
+									})}
+									)
+								</select>
+							</>
 						)}
 						<table className='tabela'>
 							<tbody>
@@ -143,6 +170,7 @@ const Pregled = ({ props }) => {
 							</tbody>
 						</table>
 						<button
+							className='backBtn'
 							onClick={(e) => {
 								e.preventDefault();
 								props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
@@ -150,7 +178,8 @@ const Pregled = ({ props }) => {
 								props.setTabela(null);
 								props.setFilter(-1);
 							}}>
-							Nazaj
+							<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+							<div>Nazaj</div>
 						</button>
 					</>
 				)}

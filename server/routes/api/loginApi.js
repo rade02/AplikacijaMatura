@@ -7,9 +7,13 @@ router.get('/', async (req, res) => {
 	const pw = req.query.password;
 
 	try {
-		let response = await pool.query(`select geslo, omogocen from Uporabniki where uporabnisko_ime = ?`, [
-			un,
-		]);
+		let response = await pool.query(
+			`select geslo, omogocen from Uporabniki where binary uporabnisko_ime = ?`,
+			[
+				// binary omogoči case sensitive query ker primerja po bajtih
+				un,
+			]
+		);
 
 		if (response[0].length > 0 && pw === response[0][0].geslo) {
 			res.status(200).send(response[0][0]);
