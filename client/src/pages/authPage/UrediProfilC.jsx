@@ -1,7 +1,16 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { Pencil, Password, FloppyDisk, ClockCounterClockwise, SignOut } from 'phosphor-react';
+import {
+	Pencil,
+	Password,
+	FloppyDisk,
+	ClockCounterClockwise,
+	SignOut,
+	Key,
+	Eraser,
+	UserMinus,
+} from 'phosphor-react';
 import UserDataComponent from './UserDataComponent';
 import ChangePassword from './ChangePasswordComponent';
 import DeleteProfile from './DeleteProfileComponent';
@@ -51,7 +60,7 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 		);
 	}
 	return (
-		<div>
+		<div className='funkcije'>
 			<h2>
 				Profil: {user.uporabnisko_ime}{' '}
 				{vloga !== 2
@@ -65,91 +74,95 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 					: ''}
 			</h2>
 			<div>
-				{vloga !== 0 ? (
-					<>
-						<button
-							onClick={(e) => {
-								e.preventDefault();
-								setEdit(!edit);
-							}}>
-							Uredi <Pencil size={22} />
-						</button>
-						<button
-							onClick={(e) => {
-								e.preventDefault();
-								setEditPw(!editPw);
-							}}>
-							Spremeni geslo
-							<Password size={22} />
-						</button>
-					</>
-				) : (
-					<></>
-				)}
-			</div>
-			<div>
-				<UserDataComponent
-					props={{
-						updatedUser: updatedUser,
-						setUpdatedUser: setUpdatedUser,
-						edit: edit,
-						user: user,
-					}}
-				/>
-				{vloga !== 0 ? (
-					<>
-						<button
-							disabled={JSON.stringify(updatedUser) === JSON.stringify(user) ? 'disabled' : ''}
-							onClick={(e) => {
-								e.preventDefault();
-								setEdit(false);
-								handleClick();
-							}}>
-							Shrani spremembe <FloppyDisk size={22} />
-						</button>
-						<button
-							disabled={JSON.stringify(updatedUser) === JSON.stringify(user) ? 'disabled' : ''}
-							onClick={(e) => {
-								e.preventDefault();
+				<div>
+					{vloga !== 0 ? (
+						<>
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+									setEdit(!edit);
+								}}>
+								Uredi <Pencil size={22} />
+							</button>
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+									setEditPw(!editPw);
+								}}>
+								Spremeni geslo
+								<Key size={22} />
+							</button>
+						</>
+					) : (
+						<></>
+					)}
+				</div>
+				<div>
+					<UserDataComponent
+						props={{
+							updatedUser: updatedUser,
+							setUpdatedUser: setUpdatedUser,
+							edit: edit,
+							user: user,
+						}}
+					/>
+					{vloga !== 0 ? (
+						<>
+							<button
+								disabled={JSON.stringify(updatedUser) === JSON.stringify(user) ? 'disabled' : ''}
+								onClick={(e) => {
+									e.preventDefault();
+									setEdit(false);
+									handleClick();
+								}}>
+								Shrani spremembe <FloppyDisk size={22} />
+							</button>
+							<button
+								disabled={JSON.stringify(updatedUser) === JSON.stringify(user) ? 'disabled' : ''}
+								onClick={(e) => {
+									e.preventDefault();
 
-								console.log(user);
-								console.log(updatedUser);
-								setUpdatedUser(user);
-								setEdit(false);
-							}}>
-							Ponastavi <ClockCounterClockwise size={22} />
-						</button>
+									console.log(user);
+									console.log(updatedUser);
+									setUpdatedUser(user);
+									setEdit(false);
+								}}>
+								Ponastavi <ClockCounterClockwise size={22} />
+							</button>
 
-						{error ? <label>Napačen vnos podatkov</label> : null}
-					</>
-				) : (
-					<></>
-				)}
+							{error ? <label>Napačen vnos podatkov</label> : null}
+						</>
+					) : (
+						<></>
+					)}
+				</div>
+				<div>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setIsAuth(false);
+						}}>
+						Odjava <SignOut size={22} />
+					</button>
+					{vloga !== 0 ? (
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								setDel(true);
+							}}>
+							Izbriši račun <UserMinus size={22} />
+						</button>
+					) : (
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								setStanjeAdmin(0);
+							}}>
+							Nazaj
+						</button>
+					)}
+				</div>
 			</div>
-			<button
-				onClick={(e) => {
-					e.preventDefault();
-					setIsAuth(false);
-				}}>
-				Odjava <SignOut size={22} />
-			</button>
-			{vloga !== 0 ? (
-				<button
-					onClick={(e) => {
-						e.preventDefault();
-						setDel(true);
-					}}>
-					Izbriši račun
-				</button>
-			) : (
-				<button
-					onClick={(e) => {
-						e.preventDefault();
-						setStanjeAdmin(0);
-					}}>
-					Nazaj
-				</button>
-			)}
 		</div>
 	);
 };

@@ -16,7 +16,8 @@
 .moznostiProfila {
 	display: flex;
 	flex-direction: row;
-	background-color: rgb(186, 240, 240);
+	margin: 15px;
+	padding: 20px;
 }
 .backBtn {
 	display: flex;
@@ -31,6 +32,40 @@
 	background-color: grey;
 	color: white;
 	cursor: pointer;
+}
+.actionBtn {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	border: 1px solid white;
+	background-color: transparent;
+	color: rgb(0, 0, 0);
+	margin: 5px 0px 5px 0px;
+	padding: 4px;
+	font-weight: 500;
+	font-size: 16px;
+	min-width: 200px;
+	text-align: left;
+}
+.actionBtn:hover {
+	background-color: rgb(220, 225, 231);
+	color: black;
+	cursor: pointer;
+}
+
+.funkcije {
+	border: 1px solid black;
+	margin: 20px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.vnosnoPolje {
+	min-width: 150px;
 }
 
 .podrobniPodatki {

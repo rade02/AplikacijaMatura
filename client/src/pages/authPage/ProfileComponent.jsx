@@ -1,5 +1,21 @@
 import axios from 'axios';
-import { Pencil, Password, FloppyDisk, ClockCounterClockwise, SignOut, CaretCircleLeft } from 'phosphor-react';
+import {
+	Pencil,
+	Password,
+	FloppyDisk,
+	ClockCounterClockwise,
+	SignOut,
+	CaretCircleLeft,
+	Database,
+	MagnifyingGlass,
+	AddressBook,
+	ArchiveBox,
+	ChalkboardTeacher,
+	FileText,
+	UserPlus,
+	ListBullets,
+	ListDashes,
+} from 'phosphor-react';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import NotificationCard from './NotificationCardComponent';
@@ -47,8 +63,6 @@ const Profile = () => {
 		pridobiVlogo();
 	}, [user.uporabnisko_ime]);
 
-	console.log(vloga);
-
 	if (vloga === null) {
 		// pridobivanje vloge profila
 		return <>Nalaganje profila ...</>;
@@ -60,65 +74,78 @@ const Profile = () => {
 					<NotificationCard />
 					<div className='moznostiProfila'>
 						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
-						<div>
+						<div className='funkcije'>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
 								}}>
-								Pregled uporabnikov
+								<AddressBook size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled uporabnikov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(2);
 								}}>
-								Pregled oseb
+								<ChalkboardTeacher size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled oseb</div>
 							</button>
-							<hr />
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								Dodajanje uporabnikov
+								<UserPlus size={22} style={{ marginRight: '5px' }} />
+								<div>Dodajanje uporabnikov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(4);
 								}}>
-								Dodajanje izdelkov
+								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
+								<div>Dodajanje izdelkov</div>
 							</button>
-							<hr />
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(5);
 								}}>
-								Pregled izdelkov
+								<ListBullets size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled izdelkov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(6);
 								}}>
-								Pregled računov
+								<FileText size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled računov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(7);
 								}}>
-								Pregled naročil
+								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled naročil</div>
 							</button>
-							<hr />
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(8);
 								}}>
-								Upravljanje s podatkovno bazo (geslo)
+								<Database size={22} style={{ marginRight: '5px' }} />
+								<div>Upravljanje s PB</div>
 							</button>
 						</div>
 					</div>
@@ -214,6 +241,7 @@ const Profile = () => {
 					<DodajanjeIzdelkov
 						props={{
 							naslov: 'Dodajanje izdelkov',
+							setStanjeAdmin: setStanjeAdmin,
 						}}
 					/>
 					<button
@@ -344,6 +372,7 @@ const Profile = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setOseba: setOseba,
+							stranka: false,
 						}}
 					/>
 					<button
@@ -401,17 +430,99 @@ const Profile = () => {
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
+					tabela={tabela}
+					setTabela={setTabela}
 				/>
 			);
 		}
 	} else if (parseInt(vloga) === 2) {
 		// stranka
-		return (
-			<>
-				<NotificationCard />
-				<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
-			</>
-		);
+		if (parseInt(stanjeAdmin) === 0) {
+			return (
+				<>
+					<NotificationCard />
+					<div className='moznostiProfila'>
+						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
+						<div className='funkcije'>
+							<button
+								className='actionBtn'
+								onClick={(e) => {
+									e.preventDefault();
+									setStanjeAdmin(1);
+								}}>
+								<ListDashes size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled naročil</div>
+							</button>
+						</div>
+					</div>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 1) {
+			// PREGLED NAROČIL STRANKE
+			const pridobiIDuporabnika = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
+						params: { uporabnisko_ime: user.uporabnisko_ime },
+					});
+					return r.data;
+				} catch (error) {
+					console.log('Prišlo je do napake');
+				}
+			};
+			const pridobiInfoONarocilih = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+						params: { iskalniKriterij: 'ID_stranke', iskalniNiz: await pridobiIDuporabnika() },
+					});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+
+			if (tabela === null) pridobiInfoONarocilih();
+			return (
+				<>
+					<PregledNarocil
+						props={{
+							naslov: 'Pregled naročil',
+							naslovnaVrstica: ['ID', 'Datum', 'ID stranke', 'Opravljeno'],
+							tabela: tabela,
+							setTabela: setTabela,
+							filter: filterUporabniki,
+							setFilter: setFilterUporabniki,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
+							stranka: true,
+							uporabnisko_ime: user.uporabnisko_ime,
+						}}
+					/>
+					<button
+						className='backBtn'
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+							setTabela(null);
+						}}>
+						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+						<div>Nazaj</div>
+					</button>
+				</>
+			);
+		} else if (parseInt(stanjeAdmin) === 9) {
+			// prikazi osebo
+			return (
+				<PodatkiOOsebi
+					oseba={oseba}
+					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
+					setStanjeAdmin={setStanjeAdmin}
+					tabela={tabela}
+					setTabela={setTabela}
+				/>
+			);
+		}
 	} else if (parseInt(vloga) === 1) {
 		// zaposleni
 		if (parseInt(stanjeAdmin) === 0) {
@@ -420,36 +531,34 @@ const Profile = () => {
 					<NotificationCard />
 					<div className='moznostiProfila'>
 						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
-						<div>
+						<div className='funkcije'>
+							<label>Funkcije</label>
 							<button
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(0);
-								}}>
-								Profil
-							</button>
-							<hr />
-							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
 								}}>
-								Dodajanje izdelkov
+								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
+								<div>Dodajanje izdelkov</div>
 							</button>
-							<hr />
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(2);
 								}}>
-								Pregled izdelkov
+								<ListBullets size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled izdelkov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								Pregled naročil
+								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled naročil</div>
 							</button>
 						</div>
 					</div>
@@ -462,6 +571,7 @@ const Profile = () => {
 					<DodajanjeIzdelkov
 						props={{
 							naslov: 'Dodajanje izdelkov',
+							setStanjeAdmin: setStanjeAdmin,
 						}}
 					/>
 					<button
@@ -543,6 +653,7 @@ const Profile = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setOseba: setOseba,
+							stranka: false,
 						}}
 					/>
 					<button
@@ -564,6 +675,8 @@ const Profile = () => {
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
+					tabela={tabela}
+					setTabela={setTabela}
 				/>
 			);
 		}
@@ -575,43 +688,43 @@ const Profile = () => {
 					<NotificationCard />
 					<div className='moznostiProfila'>
 						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
-						<div>
+						<div className='funkcije'>
+							<h4>Funkcije</h4>
 							<button
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(0);
-								}}>
-								Profil
-							</button>
-							<hr />
-							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
 								}}>
-								Dodajanje izdelkov
+								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
+								<div>Dodajanje izdelkov</div>
 							</button>
-							<hr />
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(2);
 								}}>
-								Pregled izdelkov
+								<ListBullets size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled izdelkov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								Pregled računov
+								<FileText size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled računov</div>
 							</button>
 							<button
+								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(4);
 								}}>
-								Pregled naročil
+								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled naročil</div>
 							</button>
 						</div>
 					</div>
@@ -624,6 +737,7 @@ const Profile = () => {
 					<DodajanjeIzdelkov
 						props={{
 							naslov: 'Dodajanje izdelkov',
+							setStanjeAdmin: setStanjeAdmin,
 						}}
 					/>
 					<button
@@ -754,6 +868,7 @@ const Profile = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setOseba: setOseba,
+							stranka: false,
 						}}
 					/>
 					<button
@@ -775,6 +890,8 @@ const Profile = () => {
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
+					tabela={tabela}
+					setTabela={setTabela}
 				/>
 			);
 		}

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { CaretCircleLeft } from 'phosphor-react';
 import { useState, useRef } from 'react';
 
 const DodajanjeIzdelkov = ({ props }) => {
@@ -22,9 +23,21 @@ const DodajanjeIzdelkov = ({ props }) => {
 		popust: '',
 	});
 
+	console.log(props);
+	console.log(typeof props.setStanjeAdmin);
+
 	return (
 		<div>
 			<h2 className='naslov'>{props.naslov}</h2>
+			<button
+				className='backBtn'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setStanjeAdmin(0);
+				}}>
+				<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+				<div>Nazaj</div>
+			</button>
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault();
@@ -213,11 +226,21 @@ const DodajanjeIzdelkov = ({ props }) => {
 										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, popust: e.target.value });
 										try {
-											parseInt(e.target.value);
-											if (e.target.value > 1) {
+											console.log(parseFloat(e.target.value));
+											if (isNaN(parseFloat(e.target.value))) {
 												setSporociloONapaki({
 													...sporociloONapaki,
-													popust: 'Popust mora biti manjši od 1',
+													popust: 'Popust mora biti število',
+												});
+											} else if (parseFloat(e.target.value) >= 100) {
+												setSporociloONapaki({
+													...sporociloONapaki,
+													popust: 'Popust mora biti manjši od 100',
+												});
+											} else if (parseFloat(e.target.value) <= 0) {
+												setSporociloONapaki({
+													...sporociloONapaki,
+													popust: 'Popust mora biti med 0 in 100',
 												});
 											} else {
 												setSporociloONapaki({ ...sporociloONapaki, popust: '' });
@@ -225,11 +248,11 @@ const DodajanjeIzdelkov = ({ props }) => {
 										} catch {
 											setSporociloONapaki({
 												...sporociloONapaki,
-												popust: 'Popust mora biti število',
+												popust: 'Napačen vnos popusta - mora biti število med 0 in 100',
 											});
 										}
 									}}
-									placeholder='Število med 0 in 1'
+									placeholder='decimalna pika'
 									className='tekstovnoPolje'></input>
 								{sporociloONapaki.popust === '' ? (
 									<></>

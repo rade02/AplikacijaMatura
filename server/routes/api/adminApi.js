@@ -115,8 +115,36 @@ router.get('/narocila', async (req, res) => {
 
 	try {
 		let response = await pool.query(`select * from Narocila where ${kriterij} = ?`, [niz]);
-
 		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/izdelkiPriNarocilu', async (req, res) => {
+	const ID_narocila = req.query.ID_narocila;
+
+	try {
+		let response = await pool.query(`select * from Izdelki_pri_narocilu where ID_narocila = ?`, [
+			ID_narocila,
+		]);
+		//console.log(response[0]);
+
+		if (response[0].length > 0) {
+			let izdelki = [];
+			for (let i = 0; i < response[0].length; i++) {
+				izdelki[i] = response[0][i].ID_izdelka;
+			}
+			let response2 = await pool.query(`select ID_izdelka,ime from Izdelki where ID_izdelka in (?)`, [
+				izdelki,
+			]);
+			//console.log(response2[0]);
+
+			res.status(200).send({ podatkiOIzdelkih: response[0], imenaIzdelkov: response2[0] });
+		} else {
+			res.status(200).send({ podatkiOIzdelkih: null, imenaIzdelkov: null });
+		}
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);
@@ -141,6 +169,20 @@ router.get('/PB', async (req, res) => {
 		let response = await pool.query(`${poizvedba}`);
 		//console.log(Object.keys(response[0][0]));
 		res.status(200).send({ data: response[0], keys: Object.keys(response[0][0]) });
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/idUporabnika', async (req, res) => {
+	const uporabnisko_ime = req.query.uporabnisko_ime;
+
+	try {
+		let response = await pool.query(`select ID from Stranke_in_zaposleni where uporabnisko_ime = ?`, [
+			uporabnisko_ime,
+		]);
+		res.status(200).send(response[0][0].ID.toString());
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);

@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus } from 'phosphor-react';
+import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus, Polygon } from 'phosphor-react';
 import '../AuthPage.css';
 
 const TabelskaVrstica = ({ props }) => {
 	const PORT = 3005; // !!!
-	//console.log(props.element);
+
 	if (props.naslov === 'Pregled oseb') {
 		return (
 			<tr
@@ -63,13 +63,25 @@ const TabelskaVrstica = ({ props }) => {
 			</tr>
 		);
 	} else if (props.naslov === 'Pregled naročil') {
+		const pridobiIzdelke = async (IDNarocila) => {
+			try {
+				let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelkiPriNarocilu`, {
+					params: { ID_narocila: IDNarocila },
+				});
+				props.setTabela(r.data);
+			} catch (error) {
+				console.log(`Prišlo je do napake: ${error}`);
+			}
+		};
+
 		return (
 			<tr
 				key={props.element.ID_narocila}
 				className='vrstica'
-				onClick={(e) => {
+				onClick={async (e) => {
 					e.preventDefault();
 					props.setOseba(props.element);
+					await pridobiIzdelke(props.element.ID_narocila);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
 				}}>

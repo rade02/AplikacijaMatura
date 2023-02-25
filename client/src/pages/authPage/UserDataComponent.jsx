@@ -1,6 +1,65 @@
 const UserDataComponent = ({ props }) => {
 	return (
-		<div>
+		<table>
+			<tbody>
+				{Object.keys(props.updatedUser).map((key) => {
+					if (key === 'geslo') {
+						return (
+							<tr key={key}>
+								<td>{key}: </td>
+								<td>
+									<input
+										className='vnosnoPolje'
+										type='password'
+										disabled='disabled'
+										value={props.edit ? null : props.updatedUser[key]}
+										defaultValue={props.updatedUser[key]}
+										onChange={(e) => {
+											props.setUpdatedUser({ ...props.updatedUser, geslo: e.target.value });
+										}}></input>
+								</td>
+							</tr>
+						);
+					} else if (key === 'uporabnisko_ime' || key === 'elektronski_naslov') {
+						return (
+							<tr key={key}>
+								<td>{key}: </td>
+								<td>
+									<input
+										className='vnosnoPolje'
+										type='text'
+										disabled='disabled'
+										value={props.edit ? null : props.updatedUser[key]}
+										defaultValue={props.updatedUser[key]}></input>
+								</td>
+							</tr>
+						);
+					} else if (key !== 'response') {
+						return (
+							<tr key={key}>
+								<td>{key}: </td>
+								<td>
+									<input
+										className='vnosnoPolje'
+										type='text'
+										disabled={!props.edit}
+										value={props.edit ? null : props.updatedUser[key]}
+										defaultValue={props.updatedUser[key]}
+										onChange={(e) => {
+											props.setUpdatedUser({ ...props.updatedUser, [key]: e.target.value });
+										}}></input>
+								</td>
+							</tr>
+						);
+					}
+					return <></>;
+				})}
+			</tbody>
+		</table>
+	);
+	/*
+	return (
+		<div className='urejanjeProfila'>
 			{Object.keys(props.updatedUser).map((key) => {
 				if (key === 'geslo') {
 					return (
@@ -14,7 +73,6 @@ const UserDataComponent = ({ props }) => {
 								onChange={(e) => {
 									props.setUpdatedUser({ ...props.updatedUser, geslo: e.target.value });
 								}}></input>
-							<br />
 						</div>
 					);
 				} else if (key === 'uporabnisko_ime' || key === 'elektronski_naslov') {
@@ -26,8 +84,6 @@ const UserDataComponent = ({ props }) => {
 								disabled='disabled'
 								value={props.edit ? null : props.updatedUser[key]}
 								defaultValue={props.updatedUser[key]}></input>
-
-							<br />
 						</div>
 					);
 				} else if (key !== 'response') {
@@ -42,14 +98,13 @@ const UserDataComponent = ({ props }) => {
 								onChange={(e) => {
 									props.setUpdatedUser({ ...props.updatedUser, [key]: e.target.value });
 								}}></input>
-							<br />
 						</div>
 					);
 				}
 				return <></>;
 			})}
 		</div>
-	);
+	);*/
 };
 
 export default UserDataComponent;

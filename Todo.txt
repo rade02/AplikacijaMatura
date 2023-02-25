@@ -1,11 +1,12 @@
 // TODO: 
 // TODO: popravi poštno in telefonsko številko, plačo (število in decimalna pika) pri vnosu na registraciji in pri adminu
-// TODO: 
-// TODO: 
-// TODO: DODAJ MOŽNOSTI SPREMINJANJA PODATKOV ZA PREGLEDE
+// TODO: DODAJ MOŽNOSTI SPREMINJANJA PODATKOV ZA PREGLEDE (pri osebah podatki??; pri izdelkih cene, kosov na voljo, popust, kategorija??; pri racunih??; pri narocilih opravljenost)
 // TODO: datum valute je za en dan nazaj
 // TODO: 
-// TODO: DODAJ ZAPOSLENEGA IN RAČUNOVODJO
+// TODO: 
+// TODO: 
+// TODO: 
+// TODO: 
 // TODO: fix addToCartBtn
 // TODO: upoštevaj popust pri obracunavanju cene (ze ko dodamo v cart?)
 // TODO: 
@@ -27,13 +28,13 @@
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: mogoča povečava slike na product info
 // TODO: 
-// TODO: 
+// TODO: vnose števila preverjaj z metodo isNaN(št)
 // TODO: 
 // TODO: pri profile componentu spremeni setOseba v setPodrobnosti
 // TODO: 
+// TODO: enter za pomikanje naprej na naslednja vnosna polja
 // TODO: 
-// TODO: 
-// TODO: 
+// TODO: mogoce spreminjanje podjetja pri profilu?
 // TODO: 
 // TODO: 
 // TODO: daj port kot globalno dostopno spremenljivko
