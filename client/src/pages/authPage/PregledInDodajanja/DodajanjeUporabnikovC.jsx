@@ -19,10 +19,19 @@ const DodajanjeUporabnikov = ({ props }) => {
 		oddelek: null,
 		placa: 0.0,
 	});
-	const [sporociloONapaki, setSporociloONapaki] = useState({ uimeS: '', gesloS: '', enaslovS: '', dbS: '' });
+	const [sporociloONapaki, setSporociloONapaki] = useState({
+		uimeS: '',
+		gesloS: '',
+		enaslovS: '',
+		postnaStS: '',
+		placaS: '',
+		dbS: '',
+	});
 	const [OKuporabniskoIme, setOKuporabniskoIme] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno, 3 - zasedeno
 	const [OKgeslo, setOKgeslo] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
 	const [OKenaslov, setOKenaslov] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - ze uporabljeno, 3 - veljavno
+	const [OKpostnaSt, setOKpostnaSt] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
+	const [OKplaca, setOKplaca] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
 	const [napakaPriVnosu, setNapakaPriVnosu] = useState(null);
 
 	return (
@@ -59,7 +68,13 @@ const DodajanjeUporabnikov = ({ props }) => {
 						}
 					};
 
-					if (OKuporabniskoIme === 2 && OKgeslo === 2 && OKenaslov === 3) {
+					if (
+						OKuporabniskoIme === 2 &&
+						OKgeslo === 2 &&
+						OKenaslov === 3 &&
+						OKpostnaSt === 2 &&
+						OKplaca !== 1
+					) {
 						alert('Vnesen uporabnik: ' + JSON.stringify(vneseniPodatki));
 						posodobiVlogo();
 						setVneseniPodatki({
@@ -79,7 +94,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 							placa: 0.0,
 						});
 						e.target.reset();
-						setSporociloONapaki({ uimeS: '', gesloS: '', enaslovS: '', dbS: '' });
+						setSporociloONapaki({ uimeS: '', gesloS: '', enaslovS: '', postnaSt: '', dbS: '' });
 					} else {
 						let opozorilo = '';
 						if (OKuporabniskoIme !== 2) {
@@ -88,6 +103,8 @@ const DodajanjeUporabnikov = ({ props }) => {
 							opozorilo = 'Geslo ni veljavno';
 						} else if (OKenaslov !== 3) {
 							opozorilo = 'Neveljaven elektronski naslov';
+						} else if (OKpostnaSt !== 2) {
+							opozorilo = 'Neveljavna poštna številka';
 						}
 						alert(`Registracija NEuspešna: \n${opozorilo}`);
 					}
@@ -170,7 +187,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 										setVneseniPodatki({ ...vneseniPodatki, uporabnisko_ime: e.target.value });
 									}}
 									className='tekstovnoPolje'></input>
-								{sporociloONapaki.uimeS ? (
+								{sporociloONapaki.uimeS === '' ? (
 									<></>
 								) : (
 									<div className='sporociloONapaki'>{sporociloONapaki.uimeS}</div>
@@ -232,7 +249,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 													setOKgeslo(2);
 													setSporociloONapaki({
 														...sporociloONapaki,
-														gesloS: null,
+														gesloS: '',
 													});
 												} else {
 													setOKgeslo(1);
@@ -247,7 +264,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 										setVneseniPodatki({ ...vneseniPodatki, geslo: e.target.value });
 									}}
 									className='tekstovnoPolje'></input>
-								{sporociloONapaki.gesloS === null ? (
+								{sporociloONapaki.gesloS === '' ? (
 									<></>
 								) : (
 									<div className='sporociloONapaki'>{sporociloONapaki.gesloS}</div>
@@ -365,7 +382,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 															setOKenaslov(3);
 															setSporociloONapaki({
 																...sporociloONapaki,
-																enaslovS: null,
+																enaslovS: '',
 															});
 														} else {
 															setOKenaslov(2);
@@ -402,7 +419,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 										setVneseniPodatki({ ...vneseniPodatki, elektronski_naslov: e.target.value });
 									}}
 									className='tekstovnoPolje'></input>
-								{sporociloONapaki.enaslovS === null ? (
+								{sporociloONapaki.enaslovS === '' ? (
 									<></>
 								) : (
 									<div className='sporociloONapaki'>{sporociloONapaki.enaslovS}</div>
@@ -472,12 +489,53 @@ const DodajanjeUporabnikov = ({ props }) => {
 									type='text'
 									onChange={(e) => {
 										e.preventDefault();
-										setVneseniPodatki({
-											...vneseniPodatki,
-											postna_stevilka: e.target.value,
-										});
+										if (
+											parseInt(e.target.value) < 10000 &&
+											parseInt(e.target.value) > 0 &&
+											e.target.value !== '' &&
+											!isNaN(parseInt(e.target.value))
+										) {
+											setOKpostnaSt(2);
+											setVneseniPodatki({
+												...vneseniPodatki,
+												postna_stevilka: e.target.value,
+											});
+											setSporociloONapaki({
+												...sporociloONapaki,
+												postnaStS: '',
+											});
+										} else if (parseInt(e.target.value) > 10000 || parseInt(e.target.value) < 0) {
+											setOKpostnaSt(1);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												postnaStS: 'Vnesite veljavno Slovensko poštno številko (med 0 in 10000)',
+											});
+										} else if (e.target.value === '') {
+											setOKpostnaSt(0);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												postnaStS: 'Vnesite poštno številko',
+											});
+										} else if (isNaN(parseInt(e.target.value))) {
+											setOKpostnaSt(1);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												postnaStS: 'Vnesite veljavno Slovensko poštno ŠTEVILKO',
+											});
+										} else {
+											setOKpostnaSt(1);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												postnaStS: 'Napaka pri vnosu',
+											});
+										}
 									}}
 									className='tekstovnoPolje'></input>
+								{sporociloONapaki.postnaStS === '' ? (
+									<></>
+								) : (
+									<div className='sporociloONapaki'>{sporociloONapaki.postnaStS}</div>
+								)}
 							</td>
 						</tr>
 						<tr>
@@ -492,7 +550,8 @@ const DodajanjeUporabnikov = ({ props }) => {
 											telefonska_stevilka: e.target.value,
 										});
 									}}
-									className='tekstovnoPolje'></input>
+									className='tekstovnoPolje'
+									placeholder='+386 ## ### ###'></input>
 							</td>
 						</tr>
 						<tr>
@@ -532,12 +591,43 @@ const DodajanjeUporabnikov = ({ props }) => {
 									type='text'
 									onChange={(e) => {
 										e.preventDefault();
-										setVneseniPodatki({
-											...vneseniPodatki,
-											placa: e.target.value,
-										});
+										if (parseInt(e.target.value) > 0 && !isNaN(parseFloat(e.target.value))) {
+											setOKplaca(2);
+											setVneseniPodatki({
+												...vneseniPodatki,
+												placa: e.target.value,
+											});
+											setSporociloONapaki({
+												...sporociloONapaki,
+												placaS: '',
+											});
+										} else if (parseInt(e.target.value) < 0) {
+											setOKplaca(1);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												placaS: 'Plača ne more biti negativna',
+											});
+										} else if (isNaN(parseFloat(e.target.value))) {
+											setOKplaca(1);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												placaS: 'Vnesite število',
+											});
+										} else {
+											setOKplaca(1);
+											setSporociloONapaki({
+												...sporociloONapaki,
+												placaS: 'Napačen vnos',
+											});
+										}
 									}}
-									className='tekstovnoPolje'></input>
+									className='tekstovnoPolje'
+									placeholder='Decimalna pika'></input>
+								{sporociloONapaki.placaS === '' ? (
+									<></>
+								) : (
+									<div className='sporociloONapaki'>{sporociloONapaki.placaS}</div>
+								)}
 							</td>
 						</tr>
 					</tbody>

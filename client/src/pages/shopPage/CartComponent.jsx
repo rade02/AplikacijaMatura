@@ -4,7 +4,7 @@ import { ShopContext } from '../../contexts/ShopContext';
 import { useContext, useEffect, useRef, useState } from 'react';
 import CartProduct from './cart/CartProductComponent';
 
-const Cart = ({ setShow, selectedProduct, setSelectedProduct }) => {
+const Cart = ({ setShow, selectedProduct, setSelectedProduct, setPrikazi }) => {
 	const PORT = 3005; // !!!
 	const { state, setState, cart, setCart } = useContext(ShopContext);
 	const [removedMsg, setRemovedMsg] = useState('');
@@ -50,6 +50,7 @@ const Cart = ({ setShow, selectedProduct, setSelectedProduct }) => {
 						<CartProduct
 							key={product.ID_izdelka}
 							props={{
+								setPrikazi: setPrikazi,
 								product: product,
 								counter: counter,
 								setState: setState,
@@ -65,7 +66,7 @@ const Cart = ({ setShow, selectedProduct, setSelectedProduct }) => {
 						className='backButton'
 						onClick={(e) => {
 							e.preventDefault();
-							setState({ ...state, active: 'shopping' });
+							setPrikazi('nakupovanje');
 						}}>
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 						<div>Nazaj</div>
@@ -75,9 +76,8 @@ const Cart = ({ setShow, selectedProduct, setSelectedProduct }) => {
 						disabled={cart.length <= 0 ? 'disabled' : ''}
 						onClick={(e) => {
 							e.preventDefault();
-							console.log('cart');
-							console.log(cart);
-							setState({ ...state, props: {}, active: 'checkout', fromCart: true });
+							setPrikazi('blagajna');
+							//setState({ ...state, props: {}, active: 'checkout', fromCart: true });
 						}}>
 						<div>Na plačilo</div>
 						<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />

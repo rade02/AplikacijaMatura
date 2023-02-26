@@ -1,11 +1,11 @@
-import { CaretCircleLeft, CaretCircleRight, CreditCard, Package, Truck } from 'phosphor-react';
+import { CaretCircleLeft, CaretCircleRight, CreditCard, Money, Package, Truck } from 'phosphor-react';
 import { UserContext } from '../../../contexts/UserContext';
 import { ShopContext } from '../../../contexts/ShopContext';
 import { useContext, useEffect, useState } from 'react';
 import PostaSlovenije from '../../../assets/PSlogo.png';
 import axios from 'axios';
 
-const Checkout = () => {
+const Checkout = ({ setPrikazi }) => {
 	const PORT = 3005; // !!!
 	const { user, isAuth } = useContext(UserContext);
 	const { state, setState, cart, setCart } = useContext(ShopContext);
@@ -224,7 +224,7 @@ const Checkout = () => {
 					<br />
 					<input type='radio' required name='paymentMethod' value='Po prevzemu'></input>
 					<label>Po prevzemu</label>
-					<Package size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+					<Money size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
 				</div>
 			</div>
 			<br />
@@ -234,7 +234,7 @@ const Checkout = () => {
 					className='backButton'
 					onClick={(e) => {
 						e.preventDefault();
-						setState({ ...state, active: 'cart' });
+						setPrikazi('kosarica');
 					}}>
 					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 					<div>Nazaj</div>

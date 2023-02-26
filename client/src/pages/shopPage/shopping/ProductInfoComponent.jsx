@@ -63,15 +63,19 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt }) =
 							)}
 							<br></br>
 							<div className='productButtonsDiv'>
-								<AddToCartButton
-									props={{
-										produkt: izbranProdukt,
-										setProdukt: setIzbranProdukt,
-										//displayedProduct: null,
-										//izbranProdukt: izbranProdukt,
-										//setizbranProdukt: setizbranProdukt,
-									}}
-								/>
+								{cart.find((element) => element.ID_izdelka === izbranProdukt.ID_izdelka) ===
+								undefined ? (
+									<button
+										onClick={(e) => {
+											e.preventDefault();
+											izbranProdukt.kolicina++;
+											setCart([...cart, izbranProdukt]);
+										}}>
+										Dodaj v košarico
+									</button>
+								) : (
+									<>Dodano v košarico</>
+								)}
 								<button
 									className='backButton'
 									onClick={(e) => {

@@ -20,7 +20,12 @@ const UserDataComponent = ({ props }) => {
 								</td>
 							</tr>
 						);
-					} else if (key === 'uporabnisko_ime' || key === 'elektronski_naslov') {
+					} else if (
+						key === 'uporabnisko_ime' ||
+						key === 'elektronski_naslov' ||
+						key === 'placa' ||
+						key === 'podjetje'
+					) {
 						return (
 							<tr key={key}>
 								<td>{key}: </td>

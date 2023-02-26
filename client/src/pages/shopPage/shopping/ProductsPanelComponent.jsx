@@ -1,8 +1,25 @@
+import axios from 'axios';
 import Product from './ProductComponent';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../../../contexts/ShopContext';
 
 const ProductsPanel = ({ props }) => {
+	const PORT = 3005; // !!!
+	const [stVsehProduktov, setStVsehProduktov] = useState(null);
+
+	const pridobiSteviloVsehProduktov = async () => {
+		try {
+			let response = await axios.get(`http://localhost:${PORT}/api/products/stVsehProduktov`);
+			setStVsehProduktov(response.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		pridobiSteviloVsehProduktov();
+	}, []);
+
 	if (props.napaka) {
 		<div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
 	} else if (props.niProduktov) {
@@ -25,14 +42,20 @@ const ProductsPanel = ({ props }) => {
 					})}
 				</div>
 				<div className='moreProducts'>
-					<label>Prikazanih {props.prikazaniProdukti.length} izdelkov </label>
-					<button
-						onClick={(e) => {
-							e.preventDefault();
-							props.pridobiProdukte();
-						}}>
-						Prikaži več
-					</button>
+					<label>
+						Prikazanih {props.prikazaniProdukti.length} od {stVsehProduktov} izdelkov{' '}
+					</label>
+					{props.prikazaniProdukti.length >= stVsehProduktov ? (
+						<></>
+					) : (
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								props.pridobiProdukte();
+							}}>
+							Prikaži več
+						</button>
+					)}
 				</div>
 			</div>
 		);

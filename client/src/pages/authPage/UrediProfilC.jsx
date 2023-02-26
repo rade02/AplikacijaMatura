@@ -35,7 +35,7 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 			setError(true);
 		}
 	};
-	if (editPw && vloga !== 0) {
+	if (editPw) {
 		return (
 			<>
 				<h2>Profil: {user.uporabnisko_ime}</h2>
@@ -84,18 +84,18 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 								}}>
 								Uredi <Pencil size={22} />
 							</button>
-							<button
-								onClick={(e) => {
-									e.preventDefault();
-									setEditPw(!editPw);
-								}}>
-								Spremeni geslo
-								<Key size={22} />
-							</button>
 						</>
 					) : (
 						<></>
 					)}
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setEditPw(!editPw);
+						}}>
+						Spremeni geslo
+						<Key size={22} />
+					</button>
 				</div>
 				<div>
 					<UserDataComponent

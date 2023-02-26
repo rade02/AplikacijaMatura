@@ -8,11 +8,11 @@ import Error from '../errorPage/ErrorPage';
 import ProductInfo from './shopping/ProductInfoComponent';
 import CardInput from './checkout/CardInputComponent';
 
-const ShopContent = () => {
+const ShopContent = ({ prikazi, setPrikazi }) => {
 	const { state } = useContext(ShopContext);
 
 	const PORT = 3005; // !!!
-	const [prikazi, setPrikazi] = useState('nakupovanje');
+
 	const [prikazaniProdukti, setPrikazaniProdukti] = useState([]);
 	const [niProduktov, setNiProduktov] = useState(true);
 	const [napaka, setNapaka] = useState(false);
@@ -44,8 +44,6 @@ const ShopContent = () => {
 		pridobiProdukte();
 	}, []);
 
-	console.log('izbranProdukt @ Content');
-	console.log(izbranProdukt);
 	if (prikazi === 'nakupovanje') {
 		return (
 			<Shopping

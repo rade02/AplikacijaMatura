@@ -1,7 +1,7 @@
+// TODO: datumi so za en dan nazaj
 // TODO: 
-// TODO: popravi poštno in telefonsko številko, plačo (število in decimalna pika) pri vnosu na registraciji in pri adminu
-// TODO: DODAJ MOŽNOSTI SPREMINJANJA PODATKOV ZA PREGLEDE (pri osebah podatki??; pri izdelkih cene, kosov na voljo, popust, kategorija??; pri racunih??; pri narocilih opravljenost)
-// TODO: datum valute je za en dan nazaj
+// TODO: fix shopping, cart and checkout 
+// TODO: fix pregled izdelka button on cartProductComponent
 // TODO: 
 // TODO: 
 // TODO: 

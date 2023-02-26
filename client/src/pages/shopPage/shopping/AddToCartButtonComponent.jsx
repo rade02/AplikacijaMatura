@@ -8,7 +8,7 @@ const AddToCartButton = ({ props, setShowNotif }) => {
 	const [appearance, setAppearance] = useState('addToCart');
 
 	if (props.produkt === null) {
-		return <div>Button but props.produkt is null</div>;
+		return <div>Props.produkt is null</div>;
 	}
 	return (
 		<>

@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 const ShopPage = () => {
 	const [position, setPosition] = useState(window.pageYOffset);
 	const [visible, setVisible] = useState(0); // 0 - top, 1 - invisible, 2 - visible
+	const [prikazi, setPrikazi] = useState('nakupovanje');
 
 	/*useEffect(() => {
 		const handleScroll = () => {
@@ -32,8 +33,8 @@ const ShopPage = () => {
 	return (
 		<ShopContextProvider>
 			<div className='shop'>
-				<ShopNavbar visible={visible} />
-				<ShopContent />
+				<ShopNavbar visible={visible} prikazi={prikazi} setPrikazi={setPrikazi} />
+				<ShopContent prikazi={prikazi} setPrikazi={setPrikazi} />
 			</div>
 		</ShopContextProvider>
 	);

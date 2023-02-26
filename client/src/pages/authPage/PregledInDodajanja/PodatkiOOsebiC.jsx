@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
+import { useRef, useState } from 'react';
 
 const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, setTabela }) => {
 	const PORT = 3005; // !!!
-
-	//console.log('tabela @ Podatki o osebi');
-	//console.log(tabela);
+	const [placa, setPlaca] = useState(oseba.placa);
+	const [uporabniskoIme, setUporabniskoIme] = useState(null);
+	const poljePlaca = useRef(null);
+	const [izdelek, setIzdelek] = useState(oseba);
+	const [opravljeno, setOpravljeno] = useState(null);
+	const [napaka, setNapaka] = useState(null);
 
 	if (oseba === null) {
 		return (
@@ -23,6 +27,70 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 			</div>
 		);
 	}
+
+	const handleChangePlaca = async () => {
+		try {
+			if (placa < 0 || isNaN(parseFloat(placa))) {
+				setNapaka('Vneseni podatki niso skladni z definicijami polj');
+				console.log('Napaka pri vnosu podatkov');
+				console.log(placa);
+			} else {
+				const result = await axios.post(`http://localhost:${PORT}/api/admin/urediPlaco`, {
+					novaPlaca: placa,
+					uporabnisko_ime: uporabniskoIme,
+				});
+				setNapaka('Podatki spremenjeni');
+			}
+		} catch (onRejectedError) {
+			console.log(onRejectedError);
+		}
+	};
+	const handleChangeIzdelek = async () => {
+		try {
+			if (
+				izdelek.ime !== null &&
+				izdelek.ime.length <= 40 &&
+				izdelek.kategorija !== null &&
+				izdelek.kategorija.length <= 20 &&
+				izdelek.cena_za_kos !== null &&
+				!isNaN(parseFloat(izdelek.cena_za_kos)) &&
+				izdelek.kosov_na_voljo !== null &&
+				!isNaN(parseInt(izdelek.kosov_na_voljo)) &&
+				izdelek.kratek_opis.length <= 40 &&
+				parseInt(izdelek.popust) >= 0 &&
+				parseInt(izdelek.popust) <= 100 &&
+				!isNaN(parseInt(izdelek.popust))
+			) {
+				const result = await axios.post(`http://localhost:${PORT}/api/admin/urediIzdelek`, {
+					izdelek: izdelek,
+				});
+				setNapaka('Podatki spremenjeni');
+			} else {
+				setNapaka('Vneseni podatki niso skladni z definicijami polj');
+				console.log('Napaka pri vnosu podatkov');
+				console.log(izdelek);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const handleChangeNarocilo = async () => {
+		try {
+			if (parseInt(opravljeno) !== 0 && parseInt(opravljeno) !== 1) {
+				setNapaka('Vneseni podatki niso skladni z definicijami polj');
+				console.log('Napaka pri vnosu podatkov');
+				console.log(opravljeno);
+			} else {
+				const result = await axios.post(`http://localhost:${PORT}/api/admin/urediNarocilo`, {
+					opravljeno: parseInt(opravljeno),
+					ID_narocila: uporabniskoIme,
+				});
+				setNapaka('Podatki spremenjeni');
+			}
+		} catch (onRejectedError) {
+			console.log(onRejectedError);
+		}
+	};
 
 	return (
 		<div>
@@ -49,6 +117,187 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 										<td>{oseba[pr] === 1 ? 'omogočen' : 'onemogočen'}</td>
 									) : pr === 'geslo' ? (
 										<td>{oseba[pr]}</td>
+									) : pr === 'placa' ? (
+										<td>
+											<input
+												ref={poljePlaca}
+												type='text'
+												defaultValue={oseba[pr] + ' €'}
+												style={{ minWidth: '60px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													if (!isNaN(parseFloat(poljePlaca.current.value))) {
+														setPlaca(parseFloat(poljePlaca.current.value));
+														setUporabniskoIme(oseba.uporabnisko_ime);
+														setNapaka(null);
+													}
+												}}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													if (!isNaN(placa)) {
+														handleChangePlaca();
+													}
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'ime' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr]}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, ime: e.target.value });
+													setNapaka(null);
+												}}
+												maxLength={40}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'kategorija' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr]}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, kategorija: e.target.value });
+													setNapaka(null);
+												}}
+												maxLength={20}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'cena_za_kos' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr] + ' €'}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, cena_za_kos: parseFloat(e.target.value) });
+													setNapaka(null);
+												}}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'kosov_na_voljo' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr]}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, kosov_na_voljo: e.target.value });
+													setNapaka(null);
+												}}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'kratek_opis' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr]}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, kratek_opis: e.target.value });
+													setNapaka(null);
+												}}
+												maxLength={40}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'informacije' ? (
+										<td>
+											<textarea
+												type='text'
+												defaultValue={oseba[pr]}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, informacije: e.target.value });
+													setNapaka(null);
+												}}></textarea>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'popust' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr] + ' %'}
+												style={{ minWidth: '200px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setIzdelek({ ...izdelek, popust: parseInt(e.target.value) });
+													setNapaka(null);
+												}}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeIzdelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : pr === 'opravljeno' ? (
+										<td>
+											<input
+												type='text'
+												defaultValue={oseba[pr]}
+												style={{ minWidth: '50px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													setOpravljeno(e.target.value);
+													setUporabniskoIme(oseba.ID_narocila);
+													setNapaka(null);
+												}}></input>
+											<button
+												onClick={(e) => {
+													e.preventDefault();
+													handleChangeNarocilo();
+												}}>
+												Potrdi
+											</button>
+										</td>
 									) : (
 										<td>{oseba[pr]}</td>
 									)}
@@ -97,6 +346,7 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 					<></>
 				)}
 			</div>
+			{napaka !== null ? <>{napaka}</> : <></>}
 			<button
 				className='backBtn'
 				onClick={(e) => {

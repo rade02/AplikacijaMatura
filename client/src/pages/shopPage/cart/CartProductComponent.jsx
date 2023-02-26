@@ -14,6 +14,7 @@ const CartProduct = ({ props }) => {
 					onClick={(e) => {
 						e.preventDefault();
 						setState({ props: props.product, active: 'product', fromCart: true });
+						props.setPrikazi('produkt');
 					}}>
 					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.kratek_opis}
 				</div>
@@ -30,7 +31,7 @@ const CartProduct = ({ props }) => {
 
 								props.setRemovedMsg(
 									// nujno za rerendering cart componenta !!
-									`Odstranjen izdelek: ${props.product.ime} -- ${props.product.informacije} ` +
+									`Odstranjen izdelek: ${props.product.ime} -- ${props.product.kratek_opis} ` +
 										Math.random().toFixed(3)
 								);
 							}}>
@@ -54,12 +55,12 @@ const CartProduct = ({ props }) => {
 									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
 
 									props.setRemovedMsg(
-										`Dodan izdelek: ${props.product.ime} -- ${props.product.informacije} ` +
+										`Dodan izdelek: ${props.product.ime} -- ${props.product.kratek_opis} ` +
 											Math.random().toFixed(3)
 									);
 								} else {
 									props.setRemovedMsg(
-										`Izdelka: ${props.product.ime} -- ${props.product.informacije} ni več na zalogi ` +
+										`Izdelka: ${props.product.ime} -- ${props.product.kratek_opis} ni več na zalogi ` +
 											Math.random().toFixed(3)
 									);
 								}
@@ -72,17 +73,16 @@ const CartProduct = ({ props }) => {
 							title='preglej izdelek'
 							onClick={(e) => {
 								e.preventDefault();
+
 								setState({
 									props: {
 										...props.product,
 										productInfos: props.productInfos,
 										setProductInfos: props.setProductInfos,
 									},
-									active: 'product',
 									fromCart: true,
 								});
-								//console.log('props.product @ cartProductCom');
-								//console.log(props.product);
+								props.setPrikazi('produkt');
 							}}>
 							Pregled izdelka
 						</button>

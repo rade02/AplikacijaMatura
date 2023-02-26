@@ -694,6 +694,15 @@ const Profile = () => {
 								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
+									setStanjeAdmin(5);
+								}}>
+								<ChalkboardTeacher size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled oseb</div>
+							</button>
+							<button
+								className='actionBtn'
+								onClick={(e) => {
+									e.preventDefault();
 									setStanjeAdmin(1);
 								}}>
 								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
@@ -883,6 +892,36 @@ const Profile = () => {
 					</button>
 				</>
 			);
+		} else if (parseInt(stanjeAdmin) === 5) {
+			// pregled oseb
+			const pridobiInfoOOsebah = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiInfoOOsebah();
+			return (
+				<Pregled
+					props={{
+						naslov: 'Pregled oseb',
+						naslovnaVrstica: ['ID', 'Uporabniško ime', 'Elektronski naslov', 'Ime', 'Priimek'],
+						tabela: tabela,
+						setTabela: setTabela,
+						filter: filterUporabniki,
+						setFilter: setFilterUporabniki,
+						opcije: null,
+						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+						stanjeAdmin: stanjeAdmin,
+						setStanjeAdmin: setStanjeAdmin,
+						setOseba: setOseba,
+					}}
+				/>
+			);
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
@@ -930,16 +969,5 @@ const Profile = () => {
 		);
 	}
 };
-
-/*
-							<hr />
-							<button
-								onClick={(e) => {
-									e.preventDefault();
-									setIsAuth(false);
-								}}>
-								Odjava <SignOut size={22} />
-							</button>
-*/
 
 export default Profile;

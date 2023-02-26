@@ -40,4 +40,15 @@ router.get('/availability', async (req, res) => {
 	}
 });
 
+// spremeni pri filtrih:
+router.get('/stVsehProduktov', async (req, res) => {
+	try {
+		let number = await pool.query(`select count(*) from Izdelki`);
+		res.status(200).send(number[0][0]['count(*)'].toString());
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
 export default router;

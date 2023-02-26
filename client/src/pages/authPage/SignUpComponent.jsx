@@ -30,7 +30,8 @@ const SignUpComponent = () => {
 	const [OKpassword, setOKpassword] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
 	const [OKrepeat, setOKrepeat] = useState(4); // 0 - ni se vnosa, 1 - se ne ujema z geslom, 2 - veljavno
 	const [OKemail, setOKemail] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - ze uporabljeno, 3 - veljavno
-	const [msg, setMsg] = useState({ UNmsg: '', PWmsg: '', msgPW2: '', EMmsg: '' });
+	const [OKpostnaSt, setOKpostnaSt] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
+	const [msg, setMsg] = useState({ UNmsg: '', PWmsg: '', msgPW2: '', EMmsg: '', PSmsg: '' });
 	const pwdRef = useRef(null);
 
 	const handleSubmit = async () => {
@@ -44,7 +45,14 @@ const SignUpComponent = () => {
 				});
 			}
 
-			if (retry || OKusername !== 2 || OKpassword !== 2 || OKemail !== 3) {
+			if (
+				retry ||
+				OKusername !== 2 ||
+				OKpassword !== 2 ||
+				OKemail !== 3 ||
+				OKpostnaSt !== 2 ||
+				OKpostnaSt !== 0
+			) {
 				let warn = '';
 				if (retry) {
 					warn = 'Ponovno vnesite potrebne podatke';
@@ -54,6 +62,8 @@ const SignUpComponent = () => {
 					warn = 'Geslo ni veljavno';
 				} else if (OKemail !== 3) {
 					warn = 'Neveljaven elektronski naslov';
+				} else if (OKpostnaSt === 1) {
+					warn = 'Neveljavna poštna številka';
 				}
 				alert(`Registracija NEuspešna: \n${warn}`);
 			} else {
@@ -439,7 +449,8 @@ const SignUpComponent = () => {
 								setInputData({ ...inputData, ulica_in_hisna_stevilka: e.target.value });
 								setRetry(false);
 							}}
-							maxLength={160}></input>
+							maxLength={160}
+							placeholder='Ulica ##'></input>
 						<br />
 						<p></p>
 					</div>
@@ -451,10 +462,60 @@ const SignUpComponent = () => {
 							className='forInfo'
 							onChange={(e) => {
 								e.preventDefault();
-								setInputData({ ...inputData, postna_stevilka: e.target.value });
-								setRetry(false);
+								if (
+									!isNaN(parseInt(e.target.value)) &&
+									parseInt(e.target.value) > 0 &&
+									parseInt(e.target.value) < 10000
+								) {
+									setInputData({ ...inputData, postna_stevilka: e.target.value });
+									setRetry(false);
+								} else if (e.target.value === '') {
+									console.log(e.target.value);
+									setInputData({ ...inputData, postna_stevilka: null });
+									setMsg({ ...msg, PSmsg: '' });
+									setRetry(false);
+									setOKpostnaSt(0);
+								} else if (isNaN(parseInt(e.target.value))) {
+									setInputData({ ...inputData, postna_stevilka: null });
+									setMsg({ ...msg, PSmsg: 'Poštna številka mora biti število' });
+									setRetry(true);
+									setOKpostnaSt(1);
+								} else if (parseInt(e.target.value) < 0) {
+									setInputData({ ...inputData, postna_stevilka: null });
+									setMsg({ ...msg, PSmsg: 'Poštna številka mora biti število, večje od 0' });
+									setRetry(true);
+									setOKpostnaSt(1);
+								} else if (parseInt(e.target.value) >= 10000) {
+									setInputData({ ...inputData, postna_stevilka: null });
+									setMsg({
+										...msg,
+										PSmsg: 'Slovenska poštna številka mora biti število, manjše od 10000',
+									});
+									setRetry(true);
+									setOKpostnaSt(1);
+								} else {
+									setInputData({ ...inputData, postna_stevilka: null });
+									setMsg({ ...msg, PSmsg: 'Napaka pri vnosu' });
+									setRetry(true);
+									setOKpostnaSt(1);
+								}
 							}}
 							maxLength={4}></input>
+						{OKpostnaSt === 2 ? (
+							<div style={{ color: 'green' }}>
+								<CheckCircle size={22} style={{ color: 'green' }} />
+								Veljavna poštna številka
+							</div>
+						) : OKpostnaSt === 0 ? (
+							<></>
+						) : (
+							<div style={{ color: '#520F01' }}>
+								<XCircle size={22} style={{ color: '#520F01' }} />
+								{msg.PSmsg !== '' ? `(${msg.PSmsg})` : null}
+								<br />
+							</div>
+						)}
+						<br />
 						<input
 							type='text'
 							className='forInfo'
@@ -478,7 +539,8 @@ const SignUpComponent = () => {
 								setInputData({ ...inputData, telefonska_stevilka: e.target.value });
 								setRetry(false);
 							}}
-							maxLength={20}></input>
+							maxLength={20}
+							placeholder='+386 ## ### ###'></input>
 						<br />
 						<p></p>
 					</div>

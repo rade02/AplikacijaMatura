@@ -3,24 +3,23 @@ import { useContext, useState } from 'react';
 import { ShopContext } from '../../contexts/ShopContext';
 import { UserContext } from '../../contexts/UserContext';
 
-const ShopNavbar = ({ visible }) => {
-	const { state, setState } = useContext(ShopContext);
+const ShopNavbar = ({ visible, prikazi, setPrikazi }) => {
 	const { user } = useContext(UserContext);
 
 	return (
 		<header className={visible === 0 ? 'shopNavbarTop' : visible === 1 ? 'invisibleNavbar' : 'shopNavbar'}>
 			<div className='shopNavbarHeading'>
-				{state.active === 'shopping' ? (
+				{prikazi === 'nakupovanje' ? (
 					<label>
 						Pozdravljeni <i>{user.uporabnisko_ime}</i>, izberite naše izdelke po ugodni ceni
 					</label>
-				) : state.active === 'cart' ? (
+				) : prikazi === 'kosarica' ? (
 					<label>Košarica uporabnika: {user.uporabnisko_ime}</label>
-				) : state.active === 'product' ? (
+				) : prikazi === 'produkt' ? (
 					<label>Izdelek</label>
-				) : state.active === 'checkout' ? (
+				) : prikazi === 'blagajna' ? (
 					<label>Podatki o nakupu</label>
-				) : state.active === 'cardInput' ? (
+				) : prikazi === 'vnosKartice' ? (
 					<label>Plačilo s kartico</label>
 				) : (
 					<label>Spletna trgovina podjetja d.o.o.</label>
@@ -31,7 +30,7 @@ const ShopNavbar = ({ visible }) => {
 					className='cartButton'
 					onClick={(e) => {
 						e.preventDefault();
-						setState({ ...state, action: 'cart' });
+						setPrikazi('kosarica');
 					}}>
 					<ShoppingCart size={25} style={{ marginRight: '8px' }} />
 					{user.uporabnisko_ime}

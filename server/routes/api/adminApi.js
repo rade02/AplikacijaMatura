@@ -112,9 +112,12 @@ router.get('/izdelki', async (req, res) => {
 router.get('/narocila', async (req, res) => {
 	const kriterij = req.query.iskalniKriterij;
 	const niz = req.query.iskalniNiz;
+	console.log(kriterij);
+	console.log(niz);
 
 	try {
 		let response = await pool.query(`select * from Narocila where ${kriterij} = ?`, [niz]);
+		console.log(response[0]);
 		res.status(200).send(response[0]);
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
@@ -257,6 +260,66 @@ router.post('/dodajIzdelek', async (req, res) => {
 			informacije,
 			popust,
 			slika,
+		]);
+
+		res.status(200).send('uspešna operacija');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+// urejanje
+router.post('/urediPlaco', async (req, res) => {
+	const novaPlaca = req.body.novaPlaca;
+	const uporabnisko_ime = req.body.uporabnisko_ime;
+
+	try {
+		let response = await pool.query(`update Stranke_in_zaposleni set placa = ? where uporabnisko_ime = ?;`, [
+			novaPlaca,
+			uporabnisko_ime,
+		]);
+
+		res.status(200).send('uspešna operacija');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/urediIzdelek', async (req, res) => {
+	const izdelek = req.body.izdelek;
+
+	try {
+		let response = await pool.query(
+			`update Izdelki set ime = ?, kategorija = ?, cena_za_kos = ?, kosov_na_voljo = ?, kratek_opis = ?, informacije = ?, popust = ? where ID_izdelka = ?;`,
+			[
+				izdelek.ime,
+				izdelek.kategorija,
+				izdelek.cena_za_kos,
+				izdelek.kosov_na_voljo,
+				izdelek.kratek_opis,
+				izdelek.informacije,
+				izdelek.popust,
+				izdelek.ID_izdelka,
+			]
+		);
+
+		res.status(200).send('uspešna operacija');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/urediNarocilo', async (req, res) => {
+	const opravljeno = req.body.opravljeno === 1 ? true : false;
+	const ID_narocila = req.body.ID_narocila;
+
+	try {
+		let response = await pool.query(`update Narocila set opravljeno = ? where ID_narocila = ?;`, [
+			opravljeno,
+			ID_narocila,
 		]);
 
 		res.status(200).send('uspešna operacija');

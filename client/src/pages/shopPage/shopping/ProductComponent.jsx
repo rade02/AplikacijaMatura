@@ -7,6 +7,7 @@ import AddingNotification from './AddingNotification';
 
 const Product = ({ prikazi, setPrikazi, taProdukt, izbranProdukt, setIzbranProdukt }) => {
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
+	const { cart, setCart, state } = useContext(ShopContext);
 
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);
@@ -74,18 +75,24 @@ const Product = ({ prikazi, setPrikazi, taProdukt, izbranProdukt, setIzbranProdu
 						<div></div>
 					</div>
 				</div>
-				<AddToCartButton
-					props={{
-						prikazi: prikazi,
-						setPrikazi: setPrikazi,
-						produkt: taProdukt,
-						setProdukt: setIzbranProdukt,
-					}}
-				/>
+				{cart.find((element) => element.ID_izdelka === taProdukt.ID_izdelka) === undefined ? (
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							taProdukt.kolicina++;
+							setCart([...cart, taProdukt]);
+						}}>
+						Dodaj v košarico
+					</button>
+				) : (
+					<>Dodano v košarico</>
+				)}
 			</div>
 		</div>
 	);
 };
+//{cart.find(element => element.ID) === undefined}
 // setShowNotif={setShowNotif}
 // {showNotif.show ? <AddingNotification props={showNotif.content} /> : <></>}
 // <div className='OKQuantity'>Na voljo še več kot 3 izdelki.</div>
