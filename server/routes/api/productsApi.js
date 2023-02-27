@@ -40,6 +40,17 @@ router.get('/availability', async (req, res) => {
 	}
 });
 
+router.get('/kategorije', async (req, res) => {
+	try {
+		let result = await pool.query(`select distinct kategorija from Izdelki`);
+		console.log(result[0]);
+		res.status(200).send(result[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
 // spremeni pri filtrih:
 router.get('/stVsehProduktov', async (req, res) => {
 	try {

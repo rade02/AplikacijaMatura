@@ -1,13 +1,13 @@
 // TODO: datumi so za en dan nazaj
 // TODO: 
-// TODO: fix shopping, cart and checkout 
-// TODO: fix pregled izdelka button on cartProductComponent
+// TODO: dodaj preverjanje in odstevanje zalog izdelkov ko pridemo na checkout (sporocilo, ce pride do konca zaloge)
+// TODO: filtri prikaza produktov - backend in prikaz
 // TODO: 
 // TODO: 
-// TODO: 
-// TODO: 
-// TODO: 
-// TODO: fix addToCartBtn
+// TODO: oznaci unselectable besedilo: Na voljo še več kot 3 izdelki
+// TODO: filtri floating css
+// TODO: uninstallaj bootstrap
+// TODO: v kosarici prikaz skupne cene (tudi na buttonu v shop navbaru)
 // TODO: upoštevaj popust pri obracunavanju cene (ze ko dodamo v cart?)
 // TODO: 
 // TODO: ko pridemo na cart preveri avtomatsko, če kateri izdelek več ni na voljo in obvesti ter ga odstrani
@@ -35,7 +35,7 @@
 // TODO: enter za pomikanje naprej na naslednja vnosna polja
 // TODO: 
 // TODO: mogoce spreminjanje podjetja pri profilu?
-// TODO: 
+// TODO: bootstrap spinner?
 // TODO: 
 // TODO: daj port kot globalno dostopno spremenljivko
 // TODO: dodaj datoteko z sql stavki v mapo na github

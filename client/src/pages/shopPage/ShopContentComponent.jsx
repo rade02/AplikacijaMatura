@@ -18,6 +18,7 @@ const ShopContent = ({ prikazi, setPrikazi }) => {
 	const [napaka, setNapaka] = useState(false);
 	const [izbranProdukt, setIzbranProdukt] = useState({}); // za prikaz na product info page ce pridemo iz product component
 	//const [fetchNumber] = useState(6); mogoče potem opcija za koliko jih prikaze na stran
+	const [izKosarice, setIzKosarice] = useState(null);
 
 	const pridobiProdukte = async () => {
 		try {
@@ -48,6 +49,8 @@ const ShopContent = ({ prikazi, setPrikazi }) => {
 		return (
 			<Shopping
 				props={{
+					izKosarice: izKosarice,
+					setIzKosarice: setIzKosarice,
 					setPrikazi: setPrikazi,
 					prikazaniProdukti: prikazaniProdukti,
 					niProduktov: niProduktov,
@@ -60,13 +63,21 @@ const ShopContent = ({ prikazi, setPrikazi }) => {
 		);
 	} else if (prikazi === 'kosarica') {
 		return (
-			<Cart izbranProdukt={izbranProdukt} setIzbranProdukt={setIzbranProdukt} setPrikazi={setPrikazi} />
+			<Cart
+				izbranProdukt={izbranProdukt}
+				setIzbranProdukt={setIzbranProdukt}
+				setPrikazi={setPrikazi}
+				izKosarice={izKosarice}
+				setIzKosarice={setIzKosarice}
+			/>
 		);
 	} else if (prikazi === 'blagajna') {
 		return <Checkout setPrikazi={setPrikazi} />;
 	} else if (prikazi === 'produkt') {
 		return (
 			<ProductInfo
+				izKosarice={izKosarice}
+				setIzKosarice={setIzKosarice}
 				izbranProdukt={izbranProdukt}
 				setIzbranProdukt={setIzbranProdukt}
 				setPrikazi={setPrikazi}

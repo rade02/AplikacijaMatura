@@ -13,7 +13,9 @@ const CartProduct = ({ props }) => {
 					className='productText'
 					onClick={(e) => {
 						e.preventDefault();
-						setState({ props: props.product, active: 'product', fromCart: true });
+						//setState({ props: props.product, active: 'product', fromCart: true });
+						props.setIzbranProdukt(props.product);
+						props.setIzKosarice(true);
 						props.setPrikazi('produkt');
 					}}>
 					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.kratek_opis}
@@ -73,15 +75,17 @@ const CartProduct = ({ props }) => {
 							title='preglej izdelek'
 							onClick={(e) => {
 								e.preventDefault();
-
-								setState({
+								console.log(props.product);
+								props.setIzbranProdukt(props.product);
+								props.setIzKosarice(true);
+								/*setState({
 									props: {
 										...props.product,
 										productInfos: props.productInfos,
 										setProductInfos: props.setProductInfos,
 									},
 									fromCart: true,
-								});
+								});*/
 								props.setPrikazi('produkt');
 							}}>
 							Pregled izdelka

@@ -185,7 +185,7 @@ const Checkout = ({ setPrikazi }) => {
 						{cart.map((product) => {
 							return (
 								<div>
-									{product.ime}, {product.informacije}
+									{product.ime}, {product.kratek_opis}
 								</div>
 							);
 						})}
@@ -195,9 +195,7 @@ const Checkout = ({ setPrikazi }) => {
 							return (
 								<div className='quantityAndPrice'>
 									<div>količina: {product.kolicina}</div>
-									<div className='priceTag'>
-										{(product.cena_za_kos * product.kolicina).toFixed(2)} €
-									</div>
+									<div className='priceTag'>cena/kos: {product.cena_za_kos.toFixed(2)} €</div>
 								</div>
 							);
 						})}

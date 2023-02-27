@@ -5,7 +5,15 @@ import AddToCartButton from './AddToCartButtonComponent';
 import { ShopContext } from '../../../contexts/ShopContext';
 import AddingNotification from './AddingNotification';
 
-const Product = ({ prikazi, setPrikazi, taProdukt, izbranProdukt, setIzbranProdukt }) => {
+const Product = ({
+	prikazi,
+	setPrikazi,
+	taProdukt,
+	izbranProdukt,
+	setIzbranProdukt,
+	izKosarice,
+	setIzKosarice,
+}) => {
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
 	const { cart, setCart, state } = useContext(ShopContext);
 
@@ -22,6 +30,7 @@ const Product = ({ prikazi, setPrikazi, taProdukt, izbranProdukt, setIzbranProdu
 				//console.log(taProdukt);
 				setIzbranProdukt(taProdukt);
 				setPrikazi('produkt');
+				setIzKosarice(false);
 			}}>
 			<div>
 				<div className='productPicture'>

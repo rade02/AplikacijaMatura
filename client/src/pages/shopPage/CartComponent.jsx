@@ -4,7 +4,7 @@ import { ShopContext } from '../../contexts/ShopContext';
 import { useContext, useEffect, useRef, useState } from 'react';
 import CartProduct from './cart/CartProductComponent';
 
-const Cart = ({ setShow, selectedProduct, setSelectedProduct, setPrikazi }) => {
+const Cart = ({ setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKosarice }) => {
 	const PORT = 3005; // !!!
 	const { state, setState, cart, setCart } = useContext(ShopContext);
 	const [removedMsg, setRemovedMsg] = useState('');
@@ -33,6 +33,7 @@ const Cart = ({ setShow, selectedProduct, setSelectedProduct, setPrikazi }) => {
 	});*/
 
 	useEffect(() => {
+		setIzbranProdukt(null);
 		cart.forEach((product) => {
 			counter.current = 0;
 			if (product.kolicina <= 0) {
@@ -50,6 +51,10 @@ const Cart = ({ setShow, selectedProduct, setSelectedProduct, setPrikazi }) => {
 						<CartProduct
 							key={product.ID_izdelka}
 							props={{
+								izKosarice: izKosarice,
+								setIzKosarice: setIzKosarice,
+								izbranProdukt: izbranProdukt,
+								setIzbranProdukt: setIzbranProdukt,
 								setPrikazi: setPrikazi,
 								product: product,
 								counter: counter,
@@ -67,6 +72,7 @@ const Cart = ({ setShow, selectedProduct, setSelectedProduct, setPrikazi }) => {
 						onClick={(e) => {
 							e.preventDefault();
 							setPrikazi('nakupovanje');
+							setIzKosarice(false);
 						}}>
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 						<div>Nazaj</div>

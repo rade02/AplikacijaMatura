@@ -3,8 +3,10 @@ import { useContext, useMemo, useState } from 'react';
 import { ShopContext } from '../../../contexts/ShopContext';
 import AddToCartButton from './AddToCartButtonComponent';
 
-const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt }) => {
+const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKosarice }) => {
 	const { cart, setCart, state } = useContext(ShopContext);
+
+	console.log(izbranProdukt);
 
 	return (
 		<div className='productsMenu'>
@@ -80,7 +82,7 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt }) =
 									className='backButton'
 									onClick={(e) => {
 										e.preventDefault();
-										if (state.fromCart) setPrikazi('kosarica');
+										if (izKosarice) setPrikazi('kosarica');
 										else setPrikazi('nakupovanje');
 									}}>
 									<CaretCircleLeft size={25} />
