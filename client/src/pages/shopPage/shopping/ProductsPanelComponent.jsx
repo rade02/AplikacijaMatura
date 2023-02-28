@@ -3,27 +3,13 @@ import Product from './ProductComponent';
 import { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../../../contexts/ShopContext';
 
-const ProductsPanel = ({ props }) => {
+const ProductsPanel = ({ props, stVsehProduktov, kategorijeF, cenaF, popustF }) => {
 	const PORT = 3005; // !!!
-	const [stVsehProduktov, setStVsehProduktov] = useState(null);
-
-	const pridobiSteviloVsehProduktov = async () => {
-		try {
-			let response = await axios.get(`http://localhost:${PORT}/api/products/stVsehProduktov`);
-			setStVsehProduktov(response.data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	useEffect(() => {
-		pridobiSteviloVsehProduktov();
-	}, []);
 
 	if (props.napaka) {
 		<div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
 	} else if (props.niProduktov) {
-		return <h2>Nalagamo izdelke... ?? Animacija ??</h2>;
+		return <h2>Nalagamo izdelke... ?? Animacija spinner ??</h2>;
 	} else {
 		return (
 			<div className='products'>

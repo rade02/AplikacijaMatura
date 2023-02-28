@@ -2,7 +2,7 @@
 // TODO: 
 // TODO: dodaj preverjanje in odstevanje zalog izdelkov ko pridemo na checkout (sporocilo, ce pride do konca zaloge)
 // TODO: filtri prikaza produktov - backend in prikaz
-// TODO: 
+// TODO: s poizvedbo pridobi kategorije dodaj dropdown ko admin vnasa izdelke pri kategoriji
 // TODO: 
 // TODO: oznaci unselectable besedilo: Na voljo še več kot 3 izdelki
 // TODO: filtri floating css

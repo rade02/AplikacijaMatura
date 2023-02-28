@@ -8,11 +8,21 @@ const Shopping = ({ props }) => {
 	const PORT = 3005; // !!!
 	const [kategorijeNaVoljo, setKategorijenaVoljo] = useState([]);
 	const [kategorijeF, setKategorijeF] = useState([]);
-	const [cenaF, setCenaF] = useState({ od: null, do: null });
-	const [popustF, setPopustF] = useState(null);
+	const [cenaF, setCenaF] = useState({ od: undefined, do: undefined });
+	const [popustF, setPopustF] = useState(0);
 	const od = useRef('od');
 	const Do = useRef('do');
+	const [stVsehProduktov, setStVsehProduktov] = useState(null);
 
+	// ODSTRANI:
+	const pridobiSteviloVsehProduktov = async () => {
+		try {
+			let response = await axios.get(`http://localhost:${PORT}/api/products/stVsehProduktov`);
+			setStVsehProduktov(response.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const pridobiKategorije = async () => {
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/kategorije`);
@@ -22,9 +32,27 @@ const Shopping = ({ props }) => {
 			console.log(error);
 		}
 	};
+	const filtriraj = async () => {
+		try {
+			let response = await axios.get(`http://localhost:${PORT}/api/products/filtriranje`, {
+				params: {
+					number: 6,
+					noDups: props.prikazaniProdukti.map((a) => a.ID_izdelka),
+					kategorijeF: kategorijeF,
+					cenaF: cenaF,
+					popustF: popustF,
+				},
+			});
+
+			setKategorijenaVoljo([...response.data]);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	useEffect(() => {
 		pridobiKategorije();
+		pridobiSteviloVsehProduktov();
 	}, []);
 	//checked={kategorijeF.includes(kategorija.kategorija) ? 'checked' : null}
 	return (
@@ -38,17 +66,18 @@ const Shopping = ({ props }) => {
 						console.log(kategorijeF);
 						console.log(cenaF);
 						console.log(popustF);
-						if (cenaF.od !== null) {
+						if (cenaF.od !== undefined) {
 							od.current.value = cenaF.od;
 						} else {
 							od.current.value = '';
 						}
-						if (cenaF.do !== null) {
+						if (cenaF.do !== undefined) {
 							Do.current.value = cenaF.do;
 						} else {
 							Do.current.value = '';
 						}
 						// dejansko filtriraj
+						filtriraj();
 					}}>
 					<div className='filter'>
 						<div className='naslov'>Po kategoriji izdelka</div>
@@ -84,18 +113,18 @@ const Shopping = ({ props }) => {
 									ref={od}
 									type='text'
 									className='poljeZaVnosCene'
-									placeholder={cenaF.od === null ? '-' : null}
+									placeholder={cenaF.od === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
 										if (
 											(!isNaN(parseInt(e.target.value)) &&
 												parseInt(e.target.value) > 0 &&
 												parseInt(e.target.value) < parseInt(cenaF.do)) ||
-											cenaF.do === null
+											cenaF.do === undefined
 										) {
 											setCenaF({ ...cenaF, od: e.target.value });
 										} else {
-											setCenaF({ ...cenaF, od: null });
+											setCenaF({ ...cenaF, od: undefined });
 										}
 									}}></input>
 								€
@@ -106,18 +135,18 @@ const Shopping = ({ props }) => {
 									ref={Do}
 									type='text'
 									className='poljeZaVnosCene'
-									placeholder={cenaF.do === null ? '-' : null}
+									placeholder={cenaF.do === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
 										if (
 											(!isNaN(parseInt(e.target.value)) &&
 												parseInt(e.target.value) > 0 &&
 												parseInt(e.target.value) > parseInt(cenaF.od)) ||
-											cenaF.od === null
+											cenaF.od === undefined
 										) {
 											setCenaF({ ...cenaF, do: e.target.value });
 										} else {
-											setCenaF({ ...cenaF, do: null });
+											setCenaF({ ...cenaF, do: undefined });
 										}
 									}}></input>
 								€
@@ -129,30 +158,31 @@ const Shopping = ({ props }) => {
 						<div className='checkbox'>
 							<input
 								type='radio'
+								value={0}
+								name='popusti'
+								defaultChecked
+								onChange={(e) => {
+									setPopustF(e.target.value);
+								}}
+							/>
+							<label>z in brez popustov</label>
+						</div>
+						<div className='checkbox'>
+							<input
+								type='radio'
 								value={5}
 								name='popusti'
 								onChange={(e) => {
 									setPopustF(e.target.value);
 								}}
 							/>
-							<label>do 5 % popust</label>
-						</div>
-						<div className='checkbox'>
-							<input
-								type='radio'
-								value={10}
-								name='popusti'
-								onChange={(e) => {
-									setPopustF(e.target.value);
-								}}
-							/>
-							<label>5 do 10 % popust</label>
+							<label>več kot 5 % popust</label>
 						</div>
 
 						<div className='checkbox'>
 							<input
 								type='radio'
-								value={11}
+								value={10}
 								name='popusti'
 								onChange={(e) => {
 									setPopustF(e.target.value);
@@ -164,7 +194,13 @@ const Shopping = ({ props }) => {
 					<button type='submit'>Filtriraj</button>
 				</form>
 			</div>
-			<ProductsPanel props={props} />
+			<ProductsPanel
+				props={props}
+				stVsehProduktov={stVsehProduktov}
+				kategorijeF={kategorijeF}
+				cenaF={cenaF}
+				popustF={popustF}
+			/>
 		</div>
 	);
 };
