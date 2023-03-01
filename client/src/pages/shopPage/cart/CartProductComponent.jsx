@@ -72,7 +72,7 @@ const CartProduct = ({ props }) => {
 											Math.random().toFixed(3)
 									);
 								}
-								console.log(props.product);
+								//console.log(props.product);
 							}}>
 							+
 						</button>
@@ -82,7 +82,7 @@ const CartProduct = ({ props }) => {
 							title='preglej izdelek'
 							onClick={(e) => {
 								e.preventDefault();
-								console.log(props.product);
+								//console.log(props.product);
 								props.setIzbranProdukt(props.product);
 								props.setIzKosarice(true);
 								/*setState({

@@ -57,7 +57,6 @@ router.get('/kategorije', async (req, res) => {
 
 router.get('/filtriranje', async (req, res) => {
 	let fetchNumber = parseInt(req.query.number);
-	let noDuplicates = req.query.noDups;
 	let kategorijeF = req.query.kategorijeF;
 	let cenaF = req.query.cenaF;
 	let popustF = req.query.popustF;
@@ -98,8 +97,6 @@ router.get('/filtriranje', async (req, res) => {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);
 	}
-
-	//TODO:  ce je rezultat prazen, damo sporočilo za te parametre ni izdelkov
 });
 
 router.get('/stVsehProduktov', async (req, res) => {

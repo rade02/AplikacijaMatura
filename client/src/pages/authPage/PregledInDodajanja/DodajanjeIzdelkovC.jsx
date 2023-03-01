@@ -23,8 +23,8 @@ const DodajanjeIzdelkov = ({ props }) => {
 		popust: '',
 	});
 
-	console.log(props);
-	console.log(typeof props.setStanjeAdmin);
+	//console.log(props);
+	//console.log(typeof props.setStanjeAdmin);
 
 	return (
 		<div>
@@ -131,14 +131,13 @@ const DodajanjeIzdelkov = ({ props }) => {
 									onChange={(e) => {
 										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, cena_za_kos: e.target.value });
-										try {
-											parseInt(e.target.value);
-											setSporociloONapaki({ ...sporociloONapaki, cenaZaKos: '' });
-										} catch {
+										if (isNaN(parseInt(e.target.value))) {
 											setSporociloONapaki({
 												...sporociloONapaki,
 												cenaZaKos: 'Cena za kos mora biti število',
 											});
+										} else {
+											setSporociloONapaki({ ...sporociloONapaki, cenaZaKos: '' });
 										}
 									}}
 									placeholder='decimalna pika'
@@ -159,14 +158,13 @@ const DodajanjeIzdelkov = ({ props }) => {
 									onChange={(e) => {
 										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, kosov_na_voljo: e.target.value });
-										try {
-											parseInt(e.target.value);
-											setSporociloONapaki({ ...sporociloONapaki, kosovNaVoljo: '' });
-										} catch {
+										if (isNaN(parseInt(e.target.value))) {
 											setSporociloONapaki({
 												...sporociloONapaki,
 												kosovNaVoljo: 'Kosov na voljo mora biti število',
 											});
+										} else {
+											setSporociloONapaki({ ...sporociloONapaki, kosovNaVoljo: '' });
 										}
 									}}
 									placeholder=''
@@ -226,7 +224,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, popust: e.target.value });
 										try {
-											console.log(parseFloat(e.target.value));
+											//console.log(parseFloat(e.target.value));
 											if (isNaN(parseFloat(e.target.value))) {
 												setSporociloONapaki({
 													...sporociloONapaki,

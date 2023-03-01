@@ -19,6 +19,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	const [izbranProdukt, setIzbranProdukt] = useState({}); // za prikaz na product info page ce pridemo iz product component
 	//const [fetchNumber] = useState(6); mogoče potem opcija za koliko jih prikaze na stran
 	const [izKosarice, setIzKosarice] = useState(null);
+	const [removedMsg, setRemovedMsg] = useState('');
 
 	const pridobiProdukte = async () => {
 		try {
@@ -29,10 +30,14 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				},
 			});
 			// dodamo vsakemu izdelku kolicino v kosarici
-			response = response.data.map((product) => ({
+			response = response.data;
+			response.forEach((element) => {
+				element.kolicina = 0;
+			});
+			/*response = response.data.map((product) => ({
 				...product,
 				kolicina: 0,
-			}));
+			}));*/
 			setPrikazaniProdukti([...prikazaniProdukti, ...response]);
 			setNiProduktov(false);
 		} catch (error) {
@@ -81,10 +86,15 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				izKosarice={izKosarice}
 				setIzKosarice={setIzKosarice}
 				setCenaKosarice={setCenaKosarice}
+				pridobiProdukte={pridobiProdukte}
+				prikazaniProdukti={prikazaniProdukti}
+				setPrikazaniProdukti={setPrikazaniProdukti}
+				removedMsg={removedMsg}
+				setRemovedMsg={setRemovedMsg}
 			/>
 		);
 	} else if (prikazi === 'blagajna') {
-		return <Checkout setPrikazi={setPrikazi} />;
+		return <Checkout setPrikazi={setPrikazi} removedMsg={removedMsg} setRemovedMsg={setRemovedMsg} />;
 	} else if (prikazi === 'produkt') {
 		return (
 			<ProductInfo

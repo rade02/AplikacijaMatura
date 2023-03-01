@@ -1,42 +1,37 @@
 import axios from 'axios';
 import { CaretCircleLeft, CaretCircleRight } from 'phosphor-react';
 import { ShopContext } from '../../contexts/ShopContext';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import CartProduct from './cart/CartProductComponent';
 
-const Cart = ({ setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKosarice, setCenaKosarice }) => {
+const Cart = ({
+	setPrikazi,
+	izbranProdukt,
+	setIzbranProdukt,
+	izKosarice,
+	setIzKosarice,
+	setCenaKosarice,
+	pridobiProdukte,
+	prikazaniProdukti,
+	setPrikazaniProdukti,
+	removedMsg,
+	setRemovedMsg,
+}) => {
 	const PORT = 3005; // !!!
 	const { state, setState, cart, setCart } = useContext(ShopContext);
-	const [removedMsg, setRemovedMsg] = useState('');
-	let counter = useRef(0);
-	const [jeNaZalogi, setJeNaZalogi] = useState(null);
 
-	// PREVERI ZA VSAK IZDELEK V CARTU, ČE JE SPLOH ŠE KAKŠEN NA VOLJO, ČE NI, GA ODSTRANIMO IN NAPIŠEMO DA NI VEČ
-	/*useEffect(() => {
-		const checkAvailability = async (id) => {
-			try {
-				let response = await axios.get(`http://localhost:${PORT}/api/products/availability`, {
-					params: {
-						ID_izdelka: id,
-					},
-				});
-				response = response.data.map((product) => ({
-					...product,
-					kolicina: 0,
-				}));
-			} catch (error) {
-				console.log(error);
-			}
-		};
-		cart.forEach((product) => {
-			checkAvailability();
-		});
-	});*/
+	let counter = useRef(0);
 
 	useEffect(() => {
 		setIzbranProdukt(null);
+		counter.current = 0;
+		preveriZalogoIzdelkov();
+	}, []);
 
-		const naZalogi = async (product) => {
+	const preveriZalogoIzdelkov = async () => {
+		let vsota = 0;
+
+		const f = async (product) => {
 			try {
 				let response = await axios.get(`http://localhost:${PORT}/api/products/availability`, {
 					params: {
@@ -46,17 +41,16 @@ const Cart = ({ setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKo
 				// za odstranjevanje z "-" in preverjanje ce je produkt ze nekdo kupil in ga ni več
 				if (product.kolicina <= 0 || response.data[0].kosov_na_voljo <= 0) {
 					setRemovedMsg('Izdelek ' + product.ime + ' je bil odstranjen, ker ga nimamo več na zalogi.');
-					setJeNaZalogi(false);
+					return false;
 				} else {
-					setJeNaZalogi(true);
+					return true;
 				}
 			} catch (error) {
 				console.log(error);
 			}
 		};
 
-		let vsota = 0;
-		cart.forEach((product) => {
+		for (let product of cart) {
 			counter.current = 0;
 			vsota +=
 				product.cena_za_kos *
@@ -64,14 +58,14 @@ const Cart = ({ setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKo
 				-product.cena_za_kos *
 				product.kolicina *
 				(product.popust / 100.0);
-			naZalogi(product);
-			if (!jeNaZalogi) {
-				console.log(jeNaZalogi);
+
+			if (!(await f(product))) {
 				setCart(cart.filter((p) => p.ID_izdelka !== product.ID_izdelka));
+				setPrikazaniProdukti(prikazaniProdukti.filter((p) => p.ID_izdelka !== product.ID_izdelka));
 			}
 			setCenaKosarice(vsota);
-		});
-	});
+		}
+	};
 
 	return (
 		<div>
@@ -112,7 +106,15 @@ const Cart = ({ setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKo
 						disabled={cart.length <= 0 ? 'disabled' : ''}
 						onClick={(e) => {
 							e.preventDefault();
-							setPrikazi('blagajna');
+							preveriZalogoIzdelkov();
+							if (cart.length > 0) {
+								setPrikazi('blagajna');
+								setRemovedMsg('');
+							} else {
+								setRemovedMsg(
+									'Izdelek je bil odstranjen iz vaše košarice, ker ga nimamo več na zalogi.'
+								);
+							}
 							//setState({ ...state, props: {}, active: 'checkout', fromCart: true });
 						}}>
 						<div>Na plačilo</div>

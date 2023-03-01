@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import PostaSlovenije from '../../../assets/PSlogo.png';
 import axios from 'axios';
 
-const Checkout = ({ setPrikazi }) => {
+const Checkout = ({ setPrikazi, removedMsg }) => {
 	const PORT = 3005; // !!!
 	const { user, isAuth } = useContext(UserContext);
 	const { state, setState, cart, setCart } = useContext(ShopContext);
@@ -62,6 +62,7 @@ const Checkout = ({ setPrikazi }) => {
 				handleSubmit(e);
 			}}>
 			<div>
+				<div>{removedMsg === '' ? 'no removedMsg' : removedMsg}</div>
 				<div className='divTitles'>Podatki o kupcu:</div>
 				<br />
 				{userData === null ? (
@@ -245,7 +246,7 @@ const Checkout = ({ setPrikazi }) => {
 					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 					<div>Nazaj</div>
 				</button>
-				<button className='fwdButton' type='submit'>
+				<button className='fwdButton' type='submit' disabled={cart.length === 0 ? 'disabled' : ''}>
 					<div>Oddaj naročilo</div>
 					<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
 				</button>

@@ -68,7 +68,7 @@ header {
 .shoppingPanel {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: flex-start;
 }
 .filters {
@@ -125,7 +125,7 @@ header {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
-	min-width: 700px;
+	min-width: 600px;
 	max-width: 1140px;
 	margin: 0px;
 	padding: 20px;
@@ -542,7 +542,7 @@ header {
 	height: 28px;
 	z-index: 100000;
 	position: fixed;
-	top: 70%;
+	top: 88%;
 	left: 96%;
 }
 .naVrh:hover {

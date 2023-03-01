@@ -36,12 +36,12 @@ const Shopping = ({ props }) => {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/filtriranje`, {
 				params: {
 					number: 6,
-					noDups: props.prikazaniProdukti.map((a) => a.ID_izdelka),
 					kategorijeF: kategorijeF,
 					cenaF: cenaF,
 					popustF: popustF,
 				},
 			});
+			console.log(response.data);
 			response.data.forEach((element) => {
 				element.kolicina = 0;
 			});

@@ -1,29 +1,18 @@
 // TODO: datumi so za en dan nazaj
 // TODO: 
-// TODO: dodaj preverjanje in odstevanje zalog izdelkov ko pridemo na checkout (sporocilo, ce pride do konca zaloge)
 // TODO: 
-// TODO: s klikom na placilo odstranimo zalogo
-// TODO: popravi brisanje iz kosarice
-// TODO: pri dodajanju izdelkov ujemi izjeme ce pride do vnosa crk pri številčnem vnosu
+// TODO: kreiranje narocila in racuna (po odposiljanju kreiraj narocilo, po opravljenosti (spremeni v btn na auth page) pa racun in ga poslji stranki z obvestilom o odpremi)
 // TODO: 
 // TODO: 
 // TODO: 
 // TODO: 
 // TODO: 
 // TODO: 
-// TODO: pred nakupom (klikom na plačilo) še enkrat preveri ali je v bazi še dovolj artiklov, če ni opozori da je zmanjkalo artiklov
 // TODO: 
-// TODO: 
-// TODO: ce je preveliko stevilo ga das na maksimalno število ki je na voljo
-// TODO: 
-// TODO: fix header on shop page (navbar sticky (fixed position))
-// TODO: zaposleni in njihovi podatki (tudi sporocila o narocilih - moznost prevzema narocila in nato potrditev in posiljanje racuna)
-// TODO: pri kreiranju narocila zmanjsaj zalogo
-// TODO: po odposiljanju kreiraj racun in ga poslji stranki z obvestilom o odpremi
 // TODO: 
 // TODO: 
 // TODO: popravi notification card ki se ne pojavlja
-// TODO: 
+// TODO: slike za produkte
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: mogoča povečava slike na product info
@@ -33,15 +22,9 @@
 // TODO: pri profile componentu spremeni setOseba v setPodrobnosti
 // TODO: 
 // TODO: enter za pomikanje naprej na naslednja vnosna polja
-// TODO: popravi skoči na vrh gumb
 // TODO: 
+// TODO: popravi counter v kosarici za stevec izdelkov (odvisno od renderja) - popravi številke pri označevanju izdelkov v kosarici
 // TODO: bootstrap spinner?
 // TODO: filtri floating css
 // TODO: daj port kot globalno dostopno spremenljivko
 // TODO: dodaj datoteko z sql stavki v mapo na github
-
-
-// ---------------- OUT -----------------------
-// spremeni form za registracijo
-// dodaj tabelo z vlogami
-
