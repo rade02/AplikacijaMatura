@@ -14,7 +14,6 @@ const Shopping = ({ props }) => {
 	const Do = useRef('do');
 	const [stVsehProduktov, setStVsehProduktov] = useState(null);
 
-	// ODSTRANI:
 	const pridobiSteviloVsehProduktov = async () => {
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/stVsehProduktov`);
@@ -43,8 +42,12 @@ const Shopping = ({ props }) => {
 					popustF: popustF,
 				},
 			});
+			response.data.forEach((element) => {
+				element.kolicina = 0;
+			});
 
-			setKategorijenaVoljo([...response.data]);
+			props.setPrikazaniProdukti(response.data);
+			setStVsehProduktov(response.data.length);
 		} catch (error) {
 			console.log(error);
 		}
@@ -54,7 +57,7 @@ const Shopping = ({ props }) => {
 		pridobiKategorije();
 		pridobiSteviloVsehProduktov();
 	}, []);
-	//checked={kategorijeF.includes(kategorija.kategorija) ? 'checked' : null}
+
 	return (
 		<div className='shoppingPanel'>
 			<div className='filters'>
@@ -62,10 +65,6 @@ const Shopping = ({ props }) => {
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						console.log('filtriraj!');
-						console.log(kategorijeF);
-						console.log(cenaF);
-						console.log(popustF);
 						if (cenaF.od !== undefined) {
 							od.current.value = cenaF.od;
 						} else {
@@ -76,8 +75,20 @@ const Shopping = ({ props }) => {
 						} else {
 							Do.current.value = '';
 						}
-						// dejansko filtriraj
+						if (isNaN(parseFloat(cenaF.od)) || parseFloat(cenaF.od) < 0) {
+							cenaF.od = undefined;
+						}
+						if (isNaN(parseFloat(cenaF.od)) || parseFloat(cenaF.do) < 0) {
+							cenaF.do = undefined;
+						}
 						filtriraj();
+						if (
+							(kategorijeF === undefined || kategorijeF.length === 0) &&
+							(cenaF === undefined || (cenaF.od === undefined && cenaF.do === undefined)) &&
+							popustF === 0
+						) {
+							pridobiSteviloVsehProduktov();
+						}
 					}}>
 					<div className='filter'>
 						<div className='naslov'>Po kategoriji izdelka</div>
@@ -105,7 +116,7 @@ const Shopping = ({ props }) => {
 						})}
 					</div>
 					<div className='filter'>
-						<div className='naslov'>Po ceni (slider - bootstrap)</div>
+						<div className='naslov'>Po ceni</div>
 						<div className='checkbox' style={{ flexDirection: 'column' }}>
 							<div className='filtriranjePoCeni'>
 								Od

@@ -86,16 +86,18 @@ const Product = ({
 				</div>
 				{cart.find((element) => element.ID_izdelka === taProdukt.ID_izdelka) === undefined ? (
 					<button
+						className='dodajVKosarico'
 						onClick={(e) => {
 							e.preventDefault();
 							e.stopPropagation();
+							console.log(taProdukt);
 							taProdukt.kolicina++;
 							setCart([...cart, taProdukt]);
 						}}>
 						Dodaj v košarico
 					</button>
 				) : (
-					<>Dodano v košarico</>
+					<div className='dodanoVKosarico'>Dodano v košarico</div>
 				)}
 			</div>
 		</div>

@@ -515,12 +515,6 @@ h2 {
 	box-shadow: 0px 0px 5px 2px rgb(188, 194, 194);
 }
 
-.cartButton > div {
-	font-size: large;
-	padding: 0px;
-	padding-left: 8px;
-	min-width: max-content;
-}
 .productsMenuCard {
 	display: flex;
 	flex-direction: row;

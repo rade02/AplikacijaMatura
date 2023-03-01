@@ -19,7 +19,9 @@ const Checkout = ({ setPrikazi }) => {
 			let total = 0;
 
 			for (let i = 0; i < cart.length; i++) {
-				total += cart[i].cena_za_kos * cart[i].kolicina;
+				total +=
+					cart[i].cena_za_kos * cart[i].kolicina -
+					cart[i].cena_za_kos * cart[i].kolicina * (cart[i].popust / 100.0);
 			}
 			if (deliveryCost > 0) {
 				total += deliveryCost;
@@ -195,7 +197,13 @@ const Checkout = ({ setPrikazi }) => {
 							return (
 								<div className='quantityAndPrice'>
 									<div>količina: {product.kolicina}</div>
-									<div className='priceTag'>cena/kos: {product.cena_za_kos.toFixed(2)} €</div>
+									<div className='priceTag'>
+										cena/kos:{' '}
+										{(product.cena_za_kos - product.cena_za_kos * (product.popust / 100.0)).toFixed(
+											2
+										)}{' '}
+										€
+									</div>
 								</div>
 							);
 						})}
@@ -238,7 +246,7 @@ const Checkout = ({ setPrikazi }) => {
 					<div>Nazaj</div>
 				</button>
 				<button className='fwdButton' type='submit'>
-					<div>Plačaj</div>
+					<div>Oddaj naročilo</div>
 					<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
 				</button>
 			</div>

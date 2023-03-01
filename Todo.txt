@@ -1,26 +1,26 @@
 // TODO: datumi so za en dan nazaj
 // TODO: 
 // TODO: dodaj preverjanje in odstevanje zalog izdelkov ko pridemo na checkout (sporocilo, ce pride do konca zaloge)
-// TODO: filtri prikaza produktov - backend in prikaz
-// TODO: s poizvedbo pridobi kategorije dodaj dropdown ko admin vnasa izdelke pri kategoriji
 // TODO: 
-// TODO: oznaci unselectable besedilo: Na voljo še več kot 3 izdelki
-// TODO: filtri floating css
-// TODO: uninstallaj bootstrap
-// TODO: v kosarici prikaz skupne cene (tudi na buttonu v shop navbaru)
-// TODO: upoštevaj popust pri obracunavanju cene (ze ko dodamo v cart?)
+// TODO: s klikom na placilo odstranimo zalogo
+// TODO: popravi brisanje iz kosarice
+// TODO: pri dodajanju izdelkov ujemi izjeme ce pride do vnosa crk pri številčnem vnosu
 // TODO: 
-// TODO: ko pridemo na cart preveri avtomatsko, če kateri izdelek več ni na voljo in obvesti ter ga odstrani
+// TODO: 
+// TODO: 
+// TODO: 
+// TODO: 
+// TODO: 
 // TODO: pred nakupom (klikom na plačilo) še enkrat preveri ali je v bazi še dovolj artiklov, če ni opozori da je zmanjkalo artiklov
-// TODO: prikazi tudi na product info page popust
-// TODO: dodaj obvestilo spodaj desno ko dodamo nov izdelek, o skupni ceni in dodajanju
+// TODO: 
+// TODO: 
 // TODO: ce je preveliko stevilo ga das na maksimalno število ki je na voljo
-// TODO: onemogoči button Prikaži več če so prikazani vsi izdelki
+// TODO: 
 // TODO: fix header on shop page (navbar sticky (fixed position))
 // TODO: zaposleni in njihovi podatki (tudi sporocila o narocilih - moznost prevzema narocila in nato potrditev in posiljanje racuna)
 // TODO: pri kreiranju narocila zmanjsaj zalogo
 // TODO: po odposiljanju kreiraj racun in ga poslji stranki z obvestilom o odpremi
-// TODO: pri dodajanju izdelkov ujemi izjeme ce pride do vnosa crk pri številčnem vnosu
+// TODO: 
 // TODO: 
 // TODO: popravi notification card ki se ne pojavlja
 // TODO: 
@@ -33,16 +33,15 @@
 // TODO: pri profile componentu spremeni setOseba v setPodrobnosti
 // TODO: 
 // TODO: enter za pomikanje naprej na naslednja vnosna polja
+// TODO: popravi skoči na vrh gumb
 // TODO: 
-// TODO: mogoce spreminjanje podjetja pri profilu?
 // TODO: bootstrap spinner?
-// TODO: 
+// TODO: filtri floating css
 // TODO: daj port kot globalno dostopno spremenljivko
 // TODO: dodaj datoteko z sql stavki v mapo na github
 
 
 // ---------------- OUT -----------------------
-// pri pregledu oseb mogoče spreminjati podatke o osebi
 // spremeni form za registracijo
 // dodaj tabelo z vlogami
 

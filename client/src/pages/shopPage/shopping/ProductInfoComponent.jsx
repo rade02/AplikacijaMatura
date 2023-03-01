@@ -65,19 +65,6 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 							)}
 							<br></br>
 							<div className='productButtonsDiv'>
-								{cart.find((element) => element.ID_izdelka === izbranProdukt.ID_izdelka) ===
-								undefined ? (
-									<button
-										onClick={(e) => {
-											e.preventDefault();
-											izbranProdukt.kolicina++;
-											setCart([...cart, izbranProdukt]);
-										}}>
-										Dodaj v košarico
-									</button>
-								) : (
-									<>Dodano v košarico</>
-								)}
 								<button
 									className='backButton'
 									onClick={(e) => {
@@ -88,6 +75,25 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 									<CaretCircleLeft size={25} />
 									<div>Nazaj</div>
 								</button>
+								{cart.find((element) => element.ID_izdelka === izbranProdukt.ID_izdelka) ===
+								undefined ? (
+									<button
+										className='dodajVKosarico'
+										style={{ marginTop: '0px' }}
+										onClick={(e) => {
+											e.preventDefault();
+											izbranProdukt.kolicina++;
+											setCart([...cart, izbranProdukt]);
+										}}>
+										Dodaj v košarico
+									</button>
+								) : (
+									<div
+										className='dodanoVKosarico'
+										style={{ marginLeft: '40px', width: 'fit-content', minWidth: '165px' }}>
+										Dodano v košarico
+									</div>
+								)}
 							</div>
 						</div>
 					</div>

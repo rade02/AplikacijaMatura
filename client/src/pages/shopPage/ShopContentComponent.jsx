@@ -8,8 +8,8 @@ import Error from '../errorPage/ErrorPage';
 import ProductInfo from './shopping/ProductInfoComponent';
 import CardInput from './checkout/CardInputComponent';
 
-const ShopContent = ({ prikazi, setPrikazi }) => {
-	const { state } = useContext(ShopContext);
+const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
+	const { cart } = useContext(ShopContext);
 
 	const PORT = 3005; // !!!
 
@@ -45,6 +45,16 @@ const ShopContent = ({ prikazi, setPrikazi }) => {
 		pridobiProdukte();
 	}, []);
 
+	useEffect(() => {
+		let vsota = 0;
+		cart.forEach((element) => {
+			vsota +=
+				element.cena_za_kos * element.kolicina -
+				element.cena_za_kos * element.kolicina * (element.popust / 100.0);
+		});
+		setCenaKosarice(vsota);
+	});
+
 	if (prikazi === 'nakupovanje') {
 		return (
 			<Shopping
@@ -53,6 +63,7 @@ const ShopContent = ({ prikazi, setPrikazi }) => {
 					setIzKosarice: setIzKosarice,
 					setPrikazi: setPrikazi,
 					prikazaniProdukti: prikazaniProdukti,
+					setPrikazaniProdukti: setPrikazaniProdukti,
 					niProduktov: niProduktov,
 					napaka: napaka,
 					pridobiProdukte: pridobiProdukte,
@@ -69,6 +80,7 @@ const ShopContent = ({ prikazi, setPrikazi }) => {
 				setPrikazi={setPrikazi}
 				izKosarice={izKosarice}
 				setIzKosarice={setIzKosarice}
+				setCenaKosarice={setCenaKosarice}
 			/>
 		);
 	} else if (prikazi === 'blagajna') {

@@ -196,3 +196,8 @@ td > div {
 .sporociloONapaki {
 	color: red;
 }
+
+.OKQuantity {
+	user-select: none;
+	visibility: hidden;
+}

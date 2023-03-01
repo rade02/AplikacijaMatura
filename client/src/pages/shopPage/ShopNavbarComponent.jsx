@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { ShopContext } from '../../contexts/ShopContext';
 import { UserContext } from '../../contexts/UserContext';
 
-const ShopNavbar = ({ visible, prikazi, setPrikazi }) => {
+const ShopNavbar = ({ visible, prikazi, setPrikazi, cenaKosarice }) => {
 	const { user } = useContext(UserContext);
 
 	return (
@@ -32,8 +32,13 @@ const ShopNavbar = ({ visible, prikazi, setPrikazi }) => {
 						e.preventDefault();
 						setPrikazi('kosarica');
 					}}>
-					<ShoppingCart size={25} style={{ marginRight: '8px' }} />
-					{user.uporabnisko_ime}
+					<div>
+						<ShoppingCart size={25} style={{ marginRight: '17px' }} />
+					</div>
+					<div className='cartbuttonText'>
+						<div>{user.uporabnisko_ime}</div>
+						<div>{cenaKosarice.toFixed(2)} €</div>
+					</div>
 				</button>
 			</div>
 		</header>

@@ -21,7 +21,13 @@ const CartProduct = ({ props }) => {
 					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.kratek_opis}
 				</div>
 				<div className='productLaneDetailInfo'>
-					<div>{parseFloat(props.product.cena_za_kos).toFixed(2)} €</div>
+					<div>
+						{parseFloat(
+							props.product.cena_za_kos * props.product.kolicina -
+								props.product.cena_za_kos * props.product.kolicina * (props.product.popust / 100.0)
+						).toFixed(2)}{' '}
+						€
+					</div>
 
 					<div>
 						<button
@@ -66,6 +72,7 @@ const CartProduct = ({ props }) => {
 											Math.random().toFixed(3)
 									);
 								}
+								console.log(props.product);
 							}}>
 							+
 						</button>
