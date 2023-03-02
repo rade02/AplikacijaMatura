@@ -14,6 +14,11 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 	const [deliveryCost, setDeliveryCost] = useState(0);
 	const [sameBuyerAndReceiver, setSameBuyerAndReceiver] = useState(true);
 
+	const [kupec, setKupec] = useState(null);
+	const [prejemnik, setPrejemnik] = useState(null);
+	const [naslovDostava, setNaslovDostava] = useState(null);
+	console.log('cart');
+	console.log(cart);
 	useEffect(() => {
 		const cartTotalPrice = () => {
 			let total = 0;
@@ -32,9 +37,46 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 			const fetchUserData = async () => {
 				try {
 					const result = await axios.get(`http://localhost:${PORT}/api/login/user`, {
-						params: { username: user.username },
+						params: { username: user.uporabnisko_ime },
 					});
+
 					setUserData(result.data);
+
+					if (kupec === null) {
+						setKupec({
+							...kupec,
+							ime: result.data.ime,
+							priimek: result.data.priimek,
+							naslov:
+								result.data.ulica_in_hisna_stevilka +
+								' ' +
+								result.data.postna_stevilka +
+								' ' +
+								result.data.kraj,
+						});
+					}
+					if (prejemnik === null) {
+						setPrejemnik({
+							...prejemnik,
+							ime: result.data.ime,
+							priimek: result.data.priimek,
+							naslov:
+								result.data.ulica_in_hisna_stevilka +
+								' ' +
+								result.data.postna_stevilka +
+								' ' +
+								result.data.kraj,
+						});
+					}
+					if (setNaslovDostava === null) {
+						setNaslovDostava(
+							result.data.ulica_in_hisna_stevilka +
+								' ' +
+								result.data.postna_stevilka +
+								' ' +
+								result.data.kraj
+						);
+					}
 				} catch (error) {
 					console.log(error);
 				}
@@ -43,22 +85,94 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 			fetchUserData();
 		}
 		setTotalPrice(cartTotalPrice());
-	}, [isAuth, user.username, cart, deliveryCost]);
+	}, [isAuth, cart, deliveryCost]);
 
-	const handleSubmit = (e) => {
-		console.log(e.target.deliveryOption.value);
-		if (e.target.paymentMethod.value === 'Po prevzemu') {
+	// PRIDOBI ID STRANKE (KUPCA) PRED USTVARJANJEM NAROCILA
+
+	const handleSubmit = async (e) => {
+		//console.log(e.target.deliveryOption.value);
+		/*console.log('kupec--');
+		console.log(kupec);
+		console.log('prejemnik--');
+		console.log(prejemnik);
+		console.log('naslovDostava--');
+		console.log(naslovDostava);*/
+		let IDnarocila = null;
+		try {
+			let id = null;
+			if (userData !== null) {
+				let resp = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
+					params: {
+						uporabnisko_ime: userData.uporabnisko_ime,
+					},
+				});
+				id = resp.data;
+			}
+
+			const result = await axios.get(`http://localhost:${PORT}/api/products/ustvariNarocilo`, {
+				params: {
+					ID_stranke: id,
+					imeStranke: kupec.ime,
+					priimekStranke: kupec.priimek,
+					naslovDostave: naslovDostava,
+				},
+			});
+			IDnarocila = result.data;
+			for (let element of cart) {
+				const result1 = await axios.post(`http://localhost:${PORT}/api/products/dodajIzdelkeNarocilu`, {
+					ID_narocila: IDnarocila,
+					ID_izdelka: element.ID_izdelka,
+					kolicina: element.kolicina,
+					cena: totalPrice,
+				});
+			}
+		} catch (onRejectedError) {
+			console.log(onRejectedError);
+		}
+
+		/*if (e.target.paymentMethod.value === 'Po prevzemu') {
 			// gremo nazaj, pošljemo predračun, shranimo v bazo pod čakajoča naročila
+			//narocilo in izdelki pri narocilu
+			
+			
 		} else if (e.target.paymentMethod.value === 'Z debetno kartico') {
 			// TODO: send user data
 			setState({ ...state, props: {}, active: 'cardInput' });
-		}
+		}*/
 	};
+	/*try {
+		const result = await axios.post(`http://localhost:${PORT}/api/login/updt`, updatedUser);
+		setUser(updatedUser);
+		setEdit(false);
+		//console.log(result.data);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		setError(true);
+	}*/
+
+	/*Object.keys(userData).map((key) => {
+if (key === 'ime' || key === 'priimek') {
+							return (
+								<div key={userData[key]}>
+									<label>{key}: </label>
+									<input type='text' required defaultValue={userData[key]}></input>
+									<br />
+								</div>
+							);
+						}
+						else if()
+						return <></>;
+	*/
 
 	return (
 		<form
 			onSubmit={(e) => {
 				e.preventDefault();
+				console.log('kupec');
+				console.log(kupec);
+				console.log('prejemnik');
+				console.log(prejemnik);
+
 				handleSubmit(e);
 			}}>
 			<div>
@@ -68,33 +182,86 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 				{userData === null ? (
 					<div>
 						<label>Ime: </label>
-						<input required></input>
+						<input
+							type='text'
+							required
+							onChange={(e) => {
+								e.preventDefault();
+								setKupec({ ...kupec, ime: e.target.value });
+							}}></input>
 						<br />
 						<label>Priimek: </label>
-						<input required></input>
+						<input
+							type='text'
+							required
+							onChange={(e) => {
+								e.preventDefault();
+								setKupec({ ...kupec, priimek: e.target.value });
+							}}></input>
 						<br />
 						<label>Naslov: </label>
-						<input required></input>
+						<input
+							type='text'
+							required
+							onChange={(e) => {
+								e.preventDefault();
+								setKupec({ ...kupec, naslov: e.target.value });
+							}}></input>
 						<br />
 					</div>
 				) : (
-					Object.keys(userData).map((key) => {
-						if (key !== 'username') {
-							return (
-								<div key={userData[key]}>
-									<label>{key}: </label>
-									<input type='text' required defaultValue={userData[key]}></input>
-									<br />
-								</div>
-							);
-						}
-						return <></>;
-					})
+					<>
+						<div>
+							<label>Ime: </label>
+							<input
+								type='text'
+								required
+								defaultValue={userData.ime}
+								onChange={(e) => {
+									e.preventDefault();
+									setKupec({ ...kupec, ime: e.target.value });
+								}}></input>
+							<br />
+						</div>
+						<div>
+							<label>Priimek: </label>
+							<input
+								type='text'
+								required
+								defaultValue={userData.priimek}
+								onChange={(e) => {
+									e.preventDefault();
+									setKupec({ ...kupec, priimek: e.target.value });
+								}}></input>
+							<br />
+						</div>
+						<div>
+							<label>Naslov: </label>
+							<input
+								type='text'
+								required
+								defaultValue={
+									userData.ulica_in_hisna_stevilka +
+									' ' +
+									userData.postna_stevilka +
+									' ' +
+									userData.kraj
+								}
+								onChange={(e) => {
+									e.preventDefault();
+									setKupec({ ...kupec, naslov: e.target.value });
+								}}></input>
+							<br />
+						</div>
+					</>
 				)}
 			</div>
 			<button
 				onClick={(e) => {
 					e.preventDefault();
+					if (!sameBuyerAndReceiver) {
+						setPrejemnik(kupec);
+					}
 					setSameBuyerAndReceiver(!sameBuyerAndReceiver);
 				}}>
 				{sameBuyerAndReceiver ? 'Dodaj' : 'Odstrani'} drugega prejemnika
@@ -109,28 +276,78 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 					{userData === null ? (
 						<div>
 							<label>Ime: </label>
-							<input required></input>
+							<input
+								type='text'
+								required
+								onChange={(e) => {
+									e.preventDefault();
+									setPrejemnik({ ...prejemnik, ime: e.target.value });
+								}}></input>
 							<br />
 							<label>Priimek: </label>
-							<input required></input>
+							<input
+								type='text'
+								required
+								onChange={(e) => {
+									e.preventDefault();
+									setPrejemnik({ ...prejemnik, priimek: e.target.value });
+								}}></input>
 							<br />
 							<label>Naslov: </label>
-							<input required></input>
+							<input
+								type='text'
+								required
+								onChange={(e) => {
+									e.preventDefault();
+									setPrejemnik({ ...prejemnik, naslov: e.target.value });
+								}}></input>
 							<br />
 						</div>
 					) : (
-						Object.keys(userData).map((key) => {
-							if (key !== 'username') {
-								return (
-									<div key={userData[key]}>
-										<label>{key}: </label>
-										<input type='text' required defaultValue={userData[key]}></input>
-										<br />
-									</div>
-								);
-							}
-							return <></>;
-						})
+						<>
+							<div>
+								<label>Ime: </label>
+								<input
+									type='text'
+									required
+									defaultValue={userData.ime}
+									onChange={(e) => {
+										e.preventDefault();
+										setPrejemnik({ ...prejemnik, ime: e.target.value });
+									}}></input>
+								<br />
+							</div>
+							<div>
+								<label>Priimek: </label>
+								<input
+									type='text'
+									required
+									defaultValue={userData.priimek}
+									onChange={(e) => {
+										e.preventDefault();
+										setPrejemnik({ ...prejemnik, priimek: e.target.value });
+									}}></input>
+								<br />
+							</div>
+							<div>
+								<label>Naslov: </label>
+								<input
+									type='text'
+									required
+									defaultValue={
+										userData.ulica_in_hisna_stevilka +
+										' ' +
+										userData.postna_stevilka +
+										' ' +
+										userData.kraj
+									}
+									onChange={(e) => {
+										e.preventDefault();
+										setPrejemnik({ ...prejemnik, naslov: e.target.value });
+									}}></input>
+								<br />
+							</div>
+						</>
 					)}
 				</div>
 			)}
@@ -138,12 +355,26 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 				<div className='paymentMethod'>
 					<div className='divTitles'>Naslov za dostavo:</div>
 					<br />
-					<label>Naslov za dostavo: (add to DB načine dostave)</label>
+					<label>Naslov za dostavo:</label>
 					<br />
 					{userData === null ? (
-						<input type='text' required></input>
+						<input
+							type='text'
+							required
+							defaultValue={naslovDostava}
+							onChange={(e) => {
+								e.preventDefault();
+								setNaslovDostava(e.target.value);
+							}}></input>
 					) : (
-						<input type='text' required defaultValue={userData.naslov}></input>
+						<input
+							type='text'
+							required
+							defaultValue={userData.naslov}
+							onChange={(e) => {
+								e.preventDefault();
+								setNaslovDostava(e.target.value);
+							}}></input>
 					)}
 
 					<div className='divTitles'>Način dostave:</div>

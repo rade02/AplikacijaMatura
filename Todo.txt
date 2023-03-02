@@ -1,6 +1,6 @@
-// TODO: datumi so za en dan nazaj
+// TODO: datumi so za en dan nazaj - le napacen prikaz v tabeli
 // TODO: 
-// TODO: 
+// TODO: izdelki pri narocilu - preveri delovanje
 // TODO: kreiranje narocila in racuna (po odposiljanju kreiraj narocilo, po opravljenosti (spremeni v btn na auth page) pa racun in ga poslji stranki z obvestilom o odpremi)
 // TODO: 
 // TODO: 
@@ -9,7 +9,7 @@
 // TODO: 
 // TODO: 
 // TODO: 
-// TODO: 
+// TODO: pazi na productsApi.js : 120 (db and table name)
 // TODO: 
 // TODO: popravi notification card ki se ne pojavlja
 // TODO: slike za produkte

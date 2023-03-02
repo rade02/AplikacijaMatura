@@ -109,4 +109,48 @@ router.get('/stVsehProduktov', async (req, res) => {
 	}
 });
 
+router.get('/ustvariNarocilo', async (req, res) => {
+	const ID_stranke = req.query.ID_stranke;
+	const imeStranke = req.query.imeStranke;
+	const priimekStranke = req.query.priimekStranke;
+	const naslovDostave = req.query.naslovDostave;
+	let IDtegaNarocila = null;
+	try {
+		let response1 = await pool.query(`SET information_schema_stats_expiry = 0;`); // počistimo predpomnilnik
+		let response2 = await pool.query(
+			`select auto_increment from information_schema.tables where table_schema = 'test2' and table_name = 'Narocila';`
+		);
+		IDtegaNarocila = response2[0][0].AUTO_INCREMENT;
+
+		let response3 = await pool.query(
+			`insert into Narocila (datum, ID_stranke, opravljeno, imeStranke, priimekStranke, naslovDostave) values ((select current_date() as cd), ?, default, ?, ?, ?);`,
+			[ID_stranke, imeStranke, priimekStranke, naslovDostave]
+		);
+		res.status(200).send(IDtegaNarocila.toString());
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/dodajIzdelkeNarocilu', async (req, res) => {
+	const ID_narocila = req.body.ID_narocila;
+	const ID_izdelka = req.body.ID_izdelka;
+	const kolicina = req.body.kolicina;
+	const cena = req.body.cena;
+
+	try {
+		let response = await pool.query(`insert into Izdelki_pri_narocilu values (?,?,?,?);`, [
+			ID_narocila,
+			ID_izdelka,
+			kolicina,
+			cena,
+		]);
+		res.status(200).send('update successful');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
 export default router;

@@ -42,6 +42,7 @@ const CartProduct = ({ props }) => {
 									`Odstranjen izdelek: ${props.product.ime} -- ${props.product.kratek_opis} ` +
 										Math.random().toFixed(3)
 								);
+								props.preveriZalogoIzdelkov();
 							}}>
 							-
 						</button>{' '}

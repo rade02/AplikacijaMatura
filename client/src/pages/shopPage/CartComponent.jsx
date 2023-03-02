@@ -39,7 +39,11 @@ const Cart = ({
 					},
 				});
 				// za odstranjevanje z "-" in preverjanje ce je produkt ze nekdo kupil in ga ni več
-				if (product.kolicina <= 0 || response.data[0].kosov_na_voljo <= 0) {
+				if (product.kolicina <= 0) {
+					setRemovedMsg('Izdelek ' + product.ime + ' je bil odstranjen.');
+					return false;
+				}
+				if (response.data[0].kosov_na_voljo <= 0) {
 					setRemovedMsg('Izdelek ' + product.ime + ' je bil odstranjen, ker ga nimamo več na zalogi.');
 					return false;
 				} else {
@@ -49,7 +53,6 @@ const Cart = ({
 				console.log(error);
 			}
 		};
-
 		for (let product of cart) {
 			counter.current = 0;
 			vsota +=
@@ -75,6 +78,7 @@ const Cart = ({
 						<CartProduct
 							key={product.ID_izdelka}
 							props={{
+								preveriZalogoIzdelkov: preveriZalogoIzdelkov,
 								izKosarice: izKosarice,
 								setIzKosarice: setIzKosarice,
 								izbranProdukt: izbranProdukt,
@@ -111,9 +115,10 @@ const Cart = ({
 								setPrikazi('blagajna');
 								setRemovedMsg('');
 							} else {
-								setRemovedMsg(
+								setRemovedMsg('Vaša košarica je prazna.');
+								/*setRemovedMsg(
 									'Izdelek je bil odstranjen iz vaše košarice, ker ga nimamo več na zalogi.'
-								);
+								);*/
 							}
 							//setState({ ...state, props: {}, active: 'checkout', fromCart: true });
 						}}>
