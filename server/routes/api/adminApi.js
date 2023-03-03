@@ -112,16 +112,16 @@ router.get('/izdelki', async (req, res) => {
 router.get('/narocila', async (req, res) => {
 	const kriterij = req.query.iskalniKriterij;
 	const niz = req.query.iskalniNiz;
-	console.log('kriterij');
+	/*console.log('kriterij');
 	console.log(kriterij);
-	console.log(niz);
+	console.log(niz);*/
 
 	let sql = `select * from Narocila where ${kriterij} = '${niz}'`;
-	console.log(sql);
+	//console.log(sql);
 	//`select * from Narocila where ${kriterij} = ?`
 	try {
 		let response = await pool.query(sql, [niz]);
-		console.log(response[0]);
+		//console.log(response[0]);
 		res.status(200).send(response[0]);
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
@@ -317,12 +317,10 @@ router.post('/urediIzdelek', async (req, res) => {
 });
 
 router.post('/urediNarocilo', async (req, res) => {
-	const opravljeno = req.body.opravljeno === 1 ? true : false;
 	const ID_narocila = req.body.ID_narocila;
 
 	try {
-		let response = await pool.query(`update Narocila set opravljeno = ? where ID_narocila = ?;`, [
-			opravljeno,
+		let response = await pool.query(`update Narocila set opravljeno = true where ID_narocila = ?;`, [
 			ID_narocila,
 		]);
 

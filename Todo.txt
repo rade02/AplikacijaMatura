@@ -1,12 +1,12 @@
 // TODO: datumi so za en dan nazaj - le napacen prikaz v tabeli
 // TODO: 
 // TODO: izdelki pri narocilu - preveri delovanje
-// TODO: kreiranje narocila in racuna (po odposiljanju kreiraj narocilo, po opravljenosti (spremeni v btn na auth page) pa racun in ga poslji stranki z obvestilom o odpremi)
+// TODO: kreiranje racuna (po opravljenosti narocila racun (v metodi handleChangeNarocilo v PodatkiOOsebi) in ga poslji stranki z obvestilom o odpremi)
+// TODO: preglej narocila in racune pri stranki (pregled mozen tudi izdelkov; ce je narocilo opravljeno, lahko pogledamo racun zanj)
 // TODO: 
+// TODO: iskanje narocil in racunov po imenu stranke
 // TODO: 
-// TODO: 
-// TODO: 
-// TODO: 
+// TODO: v redu, da ob prevzemu dobis racun?
 // TODO: 
 // TODO: 
 // TODO: pazi na productsApi.js : 120 (db and table name)

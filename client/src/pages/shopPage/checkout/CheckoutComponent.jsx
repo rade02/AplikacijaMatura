@@ -13,6 +13,7 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 	const [totalPrice, setTotalPrice] = useState(0);
 	const [deliveryCost, setDeliveryCost] = useState(0);
 	const [sameBuyerAndReceiver, setSameBuyerAndReceiver] = useState(true);
+	const [oddano, setOddano] = useState(false);
 
 	const [kupec, setKupec] = useState(null);
 	const [prejemnik, setPrejemnik] = useState(null);
@@ -164,6 +165,42 @@ if (key === 'ime' || key === 'priimek') {
 						return <></>;
 	*/
 
+	if (oddano) {
+		if (userData === null) {
+			return (
+				<>
+					<div>Naročilo je bilo oddano</div>;
+					<div>
+						<button
+							className='backButton'
+							onClick={(e) => {
+								e.preventDefault();
+								setPrikazi('kosarica');
+							}}>
+							<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+							<div>V redu</div>
+						</button>
+					</div>
+				</>
+			);
+		}
+		return (
+			<>
+				<div>Naročilo je bilo oddano, račun bo na voljo na vašem profilu po odpošiljanju</div>
+				<div>
+					<button
+						className='backButton'
+						onClick={(e) => {
+							e.preventDefault();
+							setPrikazi('kosarica');
+						}}>
+						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+						<div>V redu</div>
+					</button>
+				</div>
+			</>
+		);
+	}
 	return (
 		<form
 			onSubmit={(e) => {
@@ -456,10 +493,16 @@ if (key === 'ime' || key === 'priimek') {
 				<div className='paymentMethod'>
 					<div className='divTitles'>Način plačila:</div>
 					<br />
-					<input type='radio' required name='paymentMethod' value='Z debetno kartico'></input>
-					<label>Z debetno kartico</label>
-					<CreditCard size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
-					<br />
+					{userData === null ? (
+						<></>
+					) : (
+						<>
+							<input type='radio' required name='paymentMethod' value='Z debetno kartico'></input>
+							<label>Z debetno kartico</label>
+							<CreditCard size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+							<br />
+						</>
+					)}
 					<input type='radio' required name='paymentMethod' value='Po prevzemu'></input>
 					<label>Po prevzemu</label>
 					<Money size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
@@ -477,7 +520,15 @@ if (key === 'ime' || key === 'priimek') {
 					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 					<div>Nazaj</div>
 				</button>
-				<button className='fwdButton' type='submit' disabled={cart.length === 0 ? 'disabled' : ''}>
+				<button
+					className='fwdButton'
+					type='submit'
+					disabled={cart.length === 0 ? 'disabled' : ''}
+					onClick={(e) => {
+						e.preventDefault();
+						setOddano(true);
+						setCart([]);
+					}}>
 					<div>Oddaj naročilo</div>
 					<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
 				</button>

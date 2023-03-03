@@ -8,7 +8,7 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
 	const poljePlaca = useRef(null);
 	const [izdelek, setIzdelek] = useState(oseba);
-	const [opravljeno, setOpravljeno] = useState(null);
+	const [opravljeno, setOpravljeno] = useState(false);
 	const [napaka, setNapaka] = useState(null);
 
 	if (oseba === null) {
@@ -76,17 +76,17 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 	};
 	const handleChangeNarocilo = async () => {
 		try {
-			if (parseInt(opravljeno) !== 0 && parseInt(opravljeno) !== 1) {
+			/*if (parseInt(opravljeno) !== 0 && parseInt(opravljeno) !== 1) {
 				setNapaka('Vneseni podatki niso skladni z definicijami polj');
 				console.log('Napaka pri vnosu podatkov');
 				console.log(opravljeno);
-			} else {
-				const result = await axios.post(`http://localhost:${PORT}/api/admin/urediNarocilo`, {
-					opravljeno: parseInt(opravljeno),
-					ID_narocila: uporabniskoIme,
-				});
-				setNapaka('Podatki spremenjeni');
-			}
+			} else {*/
+			const result = await axios.post(`http://localhost:${PORT}/api/admin/urediNarocilo`, {
+				ID_narocila: oseba.ID_narocila,
+			});
+			// TODO: ustvari racun
+			setNapaka('Podatki spremenjeni');
+			//}
 		} catch (onRejectedError) {
 			console.log(onRejectedError);
 		}
@@ -280,23 +280,19 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 										</td>
 									) : pr === 'opravljeno' ? (
 										<td>
-											<input
-												type='text'
-												defaultValue={oseba[pr]}
-												style={{ minWidth: '50px' }}
-												onChange={(e) => {
-													e.preventDefault();
-													setOpravljeno(e.target.value);
-													setUporabniskoIme(oseba.ID_narocila);
-													setNapaka(null);
-												}}></input>
-											<button
-												onClick={(e) => {
-													e.preventDefault();
-													handleChangeNarocilo();
-												}}>
-												Potrdi
-											</button>
+											{oseba[pr] === 1 || opravljeno === true ? (
+												<div>Opravljeno</div>
+											) : (
+												<button
+													disabled={oseba[pr] === 1 || opravljeno === true ? 'disabled' : ''}
+													onClick={(e) => {
+														e.preventDefault();
+														setOpravljeno(true);
+														handleChangeNarocilo();
+													}}>
+													Nastavi kot opravljeno
+												</button>
+											)}
 										</td>
 									) : (
 										<td>{oseba[pr]}</td>
@@ -331,7 +327,11 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 													);
 													return <td key={key + '' + izdelek[key]}>{imeIzdelka[0].ime}</td>;
 												} else if (key === 'cena') {
-													return <td key={key + '' + izdelek[key]}>{izdelek[key]} €</td>;
+													return (
+														<td key={key + '' + izdelek[key]}>
+															{(izdelek[key] / parseFloat(izdelek.kolicina)).toFixed(2)} €
+														</td>
+													);
 												} else if (key !== 'ID_narocila') {
 													return <td key={key + '' + izdelek[key]}>{izdelek[key]}</td>;
 												} else return <></>;
