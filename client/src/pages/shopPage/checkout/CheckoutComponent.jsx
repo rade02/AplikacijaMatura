@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import PostaSlovenije from '../../../assets/PSlogo.png';
 import axios from 'axios';
 
-const Checkout = ({ setPrikazi, removedMsg }) => {
+const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 	const PORT = 3005; // !!!
 	const { user, isAuth } = useContext(UserContext);
 	const { state, setState, cart, setCart } = useContext(ShopContext);
@@ -18,8 +18,7 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 	const [kupec, setKupec] = useState(null);
 	const [prejemnik, setPrejemnik] = useState(null);
 	const [naslovDostava, setNaslovDostava] = useState(null);
-	console.log('cart');
-	console.log(cart);
+
 	useEffect(() => {
 		const cartTotalPrice = () => {
 			let total = 0;
@@ -88,16 +87,7 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 		setTotalPrice(cartTotalPrice());
 	}, [isAuth, cart, deliveryCost]);
 
-	// PRIDOBI ID STRANKE (KUPCA) PRED USTVARJANJEM NAROCILA
-
 	const handleSubmit = async (e) => {
-		//console.log(e.target.deliveryOption.value);
-		/*console.log('kupec--');
-		console.log(kupec);
-		console.log('prejemnik--');
-		console.log(prejemnik);
-		console.log('naslovDostava--');
-		console.log(naslovDostava);*/
 		let IDnarocila = null;
 		try {
 			let id = null;
@@ -119,17 +109,21 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 				},
 			});
 			IDnarocila = result.data;
+			console.log(IDnarocila);
 			for (let element of cart) {
 				const result1 = await axios.post(`http://localhost:${PORT}/api/products/dodajIzdelkeNarocilu`, {
 					ID_narocila: IDnarocila,
 					ID_izdelka: element.ID_izdelka,
 					kolicina: element.kolicina,
-					cena: totalPrice,
+					cena: element.cena_za_kos,
 				});
 			}
 		} catch (onRejectedError) {
 			console.log(onRejectedError);
 		}
+		cart.forEach((element) => {
+			element.kolicina = 0;
+		});
 
 		/*if (e.target.paymentMethod.value === 'Po prevzemu') {
 			// gremo nazaj, pošljemo predračun, shranimo v bazo pod čakajoča naročila
@@ -141,29 +135,6 @@ const Checkout = ({ setPrikazi, removedMsg }) => {
 			setState({ ...state, props: {}, active: 'cardInput' });
 		}*/
 	};
-	/*try {
-		const result = await axios.post(`http://localhost:${PORT}/api/login/updt`, updatedUser);
-		setUser(updatedUser);
-		setEdit(false);
-		//console.log(result.data);
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
-		setError(true);
-	}*/
-
-	/*Object.keys(userData).map((key) => {
-if (key === 'ime' || key === 'priimek') {
-							return (
-								<div key={userData[key]}>
-									<label>{key}: </label>
-									<input type='text' required defaultValue={userData[key]}></input>
-									<br />
-								</div>
-							);
-						}
-						else if()
-						return <></>;
-	*/
 
 	if (oddano) {
 		if (userData === null) {
@@ -205,12 +176,16 @@ if (key === 'ime' || key === 'priimek') {
 		<form
 			onSubmit={(e) => {
 				e.preventDefault();
-				console.log('kupec');
+				handleSubmit(e);
+				console.log('cart');
+				console.log(cart);
+				setOddano(true);
+
+				setCart([]);
+				/*console.log('kupec');
 				console.log(kupec);
 				console.log('prejemnik');
-				console.log(prejemnik);
-
-				handleSubmit(e);
+				console.log(prejemnik);*/
 			}}>
 			<div>
 				<div>{removedMsg === '' ? 'no removedMsg' : removedMsg}</div>
@@ -294,6 +269,7 @@ if (key === 'ime' || key === 'priimek') {
 				)}
 			</div>
 			<button
+				type='submit'
 				onClick={(e) => {
 					e.preventDefault();
 					if (!sameBuyerAndReceiver) {
@@ -451,32 +427,30 @@ if (key === 'ime' || key === 'priimek') {
 			<div className='cartOverview'>
 				<div className='divTitles'>Pregled košarice</div>
 				<br />
+
 				<div className='smallProductDesc'>
-					<div>
-						{cart.map((product) => {
-							return (
-								<div>
-									{product.ime}, {product.kratek_opis}
-								</div>
-							);
-						})}
-					</div>
-					<div>
-						{cart.map((product) => {
-							return (
-								<div className='quantityAndPrice'>
-									<div>količina: {product.kolicina}</div>
-									<div className='priceTag'>
-										cena/kos:{' '}
-										{(product.cena_za_kos - product.cena_za_kos * (product.popust / 100.0)).toFixed(
-											2
-										)}{' '}
-										€
-									</div>
-								</div>
-							);
-						})}
-					</div>
+					<table>
+						<tbody>
+							{cart.map((product) => {
+								return (
+									<tr>
+										<td>
+											{product.ime}, {product.kratek_opis}
+										</td>
+										<td>kol: {product.kolicina}</td>{' '}
+										<td>
+											cena/kos:{' '}
+											{(
+												product.cena_za_kos -
+												product.cena_za_kos * (product.popust / 100.0)
+											).toFixed(2)}{' '}
+											€
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
 				</div>
 				<div className='priceTotal'>
 					<div>Stroški dostave: {deliveryCost > 0 ? deliveryCost.toFixed(2) : 0.0} €</div>
@@ -520,15 +494,7 @@ if (key === 'ime' || key === 'priimek') {
 					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 					<div>Nazaj</div>
 				</button>
-				<button
-					className='fwdButton'
-					type='submit'
-					disabled={cart.length === 0 ? 'disabled' : ''}
-					onClick={(e) => {
-						e.preventDefault();
-						setOddano(true);
-						setCart([]);
-					}}>
+				<button className='fwdButton' type='submit' disabled={cart.length === 0 ? 'disabled' : ''}>
 					<div>Oddaj naročilo</div>
 					<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
 				</button>

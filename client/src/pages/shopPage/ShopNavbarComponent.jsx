@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { ShopContext } from '../../contexts/ShopContext';
 import { UserContext } from '../../contexts/UserContext';
 
-const ShopNavbar = ({ visible, prikazi, setPrikazi, cenaKosarice }) => {
+const ShopNavbar = ({ visible, setVisible, prikazi, setPrikazi, cenaKosarice }) => {
 	const { user } = useContext(UserContext);
 
 	return (
@@ -30,6 +30,7 @@ const ShopNavbar = ({ visible, prikazi, setPrikazi, cenaKosarice }) => {
 					className='cartButton'
 					onClick={(e) => {
 						e.preventDefault();
+						setVisible(0);
 						setPrikazi('kosarica');
 					}}>
 					<div>

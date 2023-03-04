@@ -1,6 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import pool from '../../dbConnection.js';
+import multer from 'multer';
+
+const upload = multer({ storage: multer.memoryStorage });
 
 // TDOD: dodajanje zaposlenega 4
 // TODO: pregled vseh uporabnikov 0
@@ -84,6 +87,9 @@ router.get('/osebe', async (req, res) => {
 router.get('/racuni', async (req, res) => {
 	const kriterij = req.query.iskalniKriterij;
 	const niz = req.query.iskalniNiz;
+	/*console.log('kriterij');
+	console.log(kriterij);
+	console.log(niz);*/
 
 	try {
 		let response = await pool.query(`select * from Racuni where ${kriterij} = ?`, [niz]);
@@ -244,7 +250,7 @@ router.post('/dodajUporabnika', async (req, res) => {
 	}
 });
 
-router.post('/dodajIzdelek', async (req, res) => {
+router.post('/dodajIzdelek', upload.single('slikaProdukta'), async (req, res) => {
 	const ime = req.body.ime;
 	const kategorija = req.body.kategorija;
 	const cena_za_kos = req.body.cena_za_kos;
@@ -252,7 +258,7 @@ router.post('/dodajIzdelek', async (req, res) => {
 	const kratek_opis = req.body.kratek_opis;
 	const informacije = req.body.informacije;
 	const popust = req.body.popust;
-	const slika = req.body.slika;
+	const slika = req.file.buffer.toString('base64');
 
 	try {
 		let response = await pool.query(`insert into Izdelki values (default,?,?,?,?,?,?,?,?)`, [
@@ -323,6 +329,33 @@ router.post('/urediNarocilo', async (req, res) => {
 		let response = await pool.query(`update Narocila set opravljeno = true where ID_narocila = ?;`, [
 			ID_narocila,
 		]);
+
+		res.status(200).send('uspešna operacija');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/izdajRacun', async (req, res) => {
+	const ID_narocila = req.body.ID_narocila;
+	const kupec = req.body.kupec;
+	const placano = req.body.placano;
+
+	try {
+		let response1 = await pool.query(`select * from Izdelki_pri_narocilu where ID_narocila = ?`, [
+			ID_narocila,
+		]);
+		let kosarica = response1[0];
+		let skupnaCena = 0;
+		kosarica.forEach((izdelek) => {
+			skupnaCena += parseFloat(izdelek.kolicina) * parseFloat(izdelek.cena);
+		});
+
+		let response = await pool.query(
+			`insert into Racuni (ID_narocila, kupec, za_placilo, placano) values (?,?,?,?);`,
+			[ID_narocila, kupec, skupnaCena.toFixed(2), placano]
+		);
 
 		res.status(200).send('uspešna operacija');
 	} catch (onRejectedError) {

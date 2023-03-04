@@ -173,6 +173,9 @@ td > div {
 .obrazecZaVnosUporabnika > table td {
 	border: none;
 }
+.nalaganjeDatoteke {
+	width: 120px;
+}
 .obrazecZaVnosUporabnika > table .opisPodatka {
 	min-width: max-content;
 	width: 160px;

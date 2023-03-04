@@ -39,6 +39,8 @@ const DodajanjeIzdelkov = ({ props }) => {
 				<div>Nazaj</div>
 			</button>
 			<form
+				method='post'
+				enctype='multipart/form-data'
 				onSubmit={async (e) => {
 					e.preventDefault();
 					const posodobiVlogo = async () => {
@@ -68,6 +70,12 @@ const DodajanjeIzdelkov = ({ props }) => {
 				className='obrazecZaVnosUporabnika'>
 				<table>
 					<tbody>
+						<tr>
+							<td className='opisPodatka'>Naložite sliko:</td>
+							<td>
+								<input type='file' name='slikaProdukta' className='nalaganjeDatoteke'></input>
+							</td>
+						</tr>
 						<tr>
 							<td className='opisPodatka'>Ime izdelka</td>
 							<td className='podatek'>

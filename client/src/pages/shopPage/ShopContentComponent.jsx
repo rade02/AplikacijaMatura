@@ -22,6 +22,9 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	const [removedMsg, setRemovedMsg] = useState('');
 
 	const pridobiProdukte = async () => {
+		console.log('cart');
+		console.log(cart);
+		console.log('PP');
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/`, {
 				params: {
@@ -32,6 +35,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			// dodamo vsakemu izdelku kolicino v kosarici
 			response = response.data;
 			response.forEach((element) => {
+				console.log(element);
 				element.kolicina = 0;
 			});
 			/*response = response.data.map((product) => ({
@@ -94,7 +98,14 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			/>
 		);
 	} else if (prikazi === 'blagajna') {
-		return <Checkout setPrikazi={setPrikazi} removedMsg={removedMsg} setRemovedMsg={setRemovedMsg} />;
+		return (
+			<Checkout
+				setPrikazi={setPrikazi}
+				removedMsg={removedMsg}
+				setRemovedMsg={setRemovedMsg}
+				pridobiProdukte={pridobiProdukte}
+			/>
+		);
 	} else if (prikazi === 'produkt') {
 		return (
 			<ProductInfo

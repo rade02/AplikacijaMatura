@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus, Polygon } from 'phosphor-react';
+import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus } from 'phosphor-react';
 import '../AuthPage.css';
 
 const TabelskaVrstica = ({ props }) => {
@@ -37,8 +37,6 @@ const TabelskaVrstica = ({ props }) => {
 				<td>{props.element.ID_racuna}</td>
 				<td>{props.element.ID_narocila}</td>
 				<td>{props.element.kupec}</td>
-				<td>{props.element.prejemnik}</td>
-				<td>{props.element.datum_valute}</td>
 				<td>{props.element.za_placilo}</td>
 				<td>{props.element.placano}</td>
 			</tr>

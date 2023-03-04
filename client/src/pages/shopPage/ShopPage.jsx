@@ -38,6 +38,7 @@ const ShopPage = () => {
 			<div className='shop' ref={zgoraj}>
 				<ShopNavbar
 					visible={visible}
+					setVisible={setVisible}
 					prikazi={prikazi}
 					setPrikazi={setPrikazi}
 					cenaKosarice={cenaKosarice}
@@ -52,10 +53,8 @@ const ShopPage = () => {
 					<div
 						className='naVrh'
 						onClick={(e) => {
-							let moving = window.pageYOffset;
 							zgoraj.current.scrollIntoView({ behaviour: 'smooth' });
 							setVisible(2);
-							setPosition(moving);
 						}}
 					/>
 				) : (

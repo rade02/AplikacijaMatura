@@ -124,19 +124,19 @@ const Profile = () => {
 								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
-									setStanjeAdmin(6);
+									setStanjeAdmin(7);
 								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled računov</div>
+								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled naročil</div>
 							</button>
 							<button
 								className='actionBtn'
 								onClick={(e) => {
 									e.preventDefault();
-									setStanjeAdmin(7);
+									setStanjeAdmin(6);
 								}}>
-								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled naročil</div>
+								<FileText size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled računov</div>
 							</button>
 							<button
 								className='actionBtn'
@@ -221,6 +221,7 @@ const Profile = () => {
 					<DodajanjeUporabnikov
 						props={{
 							naslov: 'Dodajanje uporabnikov',
+							setStanjeAdmin: setStanjeAdmin,
 						}}
 					/>
 					<button
@@ -314,15 +315,7 @@ const Profile = () => {
 					<PregledRacunov
 						props={{
 							naslov: 'Pregled računov',
-							naslovnaVrstica: [
-								'ID',
-								'ID naročila',
-								'Kupec',
-								'Prejemnik',
-								'Datum valute',
-								'Za plačilo',
-								'Plačano',
-							],
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,

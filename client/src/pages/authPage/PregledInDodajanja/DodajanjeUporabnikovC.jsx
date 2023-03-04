@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { useState, useRef } from 'react';
+import { CaretCircleLeft } from 'phosphor-react';
+import { useState } from 'react';
 
 const DodajanjeUporabnikov = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -37,6 +38,15 @@ const DodajanjeUporabnikov = ({ props }) => {
 	return (
 		<div>
 			<h2 className='naslov'>{props.naslov}</h2>
+			<button
+				className='backBtn'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setStanjeAdmin(0);
+				}}>
+				<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+				<div>Nazaj</div>
+			</button>
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault();

@@ -73,25 +73,29 @@ const Cart = ({
 	return (
 		<div>
 			<div>
-				{cart.map((product) => {
-					return (
-						<CartProduct
-							key={product.ID_izdelka}
-							props={{
-								preveriZalogoIzdelkov: preveriZalogoIzdelkov,
-								izKosarice: izKosarice,
-								setIzKosarice: setIzKosarice,
-								izbranProdukt: izbranProdukt,
-								setIzbranProdukt: setIzbranProdukt,
-								setPrikazi: setPrikazi,
-								product: product,
-								counter: counter,
-								setState: setState,
-								setRemovedMsg: setRemovedMsg,
-							}}
-						/>
-					);
-				})}
+				{cart.length > 0 ? (
+					cart.map((product) => {
+						return (
+							<CartProduct
+								key={product.ID_izdelka}
+								props={{
+									preveriZalogoIzdelkov: preveriZalogoIzdelkov,
+									izKosarice: izKosarice,
+									setIzKosarice: setIzKosarice,
+									izbranProdukt: izbranProdukt,
+									setIzbranProdukt: setIzbranProdukt,
+									setPrikazi: setPrikazi,
+									product: product,
+									counter: counter,
+									setState: setState,
+									setRemovedMsg: setRemovedMsg,
+								}}
+							/>
+						);
+					})
+				) : (
+					<div>Košarica je prazna</div>
+				)}
 			</div>
 			<div>
 				<div className='buttonsDiv'>

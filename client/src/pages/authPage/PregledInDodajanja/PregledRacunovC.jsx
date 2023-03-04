@@ -36,8 +36,8 @@ const PregledRacunov = ({ props }) => {
 								}}>
 								<option value='ID_racuna'>ID-ju računa</option>
 								<option value='ID_narocila'>ID-ju naročila</option>
-								<option value='datum_valute'>Datumu valute</option>
-								<option value='placano'>Plačilu</option>
+								<option value='kupec'>Kupcu</option>
+								<option value='placano'>Datumu placila</option>
 							</select>
 							<input
 								type='text'
@@ -52,17 +52,11 @@ const PregledRacunov = ({ props }) => {
 									}
 								}}
 								placeholder={
-									iskalniKriterij === 'placano' || 'datum_valute'
-										? 'LLLL-MM-DD'
-										: 'Vnesite iskalni niz'
+									iskalniKriterij === 'placano' ? 'LLLL-MM-DD' : 'Vnesite iskalni niz'
 								}></input>
 							<button
 								onClick={async (e) => {
 									e.preventDefault();
-									//console.log('iskalniKriterij');
-									//console.log(iskalniKriterij);
-									//console.log('iskalniNiz');
-									//console.log(iskalniNiz);
 									try {
 										let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
 											params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
@@ -76,11 +70,17 @@ const PregledRacunov = ({ props }) => {
 							</button>
 							<table>
 								<tbody>
-									<tr style={{ backgroundColor: 'rgba(240, 240, 240, 0.727)' }}>
-										{props.naslovnaVrstica.map((he) => {
-											return <th key={he}>{he}</th>;
-										})}
-									</tr>
+									{props.tabela.length === 0 ? (
+										<tr>
+											<td>Ni računov</td>
+										</tr>
+									) : (
+										<tr style={{ backgroundColor: 'rgba(240, 240, 240, 0.727)' }}>
+											{props.naslovnaVrstica.map((he) => {
+												return <th key={he}>{he}</th>;
+											})}
+										</tr>
+									)}
 									{props.tabela.map((el) => {
 										console.log('----------------');
 										console.log(el);

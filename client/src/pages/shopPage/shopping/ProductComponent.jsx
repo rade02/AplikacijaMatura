@@ -90,7 +90,7 @@ const Product = ({
 						onClick={(e) => {
 							e.preventDefault();
 							e.stopPropagation();
-							console.log(taProdukt);
+							//console.log(taProdukt);
 							taProdukt.kolicina++;
 							setCart([...cart, taProdukt]);
 						}}>

@@ -11,6 +11,7 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 	const [opravljeno, setOpravljeno] = useState(false);
 	const [napaka, setNapaka] = useState(null);
 
+	console.log(oseba);
 	if (oseba === null) {
 		return (
 			<div>
@@ -76,13 +77,13 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 	};
 	const handleChangeNarocilo = async () => {
 		try {
-			/*if (parseInt(opravljeno) !== 0 && parseInt(opravljeno) !== 1) {
-				setNapaka('Vneseni podatki niso skladni z definicijami polj');
-				console.log('Napaka pri vnosu podatkov');
-				console.log(opravljeno);
-			} else {*/
 			const result = await axios.post(`http://localhost:${PORT}/api/admin/urediNarocilo`, {
 				ID_narocila: oseba.ID_narocila,
+			});
+			const result2 = await axios.post(`http://localhost:${PORT}/api/admin/izdajRacun`, {
+				ID_narocila: oseba.ID_narocila,
+				kupec: oseba.imeStranke + ' ' + oseba.priimekStranke,
+				placano: oseba.datum,
 			});
 			// TODO: ustvari racun
 			setNapaka('Podatki spremenjeni');
