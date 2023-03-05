@@ -22,6 +22,8 @@ const DodajanjeIzdelkov = ({ props }) => {
 		kratekOpis: '',
 		popust: '',
 	});
+	const [datoteka, setDatoteka] = useState();
+	const [opis, setOpis] = useState('');
 
 	//console.log(props);
 	//console.log(typeof props.setStanjeAdmin);
@@ -39,10 +41,22 @@ const DodajanjeIzdelkov = ({ props }) => {
 				<div>Nazaj</div>
 			</button>
 			<form
+				action='/dodajIzdelek'
 				method='post'
 				enctype='multipart/form-data'
 				onSubmit={async (e) => {
 					e.preventDefault();
+					//------------------------
+					const formData = new FormData();
+					formData.append('image', datoteka);
+					formData.append('description', opis);
+
+					const result = await axios.post(`http://localhost:${PORT}/api/admin/api/images`, formData, {
+						headers: { 'Content-Type': 'multipart/form-data' },
+					});
+					console.log(result.data);
+					//------------------------
+					console.log('here');
 					const posodobiVlogo = async () => {
 						let res;
 						try {
@@ -73,7 +87,16 @@ const DodajanjeIzdelkov = ({ props }) => {
 						<tr>
 							<td className='opisPodatka'>Naložite sliko:</td>
 							<td>
-								<input type='file' name='slikaProdukta' className='nalaganjeDatoteke'></input>
+								<input
+									type='file'
+									filename={datoteka}
+									name='slikaProdukta'
+									className='nalaganjeDatoteke'
+									onChange={(e) => {
+										setDatoteka(e.target.files[0]);
+									}}
+									accept='image/*'></input>
+								<input onChange={(e) => setOpis(e.target.value)} type='text'></input>
 							</td>
 						</tr>
 						<tr>

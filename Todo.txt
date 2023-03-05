@@ -21,7 +21,7 @@
 // TODO: vnose števila preverjaj z metodo isNaN(št)
 // TODO: 
 // TODO: pri profile componentu spremeni setOseba v setPodrobnosti
-// TODO: 
+// TODO: izbriši fs modul
 // TODO: enter za pomikanje naprej na naslednja vnosna polja
 // TODO: 
 // TODO: popravi counter v kosarici za stevec izdelkov (odvisno od renderja) - popravi številke pri označevanju izdelkov v kosarici

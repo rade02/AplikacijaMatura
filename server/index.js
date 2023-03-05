@@ -15,6 +15,7 @@ app.listen(process.env.PORT, () => {
 });
 app.use(cors());
 app.use(express.json());
+app.use('/images', express.static('images'));
 
 // products api routes
 app.use('/api/products', productsApiRoutes);

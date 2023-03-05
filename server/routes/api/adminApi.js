@@ -3,7 +3,34 @@ const router = express.Router();
 import pool from '../../dbConnection.js';
 import multer from 'multer';
 
-const upload = multer({ storage: multer.memoryStorage });
+/*var storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, '/filepath');
+	},
+
+	filename: function (req, file, cb) {
+		let filename = 'filenametogive';
+		req.body.file = filename;
+
+		cb(null, filename);
+	},
+});
+const upload = multer({ storage: storage, limits: { fieldSize: 10 * 1024 * 1024 } });
+
+const upload = multer({ dest: 'images/' });
+router.post('/api/images', upload.single('image'), (req, res) => {
+	// 4
+	const imageName = req.file.filename;
+	const description = req.body.description;
+
+	// Save this data to a database probably
+
+	console.log(req.file);
+	console.log(description, imageName);
+	res.send({ description, imageName });
+});
+*/
+//https://morioh.com/p/d6bd1ff174c8
 
 // TDOD: dodajanje zaposlenega 4
 // TODO: pregled vseh uporabnikov 0
@@ -258,7 +285,7 @@ router.post('/dodajIzdelek', upload.single('slikaProdukta'), async (req, res) =>
 	const kratek_opis = req.body.kratek_opis;
 	const informacije = req.body.informacije;
 	const popust = req.body.popust;
-	const slika = req.file.buffer.toString('base64');
+	const slika = req.file; //.buffer.toString('base64');
 
 	try {
 		let response = await pool.query(`insert into Izdelki values (default,?,?,?,?,?,?,?,?)`, [
