@@ -3,35 +3,6 @@ const router = express.Router();
 import pool from '../../dbConnection.js';
 import multer from 'multer';
 
-/*var storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, '/filepath');
-	},
-
-	filename: function (req, file, cb) {
-		let filename = 'filenametogive';
-		req.body.file = filename;
-
-		cb(null, filename);
-	},
-});
-const upload = multer({ storage: storage, limits: { fieldSize: 10 * 1024 * 1024 } });
-
-const upload = multer({ dest: 'images/' });
-router.post('/api/images', upload.single('image'), (req, res) => {
-	// 4
-	const imageName = req.file.filename;
-	const description = req.body.description;
-
-	// Save this data to a database probably
-
-	console.log(req.file);
-	console.log(description, imageName);
-	res.send({ description, imageName });
-});
-*/
-//https://morioh.com/p/d6bd1ff174c8
-
 // TDOD: dodajanje zaposlenega 4
 // TODO: pregled vseh uporabnikov 0
 // TODO: pregled vseh zaposlenih 4 0
@@ -114,12 +85,17 @@ router.get('/osebe', async (req, res) => {
 router.get('/racuni', async (req, res) => {
 	const kriterij = req.query.iskalniKriterij;
 	const niz = req.query.iskalniNiz;
-	/*console.log('kriterij');
-	console.log(kriterij);
-	console.log(niz);*/
-
+	const razvrscanje_po = req.query.razvrscanje_po;
+	const razvrscanje_razvrsti = req.query.razvrscanje_razvrsti;
+	let sql;
+	if (razvrscanje_po === undefined || razvrscanje_po === null) {
+		sql = `select * from Racuni where ${kriterij} = '${niz}'`;
+	} else {
+		sql = `select * from Racuni where ${kriterij} = '${niz}' order by ${razvrscanje_po} ${razvrscanje_razvrsti}`;
+	}
+	console.log(sql);
 	try {
-		let response = await pool.query(`select * from Racuni where ${kriterij} = ?`, [niz]);
+		let response = await pool.query(sql, [niz]);
 
 		res.status(200).send(response[0]);
 	} catch (onRejectedError) {
@@ -145,13 +121,16 @@ router.get('/izdelki', async (req, res) => {
 router.get('/narocila', async (req, res) => {
 	const kriterij = req.query.iskalniKriterij;
 	const niz = req.query.iskalniNiz;
-	/*console.log('kriterij');
-	console.log(kriterij);
-	console.log(niz);*/
+	const razvrscanje_po = req.query.razvrscanje_po;
+	const razvrscanje_razvrsti = req.query.razvrscanje_razvrsti;
+	let sql;
 
-	let sql = `select * from Narocila where ${kriterij} = '${niz}'`;
+	if (razvrscanje_po === undefined || razvrscanje_po === null) {
+		sql = `select * from Narocila where ${kriterij} = '${niz}'`;
+	} else {
+		sql = `select * from Narocila where ${kriterij} = '${niz}' order by ${razvrscanje_po} ${razvrscanje_razvrsti}`;
+	}
 	//console.log(sql);
-	//`select * from Narocila where ${kriterij} = ?`
 	try {
 		let response = await pool.query(sql, [niz]);
 		//console.log(response[0]);
@@ -277,15 +256,15 @@ router.post('/dodajUporabnika', async (req, res) => {
 	}
 });
 
-router.post('/dodajIzdelek', upload.single('slikaProdukta'), async (req, res) => {
+router.post('/dodajIzdelek', async (req, res) => {
 	const ime = req.body.ime;
 	const kategorija = req.body.kategorija;
-	const cena_za_kos = req.body.cena_za_kos;
-	const kosov_na_voljo = req.body.kosov_na_voljo;
-	const kratek_opis = req.body.kratek_opis;
-	const informacije = req.body.informacije;
-	const popust = req.body.popust;
-	const slika = req.file; //.buffer.toString('base64');
+	const cena_za_kos = parseFloat(req.body.cena_za_kos);
+	const kosov_na_voljo = parseInt(req.body.kosov_na_voljo);
+	const kratek_opis = req.body.kratek_opis === 'null' ? null : req.body.kratek_opis;
+	const informacije = req.body.informacije === 'null' ? null : req.body.informacije;
+	const popust = parseInt(req.body.popust);
+	const slika = req.files.slika.data === 'null' ? null : req.files.slika.data;
 
 	try {
 		let response = await pool.query(`insert into Izdelki values (default,?,?,?,?,?,?,?,?)`, [
@@ -385,6 +364,24 @@ router.post('/izdajRacun', async (req, res) => {
 		);
 
 		res.status(200).send('uspešna operacija');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/racuniUporabnika', async (req, res) => {
+	const uporabnisko_ime = req.query.uporabnisko_ime;
+
+	try {
+		let response = await pool.query(
+			`select * from Racuni where ID_narocila in 
+			(select ID_narocila from Narocila where ID_stranke = 
+			(select ID from Stranke_in_zaposleni where uporabnisko_ime = ?));`,
+			[uporabnisko_ime]
+		);
+		console.log(response[0]);
+		res.status(200).send(response[0]);
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);

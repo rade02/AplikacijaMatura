@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { ShopContext } from '../../../contexts/ShopContext';
 
 const CartProduct = ({ props }) => {
-	const { cart, setState } = useContext(ShopContext);
+	const { cart, setCart, setState } = useContext(ShopContext);
 	// TODO: SPREMENI, DA BO NAMESTO += 0.5 : += 1
 	return (
 		<div className='cartProduct'>
@@ -21,13 +21,7 @@ const CartProduct = ({ props }) => {
 					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.kratek_opis}
 				</div>
 				<div className='productLaneDetailInfo'>
-					<div>
-						{parseFloat(
-							props.product.cena_za_kos * props.product.kolicina -
-								props.product.cena_za_kos * props.product.kolicina * (props.product.popust / 100.0)
-						).toFixed(2)}{' '}
-						€
-					</div>
+					<div>{parseFloat(props.product.cena_za_kos).toFixed(2)} €</div>
 
 					<div>
 						<button
@@ -39,9 +33,9 @@ const CartProduct = ({ props }) => {
 
 								props.setRemovedMsg(
 									// nujno za rerendering cart componenta !!
-									`Odstranjen izdelek: ${props.product.ime} -- ${props.product.kratek_opis} ` +
-										Math.random().toFixed(3)
+									`Odstranjen izdelek: ${props.product.ime} -- ${props.product.kratek_opis} `
 								);
+								Math.random().toFixed(3);
 								props.preveriZalogoIzdelkov();
 							}}>
 							-
@@ -57,20 +51,18 @@ const CartProduct = ({ props }) => {
 							}
 							onClick={(e) => {
 								e.preventDefault();
+								console.log('click');
 								if (
 									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 <=
 									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
 								) {
 									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
-
 									props.setRemovedMsg(
-										`Dodan izdelek: ${props.product.ime} -- ${props.product.kratek_opis} ` +
-											Math.random().toFixed(3)
+										`Dodan izdelek: ${props.product.ime} -- ${props.product.kratek_opis} `
 									);
 								} else {
 									props.setRemovedMsg(
-										`Izdelka: ${props.product.ime} -- ${props.product.kratek_opis} ni več na zalogi ` +
-											Math.random().toFixed(3)
+										`Izdelka: ${props.product.ime} -- ${props.product.kratek_opis} ni več na zalogi `
 									);
 								}
 								//console.log(props.product);

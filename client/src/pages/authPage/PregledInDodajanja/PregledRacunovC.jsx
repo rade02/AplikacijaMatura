@@ -3,10 +3,15 @@ import axios from 'axios';
 import TabelskaVrstica from './TabelskaVrsticaC';
 import { CaretCircleLeft } from 'phosphor-react';
 
-const PregledRacunov = ({ props }) => {
+const PregledRacunov = ({ props, jeStranka }) => {
 	const PORT = 3005; // !!!
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID_racuna');
-	const [iskalniNiz, setIskalniNiz] = useState(0);
+	const [iskalniNiz, setIskalniNiz] = useState(null);
+	const [razvrstiPo, setRazvrstiPo] = useState('ID_narocila');
+	const [razvrsti, setRazvrsti] = useState('asc');
+
+	if (jeStranka) {
+	}
 	return (
 		<>
 			<h2>{props.naslov}</h2>
@@ -45,8 +50,7 @@ const PregledRacunov = ({ props }) => {
 									e.preventDefault();
 
 									if (e.target.value === '') {
-										setIskalniNiz(1);
-										setIskalniKriterij(1);
+										setIskalniNiz(null);
 									} else {
 										setIskalniNiz(e.target.value);
 									}
@@ -54,14 +58,51 @@ const PregledRacunov = ({ props }) => {
 								placeholder={
 									iskalniKriterij === 'placano' ? 'LLLL-MM-DD' : 'Vnesite iskalni niz'
 								}></input>
+							<br />
+							<label>Razvrsti po: </label>
+							<select
+								onClick={(e) => {
+									e.preventDefault();
+									setRazvrstiPo(e.target.value);
+								}}>
+								<option value={null}>-</option>
+								<option value='ID_racuna'>ID-ju računa</option>
+								<option value='datum'>datumu</option>
+								<option value='za_placilo'>znesku</option>
+							</select>
+							<select
+								onClick={(e) => {
+									e.preventDefault();
+									setRazvrsti(e.target.value);
+								}}>
+								<option value='asc'>Naraščajoče</option>
+								<option value='desc'>Padajoče</option>
+							</select>
 							<button
 								onClick={async (e) => {
 									e.preventDefault();
 									try {
-										let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
-											params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
-										});
-										props.setTabela(r.data);
+										if (iskalniNiz === null) {
+											let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+												params: {
+													iskalniKriterij: 1,
+													iskalniNiz: 1,
+													razvrscanje_po: razvrstiPo,
+													razvrscanje_razvrsti: razvrsti,
+												},
+											});
+											props.setTabela(r.data);
+										} else {
+											let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+												params: {
+													iskalniKriterij: iskalniKriterij,
+													iskalniNiz: iskalniNiz,
+													razvrscanje_po: razvrstiPo,
+													razvrscanje_razvrsti: razvrsti,
+												},
+											});
+											props.setTabela(r.data);
+										}
 									} catch (error) {
 										console.log(`Prišlo je do napake: ${error}`);
 									}

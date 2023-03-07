@@ -114,24 +114,19 @@ router.get('/ustvariNarocilo', async (req, res) => {
 	const imeStranke = req.query.imeStranke;
 	const priimekStranke = req.query.priimekStranke;
 	const naslovDostave = req.query.naslovDostave;
-	//let IDtegaNarocila = null;
-	try {
-		/*let response1 = await pool.query(`SET information_schema_stats_expiry = 0;`); // počistimo predpomnilnik
-		let response2 = await pool.query(`SHOW TABLE STATUS WHERE NAME LIKE "Narocila";`);
-		console.log(response2[0][0]);
-		console.log(response2[0][0].Auto_increment);
-		IDtegaNarocila = response2[0][0].Auto_increment;*/
 
+	try {
+		// dodajanje naročila
 		let response3 = await pool.query(
 			`insert into Narocila (datum, ID_stranke, opravljeno, imeStranke, priimekStranke, naslovDostave) values ((select current_date() as cd), ?, default, ?, ?, ?);`,
 			[ID_stranke, imeStranke, priimekStranke, naslovDostave]
 		);
+		// pridobivanje ID-ja zdajšnjega naročila
 		let response22 = await pool.query(
-			`select max(ID_narocila) as MID from Narocila where ID_stranke = ? and naslovDostave = ?;`,
-			[ID_stranke, naslovDostave]
+			`select max(ID_narocila) as IDzadnjegaNarocila from Narocila where (ID_stranke = ? or (imeStranke = ? and priimekStranke = ?)) and naslovDostave = ?;`,
+			[ID_stranke, imeStranke, priimekStranke, naslovDostave]
 		);
-		console.log(response22[0][0].MID);
-		res.status(200).send(response22[0][0].MID.toString());
+		res.status(200).send(response22[0][0].IDzadnjegaNarocila.toString());
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);
@@ -151,6 +146,22 @@ router.post('/dodajIzdelkeNarocilu', async (req, res) => {
 			kolicina,
 			cena,
 		]);
+		res.status(200).send('update successful');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/zmanjsajZalogo', async (req, res) => {
+	const kolicina_kupljeno = req.body.kolicina_kupljeno;
+	const ID_izdelka = req.body.ID_izdelka;
+
+	try {
+		let response = await pool.query(
+			`update Izdelki set kosov_na_voljo = kosov_na_voljo - ? where ID_izdelka = ?`,
+			[kolicina_kupljeno, ID_izdelka]
+		);
 		res.status(200).send('update successful');
 	} catch (onRejectedError) {
 		console.log(onRejectedError);

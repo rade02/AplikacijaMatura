@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import PostaSlovenije from '../../../assets/PSlogo.png';
 import axios from 'axios';
 
-const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
+const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) => {
 	const PORT = 3005; // !!!
 	const { user, isAuth } = useContext(UserContext);
 	const { state, setState, cart, setCart } = useContext(ShopContext);
@@ -39,7 +39,8 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 					const result = await axios.get(`http://localhost:${PORT}/api/login/user`, {
 						params: { username: user.uporabnisko_ime },
 					});
-
+					console.log('result.data');
+					console.log(result.data);
 					setUserData(result.data);
 
 					if (kupec === null) {
@@ -68,14 +69,16 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 								result.data.kraj,
 						});
 					}
-					if (setNaslovDostava === null) {
-						setNaslovDostava(
-							result.data.ulica_in_hisna_stevilka +
-								' ' +
-								result.data.postna_stevilka +
-								' ' +
-								result.data.kraj
-						);
+					console.log(naslovDostava);
+					if (naslovDostava === null) {
+						let n =
+							result.data.ulica_in_hisna_stevilka === null ? '' : result.data.ulica_in_hisna_stevilka;
+						n += result.data.postna_stevilka === null ? '' : result.data.postna_stevilka;
+						n += result.data.kraj === null ? '' : result.data.kraj;
+						console.log(n);
+						if (n !== null && n.length > 0) {
+							setNaslovDostava(n);
+						}
 					}
 				} catch (error) {
 					console.log(error);
@@ -99,7 +102,6 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 				});
 				id = resp.data;
 			}
-
 			const result = await axios.get(`http://localhost:${PORT}/api/products/ustvariNarocilo`, {
 				params: {
 					ID_stranke: id,
@@ -109,7 +111,7 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 				},
 			});
 			IDnarocila = result.data;
-			console.log(IDnarocila);
+
 			for (let element of cart) {
 				const result1 = await axios.post(`http://localhost:${PORT}/api/products/dodajIzdelkeNarocilu`, {
 					ID_narocila: IDnarocila,
@@ -117,8 +119,15 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 					kolicina: element.kolicina,
 					cena: element.cena_za_kos,
 				});
+				// zmanjšanje zaloge
+				const result12 = await axios.post(`http://localhost:${PORT}/api/products/zmanjsajZalogo`, {
+					kolicina_kupljeno: element.kolicina,
+					ID_izdelka: element.ID_izdelka,
+				});
 			}
 		} catch (onRejectedError) {
+			setOddano(false);
+			setRemovedMsg('Potrditev naročila neuspešna (prišlo je do napake)');
 			console.log(onRejectedError);
 		}
 		cart.forEach((element) => {
@@ -140,7 +149,7 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 		if (userData === null) {
 			return (
 				<>
-					<div>Naročilo je bilo oddano</div>;
+					<div>Naročilo je bilo oddano</div>
 					<div>
 						<button
 							className='backButton'
@@ -177,8 +186,9 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 			onSubmit={(e) => {
 				e.preventDefault();
 				handleSubmit(e);
-				console.log('cart');
-				console.log(cart);
+				console.log(kupec);
+				//console.log('cart');
+				//console.log(cart);
 				setOddano(true);
 
 				setCart([]);
@@ -252,13 +262,7 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 							<input
 								type='text'
 								required
-								defaultValue={
-									userData.ulica_in_hisna_stevilka +
-									' ' +
-									userData.postna_stevilka +
-									' ' +
-									userData.kraj
-								}
+								defaultValue={naslovDostava}
 								onChange={(e) => {
 									e.preventDefault();
 									setKupec({ ...kupec, naslov: e.target.value });
@@ -347,13 +351,7 @@ const Checkout = ({ setPrikazi, removedMsg, pridobiProdukte }) => {
 								<input
 									type='text'
 									required
-									defaultValue={
-										userData.ulica_in_hisna_stevilka +
-										' ' +
-										userData.postna_stevilka +
-										' ' +
-										userData.kraj
-									}
+									defaultValue={naslovDostava}
 									onChange={(e) => {
 										e.preventDefault();
 										setPrejemnik({ ...prejemnik, naslov: e.target.value });

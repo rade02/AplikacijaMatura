@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
 import { useState, useRef, useEffect } from 'react';
+import FileUpload from '../../FileUpload';
 
 const DodajanjeIzdelkov = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -12,7 +13,6 @@ const DodajanjeIzdelkov = ({ props }) => {
 		kratek_opis: null,
 		informacije: null,
 		popust: 0,
-		slika: null,
 	});
 	const [sporociloONapaki, setSporociloONapaki] = useState({
 		ime: '',
@@ -22,11 +22,25 @@ const DodajanjeIzdelkov = ({ props }) => {
 		kratekOpis: '',
 		popust: '',
 	});
-	const [datoteka, setDatoteka] = useState();
-	const [opis, setOpis] = useState('');
 
-	//console.log(props);
-	//console.log(typeof props.setStanjeAdmin);
+	// ----------- fileupload -------------------
+	const [file, setFile] = useState(null);
+	const uploadFile = async (e) => {
+		const formData = new FormData();
+		formData.append('file', file);
+
+		try {
+			const res = await axios.post(`http://localhost:${PORT}/api/admin/upload`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+			//console.log(res);
+		} catch (ex) {
+			console.log(ex);
+		}
+	};
+	// ----------- fileupload -------------------
 
 	return (
 		<div>
@@ -48,27 +62,20 @@ const DodajanjeIzdelkov = ({ props }) => {
 					e.preventDefault();
 					//------------------------
 					const formData = new FormData();
-					formData.append('image', datoteka);
-					formData.append('description', opis);
+					formData.append('slika', file);
+					formData.append('ime', vneseniPodatki.ime);
+					formData.append('kategorija', vneseniPodatki.kategorija);
+					formData.append('cena_za_kos', vneseniPodatki.cena_za_kos);
+					formData.append('kosov_na_voljo', vneseniPodatki.kosov_na_voljo);
+					formData.append('kratek_opis', vneseniPodatki.kratek_opis);
+					formData.append('informacije', vneseniPodatki.informacije);
+					formData.append('popust', vneseniPodatki.popust);
 
-					const result = await axios.post(`http://localhost:${PORT}/api/admin/api/images`, formData, {
-						headers: { 'Content-Type': 'multipart/form-data' },
-					});
-					console.log(result.data);
-					//------------------------
-					console.log('here');
 					const posodobiVlogo = async () => {
 						let res;
 						try {
-							res = await axios.post(`http://localhost:${PORT}/api/admin/dodajIzdelek`, {
-								ime: vneseniPodatki.ime,
-								kategorija: vneseniPodatki.kategorija,
-								cena_za_kos: vneseniPodatki.cena_za_kos,
-								kosov_na_voljo: vneseniPodatki.kosov_na_voljo,
-								kratek_opis: vneseniPodatki.kratek_opis,
-								informacije: vneseniPodatki.informacije,
-								popust: vneseniPodatki.popust,
-								slika: vneseniPodatki.slika,
+							res = await axios.post(`http://localhost:${PORT}/api/admin/dodajIzdelek`, formData, {
+								headers: { 'Content-Type': 'multipart/form-data' },
 							});
 						} catch (error) {
 							setSporociloONapaki({
@@ -80,24 +87,14 @@ const DodajanjeIzdelkov = ({ props }) => {
 					};
 					posodobiVlogo();
 					e.target.reset();
+					setFile(null);
 				}}
 				className='obrazecZaVnosUporabnika'>
 				<table>
 					<tbody>
 						<tr>
 							<td className='opisPodatka'>Naložite sliko:</td>
-							<td>
-								<input
-									type='file'
-									filename={datoteka}
-									name='slikaProdukta'
-									className='nalaganjeDatoteke'
-									onChange={(e) => {
-										setDatoteka(e.target.files[0]);
-									}}
-									accept='image/*'></input>
-								<input onChange={(e) => setOpis(e.target.value)} type='text'></input>
-							</td>
+							<FileUpload setFile={setFile} uploadFile={uploadFile} />
 						</tr>
 						<tr>
 							<td className='opisPodatka'>Ime izdelka</td>
@@ -114,7 +111,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 												ime: 'Ime sme vsebovati največ 40 znakov',
 											});
 										} else {
-											setSporociloONapaki({ ...sporociloONapaki, ime: '' });
+											setSporociloONapaki({ ...sporociloONapaki, ime: '', dbS: '' });
 										}
 									}}
 									placeholder=''
@@ -141,7 +138,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 												kategorija: 'Kategorija sme vsebovati največ 20 znakov',
 											});
 										} else {
-											setSporociloONapaki({ ...sporociloONapaki, kategorija: '' });
+											setSporociloONapaki({ ...sporociloONapaki, kategorija: '', dbS: '' });
 										}
 									}}
 									placeholder=''
@@ -168,7 +165,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 												cenaZaKos: 'Cena za kos mora biti število',
 											});
 										} else {
-											setSporociloONapaki({ ...sporociloONapaki, cenaZaKos: '' });
+											setSporociloONapaki({ ...sporociloONapaki, cenaZaKos: '', dbS: '' });
 										}
 									}}
 									placeholder='decimalna pika'
@@ -195,7 +192,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 												kosovNaVoljo: 'Kosov na voljo mora biti število',
 											});
 										} else {
-											setSporociloONapaki({ ...sporociloONapaki, kosovNaVoljo: '' });
+											setSporociloONapaki({ ...sporociloONapaki, kosovNaVoljo: '', dbS: '' });
 										}
 									}}
 									placeholder=''
@@ -221,7 +218,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 												kratekOpis: 'Kratek opis sme vsebovati največ 40 znakov',
 											});
 										} else {
-											setSporociloONapaki({ ...sporociloONapaki, kratekOpis: '' });
+											setSporociloONapaki({ ...sporociloONapaki, kratekOpis: '', dbS: '' });
 										}
 									}}
 									placeholder=''
@@ -272,7 +269,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 													popust: 'Popust mora biti med 0 in 100',
 												});
 											} else {
-												setSporociloONapaki({ ...sporociloONapaki, popust: '' });
+												setSporociloONapaki({ ...sporociloONapaki, popust: '', dbS: '' });
 											}
 										} catch {
 											setSporociloONapaki({
@@ -288,18 +285,6 @@ const DodajanjeIzdelkov = ({ props }) => {
 								) : (
 									<div className='sporociloONapaki'>{sporociloONapaki.popust}</div>
 								)}
-							</td>
-						</tr>
-						<tr>
-							<td className='opisPodatka'>Slika</td>
-							<td className='podatek'>
-								<input
-									type='text'
-									onChange={(e) => {
-										e.preventDefault();
-										//setVneseniPodatki({ ...vneseniPodatki, slika: e.target.value });
-									}}
-									className='tekstovnoPolje'></input>
 							</td>
 						</tr>
 					</tbody>

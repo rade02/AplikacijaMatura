@@ -87,6 +87,9 @@ const TabelskaVrstica = ({ props }) => {
 				<td>{props.element.datum}</td>
 				<td>{props.element.ID_stranke}</td>
 				<td>{props.element.opravljeno}</td>
+				<td>{props.element.imeStranke}</td>
+				<td>{props.element.priimekStranke}</td>
+				<td>{props.element.naslovDostave}</td>
 			</tr>
 		);
 	} else if (props.naslov === 'Upravljanje z bazo podatkov') {

@@ -16,6 +16,7 @@ const Cart = ({
 	setPrikazaniProdukti,
 	removedMsg,
 	setRemovedMsg,
+	setNiProduktov,
 }) => {
 	const PORT = 3005; // !!!
 	const { state, setState, cart, setCart } = useContext(ShopContext);
@@ -104,6 +105,9 @@ const Cart = ({
 						onClick={(e) => {
 							e.preventDefault();
 							setPrikazi('nakupovanje');
+							setNiProduktov(true);
+							//setPrikazaniProdukti(null);
+							//pridobiProdukte();
 							setIzKosarice(false);
 						}}>
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />

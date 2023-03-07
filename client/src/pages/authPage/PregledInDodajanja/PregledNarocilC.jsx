@@ -6,7 +6,10 @@ import { CaretCircleLeft } from 'phosphor-react';
 const PregledNarocil = ({ props }) => {
 	const PORT = 3005; // !!!
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID_narocila');
-	const [iskalniNiz, setIskalniNiz] = useState(0);
+	const [iskalniNiz, setIskalniNiz] = useState(null);
+	const [razvrstiPo, setRazvrstiPo] = useState('ID_narocila');
+	const [razvrsti, setRazvrsti] = useState('asc');
+
 	return (
 		<>
 			<h2>{!props.stranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnisko_ime}</h2>
@@ -28,56 +31,91 @@ const PregledNarocil = ({ props }) => {
 								<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 								<div>Nazaj</div>
 							</button>
-							{!props.stranka ? (
-								<>
-									<label>Iskanje po: </label>
-									<select
-										onClick={(e) => {
-											e.preventDefault();
-											setIskalniKriterij(e.target.value);
-										}}>
-										<option value='ID_narocila'>ID-ju naročila</option>
-										<option value='datum'>Datumu</option>
-										<option value='ID_stranke'>ID-ju stranke</option>
-										<option value='opravljeno'>Opravljenosti</option>
-									</select>
-									<input
-										type='text'
-										onChange={(e) => {
-											e.preventDefault();
 
-											if (e.target.value === '') {
-												setIskalniNiz(1);
-												setIskalniKriterij(1);
-											} else {
-												setIskalniNiz(e.target.value);
-											}
-										}}
-										placeholder={
-											iskalniKriterij === 'datum'
-												? 'YYYY-MM-DD'
-												: iskalniKriterij === 'opravljeno'
-												? '1 ali 0'
-												: 'Vnesite iskalni niz'
-										}></input>
-									<button
-										onClick={async (e) => {
-											e.preventDefault();
-											try {
-												let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
-													params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
-												});
-												props.setTabela(r.data);
-											} catch (error) {
-												console.log(`Prišlo je do napake: ${error}`);
-											}
-										}}>
-										Išči
-									</button>
-								</>
-							) : (
-								<></>
-							)}
+							<label>Iskanje po: </label>
+							<select
+								onClick={(e) => {
+									e.preventDefault();
+									setIskalniKriterij(e.target.value);
+								}}>
+								<option value='ID_narocila'>ID-ju naročila</option>
+								<option value='datum'>Datumu</option>
+								<option value='ID_stranke'>ID-ju stranke</option>
+								<option value='opravljeno'>Opravljenosti</option>
+								<option value='imeStranke'>Imenu stranke</option>
+								<option value='priimekStranke'>Priimku stranke</option>
+								<option value='naslovDostave'>Naslovu dostave</option>
+							</select>
+
+							<input
+								type='text'
+								onChange={(e) => {
+									e.preventDefault();
+
+									if (e.target.value === '') {
+										setIskalniNiz(null);
+									} else {
+										setIskalniNiz(e.target.value);
+									}
+								}}
+								placeholder={
+									iskalniKriterij === 'datum'
+										? 'YYYY-MM-DD'
+										: iskalniKriterij === 'opravljeno'
+										? '1 ali 0'
+										: 'Vnesite iskalni niz'
+								}></input>
+							<br />
+							<label>Razvrsti po: </label>
+							<select
+								onClick={(e) => {
+									e.preventDefault();
+									setRazvrstiPo(e.target.value);
+								}}>
+								<option value={null}>-</option>
+								<option value='ID_narocila'>ID-ju</option>
+								<option value='datum'>datumu</option>
+							</select>
+							<select
+								onClick={(e) => {
+									e.preventDefault();
+									setRazvrsti(e.target.value);
+								}}>
+								<option value='asc'>Naraščajoče</option>
+								<option value='desc'>Padajoče</option>
+							</select>
+							<button
+								onClick={async (e) => {
+									e.preventDefault();
+									try {
+										if (iskalniNiz === null) {
+											let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+												params: {
+													iskalniKriterij: 1,
+													iskalniNiz: 1,
+													razvrscanje_po: razvrstiPo,
+													razvrscanje_razvrsti: razvrsti,
+												},
+											});
+											props.setTabela(r.data);
+										} else {
+											let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+												params: {
+													iskalniKriterij: iskalniKriterij,
+													iskalniNiz: iskalniNiz,
+													razvrscanje_po: razvrstiPo,
+													razvrscanje_razvrsti: razvrsti,
+												},
+											});
+											props.setTabela(r.data);
+										}
+									} catch (error) {
+										console.log(`Prišlo je do napake: ${error}`);
+									}
+								}}>
+								Išči
+							</button>
+
 							<table>
 								<tbody>
 									{props.tabela.length === 0 ? (

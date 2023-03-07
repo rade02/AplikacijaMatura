@@ -7,6 +7,7 @@ import Checkout from './checkout/CheckoutComponent';
 import Error from '../errorPage/ErrorPage';
 import ProductInfo from './shopping/ProductInfoComponent';
 import CardInput from './checkout/CardInputComponent';
+import { WarningCircle } from 'phosphor-react';
 
 const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	const { cart } = useContext(ShopContext);
@@ -22,9 +23,6 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	const [removedMsg, setRemovedMsg] = useState('');
 
 	const pridobiProdukte = async () => {
-		console.log('cart');
-		console.log(cart);
-		console.log('PP');
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/`, {
 				params: {
@@ -35,7 +33,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			// dodamo vsakemu izdelku kolicino v kosarici
 			response = response.data;
 			response.forEach((element) => {
-				console.log(element);
+				//console.log(element);
 				element.kolicina = 0;
 			});
 			/*response = response.data.map((product) => ({
@@ -51,10 +49,6 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	};
 
 	useEffect(() => {
-		pridobiProdukte();
-	}, []);
-
-	useEffect(() => {
 		let vsota = 0;
 		cart.forEach((element) => {
 			vsota +=
@@ -62,8 +56,32 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				element.cena_za_kos * element.kolicina * (element.popust / 100.0);
 		});
 		setCenaKosarice(vsota);
+		if (niProduktov) {
+			setPrikazaniProdukti([]);
+			pridobiProdukte();
+		}
 	});
 
+	if (napaka) {
+		return (
+			<>
+				<div>
+					<WarningCircle size={25} />
+					Napaka pri nalaganju izdelkov
+				</div>
+				<div>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							setNapaka(false);
+							pridobiProdukte();
+						}}>
+						Poskusi ponovno
+					</button>
+				</div>
+			</>
+		);
+	}
 	if (prikazi === 'nakupovanje') {
 		return (
 			<Shopping
@@ -95,6 +113,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				setPrikazaniProdukti={setPrikazaniProdukti}
 				removedMsg={removedMsg}
 				setRemovedMsg={setRemovedMsg}
+				setNiProduktov={setNiProduktov}
 			/>
 		);
 	} else if (prikazi === 'blagajna') {

@@ -39,7 +39,6 @@ const Profile = () => {
 	const [prejsnjeStanjeAdmin, setPrejsnjeStanjeAdmin] = useState(0);
 	const [tabela, setTabela] = useState(null);
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
-	// TODO: ime je link in lahko si ogledamo vse podatke ki so shranjeni v bazi o osebah
 	const [oseba, setOseba] = useState(null); // podatki o osebi
 
 	// TODO: na domaci strani naredi okno ki se pojavi ob izbrisu profila
@@ -63,10 +62,14 @@ const Profile = () => {
 		pridobiVlogo();
 	}, [user.uporabnisko_ime]);
 
+	console.log(user);
+
 	if (vloga === null) {
 		// pridobivanje vloge profila
 		return <>Nalaganje profila ...</>;
-	} else if (parseInt(vloga) === 0) {
+	}
+	// ################################################ ADMIN ######################################################
+	else if (parseInt(vloga) === 0) {
 		// admin
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
@@ -75,6 +78,7 @@ const Profile = () => {
 					<div className='moznostiProfila'>
 						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
+							<h4>Funkcije</h4>
 							<button
 								className='actionBtn'
 								onClick={(e) => {
@@ -356,7 +360,15 @@ const Profile = () => {
 					<PregledNarocil
 						props={{
 							naslov: 'Pregled naročil',
-							naslovnaVrstica: ['ID', 'Datum', 'ID stranke', 'Opravljeno'],
+							naslovnaVrstica: [
+								'ID',
+								'Datum',
+								'ID stranke',
+								'Opravljeno',
+								'Ime stranke',
+								'Priimek stranke',
+								'Naslov dostave',
+							],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -420,6 +432,7 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					stranka={false}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
@@ -428,7 +441,9 @@ const Profile = () => {
 				/>
 			);
 		}
-	} else if (parseInt(vloga) === 2) {
+	}
+	// ################################################ STRANKA ######################################################
+	else if (parseInt(vloga) === 2) {
 		// stranka
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
@@ -437,6 +452,7 @@ const Profile = () => {
 					<div className='moznostiProfila'>
 						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
+							<h4>Funkcije</h4>
 							<button
 								className='actionBtn'
 								onClick={(e) => {
@@ -446,26 +462,33 @@ const Profile = () => {
 								<ListDashes size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled naročil</div>
 							</button>
+							<button
+								className='actionBtn'
+								onClick={(e) => {
+									e.preventDefault();
+									setStanjeAdmin(3);
+								}}>
+								<FileText size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled računov</div>
+							</button>
 						</div>
 					</div>
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 1) {
 			// PREGLED NAROČIL STRANKE
-			const pridobiIDuporabnika = async () => {
-				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
-						params: { uporabnisko_ime: user.uporabnisko_ime },
-					});
-					return r.data;
-				} catch (error) {
-					console.log('Prišlo je do napake');
-				}
-			};
 			const pridobiInfoONarocilih = async () => {
 				try {
+					let r1 = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
+						params: {
+							uporabnisko_ime: user.uporabnisko_ime,
+						},
+					});
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
-						params: { iskalniKriterij: 'ID_stranke', iskalniNiz: await pridobiIDuporabnika() },
+						params: {
+							iskalniKriterij: 'ID_stranke',
+							iskalniNiz: r1.data,
+						},
 					});
 					setTabela(r.data);
 				} catch (error) {
@@ -479,7 +502,15 @@ const Profile = () => {
 					<PregledNarocil
 						props={{
 							naslov: 'Pregled naročil',
-							naslovnaVrstica: ['ID', 'Datum', 'ID stranke', 'Opravljeno'],
+							naslovnaVrstica: [
+								'ID',
+								'Datum',
+								'ID stranke',
+								'Opravljeno',
+								'Ime stranke',
+								'Priimek stranke',
+								'Naslov dostave',
+							],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -504,10 +535,52 @@ const Profile = () => {
 					</button>
 				</>
 			);
+		} else if (parseInt(stanjeAdmin) === 3) {
+			// PREGLED RAČUNOV STRANKE
+			const pridobiRacuneUporabnika = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuniUporabnika`, {
+						params: { uporabnisko_ime: user.uporabnisko_ime },
+					});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiRacuneUporabnika();
+			return (
+				<>
+					<PregledRacunov
+						props={{
+							naslov: 'Pregled računov',
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
+							tabela: tabela,
+							setTabela: setTabela,
+							filter: filterUporabniki,
+							setFilter: setFilterUporabniki,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
+						}}
+					/>
+					<button
+						className='backBtn'
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+							setTabela(null);
+						}}>
+						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+						<div>Nazaj</div>
+					</button>
+				</>
+			);
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					stranka={true}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
@@ -516,7 +589,9 @@ const Profile = () => {
 				/>
 			);
 		}
-	} else if (parseInt(vloga) === 1) {
+	}
+	// ################################################ ZAPOSLENI ######################################################
+	else if (parseInt(vloga) === 1) {
 		// zaposleni
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
@@ -525,7 +600,7 @@ const Profile = () => {
 					<div className='moznostiProfila'>
 						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
-							<label>Funkcije</label>
+							<h4>Funkcije</h4>
 							<button
 								className='actionBtn'
 								onClick={(e) => {
@@ -552,6 +627,15 @@ const Profile = () => {
 								}}>
 								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled naročil</div>
+							</button>
+							<button
+								className='actionBtn'
+								onClick={(e) => {
+									e.preventDefault();
+									setStanjeAdmin(6);
+								}}>
+								<FileText size={22} style={{ marginRight: '5px' }} />
+								<div>Pregled računov</div>
 							</button>
 						</div>
 					</div>
@@ -637,7 +721,15 @@ const Profile = () => {
 					<PregledNarocil
 						props={{
 							naslov: 'Pregled naročil',
-							naslovnaVrstica: ['ID', 'Datum', 'ID stranke', 'Opravljeno'],
+							naslovnaVrstica: [
+								'ID',
+								'Datum',
+								'ID stranke',
+								'Opravljeno',
+								'Ime stranke',
+								'Priimek stranke',
+								'Naslov dostave',
+							],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -661,10 +753,52 @@ const Profile = () => {
 					</button>
 				</>
 			);
+		} else if (parseInt(stanjeAdmin) === 6) {
+			// PREGLED RAČUNOV ZAPOSLENEGA
+			const pridobiInfoORacunih = async () => {
+				try {
+					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					setTabela(r.data);
+				} catch (error) {
+					console.log(`Prišlo je do napake: ${error}`);
+				}
+			};
+			if (tabela === null) pridobiInfoORacunih();
+			return (
+				<>
+					<PregledRacunov
+						props={{
+							naslov: 'Pregled računov',
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
+							tabela: tabela,
+							setTabela: setTabela,
+							filter: filterUporabniki,
+							setFilter: setFilterUporabniki,
+							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
+							stanjeAdmin: stanjeAdmin,
+							setStanjeAdmin: setStanjeAdmin,
+							setOseba: setOseba,
+						}}
+					/>
+					<button
+						className='backBtn'
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(0);
+							setTabela(null);
+						}}>
+						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+						<div>Nazaj</div>
+					</button>
+				</>
+			);
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					stranka={false}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
@@ -673,7 +807,9 @@ const Profile = () => {
 				/>
 			);
 		}
-	} else if (parseInt(vloga) === 3) {
+	}
+	// ################################################ RAČUNOVODJA ######################################################
+	else if (parseInt(vloga) === 3) {
 		// računovodja
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
@@ -812,15 +948,7 @@ const Profile = () => {
 					<PregledRacunov
 						props={{
 							naslov: 'Pregled računov',
-							naslovnaVrstica: [
-								'ID',
-								'ID naročila',
-								'Kupec',
-								'Prejemnik',
-								'Datum valute',
-								'Za plačilo',
-								'Plačano',
-							],
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -861,7 +989,15 @@ const Profile = () => {
 					<PregledNarocil
 						props={{
 							naslov: 'Pregled naročil',
-							naslovnaVrstica: ['ID', 'Datum', 'ID stranke', 'Opravljeno'],
+							naslovnaVrstica: [
+								'ID',
+								'Datum',
+								'ID stranke',
+								'Opravljeno',
+								'Ime stranke',
+								'Priimek stranke',
+								'Naslov dostave',
+							],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -919,6 +1055,7 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					stranka={true}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
@@ -927,7 +1064,9 @@ const Profile = () => {
 				/>
 			);
 		}
-	} else {
+	}
+	// ################################################ NAPAČNA VLOGA ######################################################
+	else {
 		// napacna vloga (profilu dodamo vlogo stranke)
 		const posodobiVlogo = async () => {
 			let res;

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
 import { useRef, useState } from 'react';
 
-const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, setTabela }) => {
+const PodatkiOOsebi = ({ stranka, oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, setTabela }) => {
 	const PORT = 3005; // !!!
 	const [placa, setPlaca] = useState(oseba.placa);
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
@@ -279,7 +279,7 @@ const PodatkiOOsebi = ({ oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, set
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'opravljeno' ? (
+									) : pr === 'opravljeno' && !stranka ? (
 										<td>
 											{oseba[pr] === 1 || opravljeno === true ? (
 												<div>Opravljeno</div>
