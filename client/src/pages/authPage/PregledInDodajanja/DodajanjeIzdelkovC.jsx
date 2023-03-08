@@ -3,7 +3,7 @@ import { CaretCircleLeft } from 'phosphor-react';
 import { useState, useRef, useEffect } from 'react';
 import FileUpload from '../../FileUpload';
 
-const DodajanjeIzdelkov = ({ props }) => {
+const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 	const PORT = 3005; // !!!
 	const [vneseniPodatki, setVneseniPodatki] = useState({
 		ime: null,
@@ -23,24 +23,32 @@ const DodajanjeIzdelkov = ({ props }) => {
 		popust: '',
 	});
 
-	// ----------- fileupload -------------------
-	const [file, setFile] = useState(null);
-	const uploadFile = async (e) => {
-		const formData = new FormData();
-		formData.append('file', file);
+	let slika = useRef(null);
 
+	const pridobiSliko = async () => {
+		console.log('pridobiSliko');
+		let res;
 		try {
-			const res = await axios.post(`http://localhost:${PORT}/api/admin/upload`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
+			res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+				method: 'get',
+				responseType: 'blob',
 			});
-			//console.log(res);
-		} catch (ex) {
-			console.log(ex);
+			console.log(res.data);
+			slika.current = URL.createObjectURL(res.data);
+			console.log(slika.current);
+			setSporociloONapaki({ ...sporociloONapaki }); // za refresh
+		} catch (error) {
+			setSporociloONapaki({
+				...sporociloONapaki,
+				dbS: 'Napaka pri vnosu v bazo podatkov',
+			});
+			console.log('Prišlo je do napake: ' + error.toString());
 		}
 	};
-	// ----------- fileupload -------------------
+
+	useEffect(() => {
+		pridobiSliko();
+	}, []);
 
 	return (
 		<div>
@@ -57,7 +65,7 @@ const DodajanjeIzdelkov = ({ props }) => {
 			<form
 				action='/dodajIzdelek'
 				method='post'
-				enctype='multipart/form-data'
+				encType='multipart/form-data'
 				onSubmit={async (e) => {
 					e.preventDefault();
 					//------------------------
@@ -85,11 +93,20 @@ const DodajanjeIzdelkov = ({ props }) => {
 							console.log('Prišlo je do napake: ' + error.toString());
 						}
 					};
+
 					posodobiVlogo();
+
 					e.target.reset();
 					setFile(null);
+					URL.revokeObjectURL();
 				}}
 				className='obrazecZaVnosUporabnika'>
+				<img
+					src={slika.current}
+					className='majhnaSlika'
+					alt={`ni slike ${slika.current !== null ? JSON.stringify(slika.current) : ''}`}
+				/>
+
 				<table>
 					<tbody>
 						<tr>

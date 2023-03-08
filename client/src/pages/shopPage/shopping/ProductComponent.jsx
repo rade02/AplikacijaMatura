@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useContext, useMemo } from 'react';
+import { useEffect, useState, useContext, useMemo, useRef } from 'react';
 import AddToCartButton from './AddToCartButtonComponent';
 import { ShopContext } from '../../../contexts/ShopContext';
 import AddingNotification from './AddingNotification';
@@ -14,13 +14,40 @@ const Product = ({
 	izKosarice,
 	setIzKosarice,
 }) => {
+	const PORT = 3005; // !!!
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
 	const { cart, setCart, state } = useContext(ShopContext);
+	let slika = useRef(null);
+
+	const pridobiSliko = async () => {
+		console.log('pridobiSliko');
+		let res;
+		try {
+			res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+				method: 'get',
+				responseType: 'blob',
+			});
+			console.log(res.data);
+			slika.current = URL.createObjectURL(res.data);
+			console.log(slika.current);
+			// set nekaj za refresh
+			//setSporociloONapaki({ ...sporociloONapaki }); // za refresh
+		} catch (error) {
+			/*setSporociloONapaki({
+				...sporociloONapaki,
+				dbS: 'Napaka pri vnosu v bazo podatkov',
+			});*/
+			console.log('Prišlo je do napake: ' + error.toString());
+		}
+	};
 
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);
+		pridobiSliko();
 	}, [taProdukt, setIzbranProdukt]);
 
+	console.log(taProdukt.slika);
+	//<img src={taProdukt.slika} alt='ni slike'></img>
 	return (
 		<div
 			className='productCard'
@@ -33,8 +60,12 @@ const Product = ({
 				setIzKosarice(false);
 			}}>
 			<div>
-				<div className='productPicture'>
-					<img src='' alt='ni slike'></img>
+				<div>
+					<img
+						src={slika.current}
+						className='majhnaSlika'
+						alt={`ni slike ${slika.current !== null ? JSON.stringify(slika.current) : ''}`}
+					/>
 				</div>
 				<hr></hr>
 				<div className='productInfo'>

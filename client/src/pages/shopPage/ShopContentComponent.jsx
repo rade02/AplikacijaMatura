@@ -30,11 +30,16 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 					noDups: prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
+			let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+				method: 'get',
+				responseType: 'blob',
+			});
 			// dodamo vsakemu izdelku kolicino v kosarici
 			response = response.data;
 			response.forEach((element) => {
-				//console.log(element);
 				element.kolicina = 0;
+				element.slika = res.data;
+				console.log(element);
 			});
 			/*response = response.data.map((product) => ({
 				...product,

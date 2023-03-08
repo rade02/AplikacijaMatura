@@ -36,6 +36,7 @@ const FileUpload = ({ setFile, uploadFile }) => {
 					console.log('clicked to submit');
 				}}>
 				<input
+					style={{ minWidth: '300px' }}
 					type='file'
 					action='/api/admin/upload'
 					encType='multipart/form-data'

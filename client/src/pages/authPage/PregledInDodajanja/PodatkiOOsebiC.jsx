@@ -1,8 +1,18 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
 import { useRef, useState } from 'react';
+import FileUpload from '../../FileUpload';
 
-const PodatkiOOsebi = ({ stranka, oseba, prejsnjeStanjeAdmin, setStanjeAdmin, tabela, setTabela }) => {
+const PodatkiOOsebi = ({
+	stranka,
+	oseba,
+	prejsnjeStanjeAdmin,
+	setStanjeAdmin,
+	tabela,
+	setTabela,
+	setFile,
+	uploadFile,
+}) => {
 	const PORT = 3005; // !!!
 	const [placa, setPlaca] = useState(oseba.placa);
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
@@ -278,6 +288,13 @@ const PodatkiOOsebi = ({ stranka, oseba, prejsnjeStanjeAdmin, setStanjeAdmin, ta
 												}}>
 												Potrdi
 											</button>
+										</td>
+									) : pr === 'slika' ? (
+										<td style={{ minWidth: '200px' }}>
+											<FileUpload
+												setFile={setFile}
+												uploadFile={uploadFile}
+											/>
 										</td>
 									) : pr === 'opravljeno' && !stranka ? (
 										<td>

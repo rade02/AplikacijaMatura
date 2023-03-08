@@ -264,6 +264,7 @@ router.post('/dodajIzdelek', async (req, res) => {
 	const kratek_opis = req.body.kratek_opis === 'null' ? null : req.body.kratek_opis;
 	const informacije = req.body.informacije === 'null' ? null : req.body.informacije;
 	const popust = parseInt(req.body.popust);
+	//console.log(req.files);
 	const slika = req.files.slika.data === 'null' ? null : req.files.slika.data;
 
 	try {
@@ -382,6 +383,19 @@ router.get('/racuniUporabnika', async (req, res) => {
 		);
 		console.log(response[0]);
 		res.status(200).send(response[0]);
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/pridobiSliko', async (req, res) => {
+	console.log('pridobivanje slike...');
+	try {
+		let response = await pool.query(`select slika from Izdelki where ID_izdelka = 37;`);
+		console.log(response[0][0].slika);
+
+		res.status(200).send(response[0][0].slika);
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);

@@ -1,11 +1,11 @@
 // TODO: 
 // TODO: 
 // TODO: moznost dodajanja slik tudi ze obstojecim izdelkom
-// TODO: 
-// TODO: prikazi slike izdelkov
-// TODO: 
+// TODO: kolicina pri vnosu izdelkov dovoljuje necelo stevilo
+// TODO: prikazi slike izdelkov (mora biti v JSONu pri prenasanju izdelkov)
+// TODO: -->> prikazi sliko tudi na podatkihOIzdelku (osebi)
 // TODO: dodajanje in odstranjevanje v cartu
-// TODO: 
+// TODO: izbrise sliko po kliku na vnos (oz se resetira ime ce je datoteka ze ven)
 // TODO: znesek pri narocilih
 // TODO: dostavo na koncu dodaj kot izdelek da se šteje v ceni
 // TODO: shop navbar napaka ce odpremo product info po dodajanju in ko smo spodaj

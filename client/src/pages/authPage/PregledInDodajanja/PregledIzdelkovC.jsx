@@ -7,6 +7,13 @@ const PregledIzdelkov = ({ props }) => {
 	const PORT = 3005; // !!!
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID_izdelka');
 	const [iskalniNiz, setIskalniNiz] = useState(0);
+
+	if (props.tabela !== null) {
+		props.tabela.forEach((element) => {
+			console.log(element);
+		});
+	}
+
 	return (
 		<>
 			<h2>{props.naslov}</h2>
@@ -16,18 +23,18 @@ const PregledIzdelkov = ({ props }) => {
 				) : (
 					<>
 						<div>
-						<button
-									className='backBtn'
-									onClick={(e) => {
-										e.preventDefault();
-										props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
-										props.setStanjeAdmin(0);
-										props.setTabela(null);
-										props.setFilter(-1);
-									}}>
-									<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
-									<div>Nazaj</div>
-								</button>
+							<button
+								className='backBtn'
+								onClick={(e) => {
+									e.preventDefault();
+									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+									props.setStanjeAdmin(0);
+									props.setTabela(null);
+									props.setFilter(-1);
+								}}>
+								<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+								<div>Nazaj</div>
+							</button>
 							<label>Iskanje po: </label>
 							<select
 								onClick={(e) => {

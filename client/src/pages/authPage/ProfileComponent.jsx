@@ -41,6 +41,25 @@ const Profile = () => {
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
 	const [oseba, setOseba] = useState(null); // podatki o osebi
 
+	// ----------- fileupload -------------------
+	const [file, setFile] = useState(null);
+	const uploadFile = async (e) => {
+		const formData = new FormData();
+		formData.append('file', file);
+
+		try {
+			const res = await axios.post(`http://localhost:${PORT}/api/admin/upload`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+			//console.log(res);
+		} catch (ex) {
+			console.log(ex);
+		}
+	};
+	// ----------- fileupload -------------------
+
 	// TODO: na domaci strani naredi okno ki se pojavi ob izbrisu profila
 	// TODO: PREVERI CE JE VNOS PRAVILEN (int, date ...)
 	// TODO: ne dela ce refreshamo na profile page in gremo nazaj na prijavo (isAuth se ponastavi, ostalo pa ne)
@@ -244,6 +263,9 @@ const Profile = () => {
 			return (
 				<>
 					<DodajanjeIzdelkov
+						file={file}
+						setFile={setFile}
+						uploadFile={uploadFile}
 						props={{
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
@@ -272,7 +294,10 @@ const Profile = () => {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
 			};
-			if (tabela === null) pridobiInfoOIzdelkih();
+
+			if (tabela === null) {
+				pridobiInfoOIzdelkih();
+			}
 			return (
 				<>
 					<PregledIzdelkov
@@ -432,6 +457,8 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					setFile={setFile}
+					uploadFile={uploadFile}
 					stranka={false}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
@@ -580,6 +607,8 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					setFile={setFile}
+					uploadFile={uploadFile}
 					stranka={true}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
@@ -1055,6 +1084,8 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					setFile={setFile}
+					uploadFile={uploadFile}
 					stranka={true}
 					oseba={oseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
