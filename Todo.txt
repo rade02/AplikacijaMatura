@@ -1,10 +1,10 @@
 // TODO: ne nalozijo se vse slike (rabi da scrollamo in potem malo pocakamo)
 // TODO: ni nalaganja slik po filtriranju
 // TODO: ne deluje ce ne dodamo slike pri vnasanju izdelkov
-// TODO: filter pri pregledu izdelkov vrze prazno ce nimamo filtra
+// TODO: filter pri pregledu izdelkov vrze prazno ce nimamo filtra (samo v 1 primeru?)
 // TODO: moznost dodajanja slik tudi ze obstojecim izdelkom
 // TODO: kolicina pri vnosu izdelkov dovoljuje necelo stevilo
-// TODO: prikazi slike izdelkov (mora biti v JSONu pri prenasanju izdelkov)
+// TODO: 
 // TODO: -->> prikazi sliko tudi na podatkihOIzdelku (osebi) ce je ze gor
 // TODO: dodajanje in odstranjevanje v cartu
 // TODO: izbrise sliko po kliku na vnos (oz se resetira ime ce je datoteka ze ven)
@@ -15,11 +15,11 @@
 // TODO: omogoči prikaz slike ko je ta v nalaganju
 // TODO: napaka pri adminu vnasanje sql stavka (select)
 // TODO: popravi notification card ki se ne pojavlja
-// TODO: popravi prikaz ce ni slike (buffer.type)
+// TODO: 
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: dodaj pri try catch error message in jih prikazi
-// TODO: mogoča povečava slike na product info
-// TODO:  prikazi sliko tudi na product info componenti in v cartu
+// TODO: 
+// TODO: 
 // TODO: vnose števila preverjaj z metodo isNaN(št)
 // TODO: preveri moznosti izboljsanih queryjev sql
 // TODO: pri profile componentu spremeni setOseba v setPodrobnosti

@@ -390,11 +390,8 @@ router.get('/racuniUporabnika', async (req, res) => {
 });
 
 router.get('/pridobiSliko', async (req, res) => {
-	//console.log(req._parsedOriginalUrl.query);
-	console.log('######################################');
-	console.log(req); // .query.ID_izdelka
-	console.log('######################################');
-	console.log(req.query.ID_izdelka);
+	//console.log(req.query.ID_izdelka);
+
 	try {
 		if (req.query.ID_izdelka !== undefined && req.query.ID_izdelka !== null) {
 			let response = await pool.query(`select slika from Izdelki where ID_izdelka = ?;`, [

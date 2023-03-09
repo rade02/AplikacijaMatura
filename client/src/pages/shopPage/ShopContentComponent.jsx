@@ -40,13 +40,8 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 						ID_izdelka: element.ID_izdelka,
 					},
 				});
-				/*
-									params: {
-						ID_izdelka: element.ID_izdelka,
-					},
-				*/
 				element.kolicina = 0;
-				console.log(res.data);
+				//console.log(res.data);
 				if (res.data.size === 0) {
 					element.slika = null;
 				} else {

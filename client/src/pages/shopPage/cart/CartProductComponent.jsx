@@ -8,7 +8,18 @@ const CartProduct = ({ props }) => {
 	return (
 		<div className='cartProduct'>
 			<div className='cartProductIndex'>#{(props.counter.current += 0.5)}</div>
-			<img src='' alt='ni slike' className='smallImage'></img>
+			{props.product.slika === null ? (
+				<div className='productPicture'>ni slike</div>
+			) : (
+				<div className='productPicture'>
+					<img
+						src={props.product.slika}
+						className='majhnaSlika'
+						alt={`ni slike ${props.product.slika !== null ? JSON.stringify(props.product.slika) : ''}`}
+					/>
+				</div>
+			)}
+
 			<div className='productLaneInfo'>
 				<div
 					className='productText'

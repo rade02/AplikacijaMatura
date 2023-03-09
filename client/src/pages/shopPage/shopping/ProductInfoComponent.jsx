@@ -20,7 +20,19 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 					</div>
 					<div>
 						<div className='productImage'>
-							<img src='' alt='ni slike'></img>
+							{izbranProdukt.slika === null ? (
+								<div className='productPicture'>slika ni na voljo</div>
+							) : (
+								<div className='productPicture'>
+									<img
+										src={izbranProdukt.slika}
+										className='velikaSlika'
+										alt={`ni slike ${
+											izbranProdukt.slika !== null ? JSON.stringify(izbranProdukt.slika) : ''
+										}`}
+									/>
+								</div>
+							)}
 						</div>
 						<div className='productDescription'>
 							<div className='category'>{izbranProdukt.kategorija}</div>

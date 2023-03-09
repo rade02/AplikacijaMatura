@@ -32,6 +32,7 @@ const Shopping = ({ props }) => {
 		}
 	};
 	const filtriraj = async () => {
+		console.log('filtriraj');
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/filtriranje`, {
 				params: {
@@ -41,8 +42,21 @@ const Shopping = ({ props }) => {
 					popustF: popustF,
 				},
 			});
-			response.data.forEach((element) => {
+			response.data.forEach(async (element) => {
+				let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+					method: 'get',
+					responseType: 'blob',
+					params: {
+						ID_izdelka: element.ID_izdelka,
+					},
+				});
 				element.kolicina = 0;
+				if (res.data.size === 0) {
+					element.slika = null;
+				} else {
+					element.slika = URL.createObjectURL(res.data);
+				}
+				console.log(element.slika);
 			});
 
 			props.setPrikazaniProdukti(response.data);

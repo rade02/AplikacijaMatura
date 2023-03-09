@@ -599,14 +599,6 @@ h2 {
 	padding-right: 10px;
 	padding-bottom: 30px;
 }
-.smallImage {
-	background-color: #2471af;
-	min-width: 50px;
-	min-height: 50px;
-	max-width: 50px;
-	max-height: 50px;
-	margin-right: 10px;
-}
 
 .productLaneDetailInfo {
 	display: flex;
@@ -637,6 +629,18 @@ h2 {
 /* ------------- error page ---------------- */
 
 .majhnaSlika {
-	width: 70px;
-	height: 70px;
+	background-color: #2471af;
+	min-width: 50px;
+	min-height: 50px;
+	max-width: 50px;
+	max-height: 50px;
+	margin-right: 10px;
+}
+.velikaSlika {
+	background-color: #868686;
+	min-width: 150px;
+	min-height: 150px;
+	max-width: 250px;
+	max-height: 250px;
+	margin-right: 10px;
 }
