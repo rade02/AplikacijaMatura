@@ -390,12 +390,26 @@ router.get('/racuniUporabnika', async (req, res) => {
 });
 
 router.get('/pridobiSliko', async (req, res) => {
-	console.log('pridobivanje slike...');
+	//console.log(req._parsedOriginalUrl.query);
+	console.log('######################################');
+	console.log(req); // .query.ID_izdelka
+	console.log('######################################');
+	console.log(req.query.ID_izdelka);
 	try {
-		let response = await pool.query(`select slika from Izdelki where ID_izdelka = 37;`);
-		console.log(response[0][0].slika);
-
-		res.status(200).send(response[0][0].slika);
+		if (req.query.ID_izdelka !== undefined && req.query.ID_izdelka !== null) {
+			let response = await pool.query(`select slika from Izdelki where ID_izdelka = ?;`, [
+				req.query.ID_izdelka,
+			]);
+			console.log(response[0][0].slika);
+			res.status(200).send(response[0][0].slika);
+		} else {
+			/*let response = await pool.query(`select slika from Izdelki where ID_izdelka = 37;`);
+			console.log(response[0][0].slika);
+			res.status(200).send(response[0][0].slika);*/
+			res.status(200).send('');
+			console.log('napacen ID_izdelka:');
+			console.log(req._parsedOriginalUrl.query);
+		}
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);

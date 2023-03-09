@@ -4,6 +4,7 @@ import { ShopContext } from '../../../contexts/ShopContext';
 const CartProduct = ({ props }) => {
 	const { cart, setCart, setState } = useContext(ShopContext);
 	// TODO: SPREMENI, DA BO NAMESTO += 0.5 : += 1
+	console.log(props.product);
 	return (
 		<div className='cartProduct'>
 			<div className='cartProductIndex'>#{(props.counter.current += 0.5)}</div>

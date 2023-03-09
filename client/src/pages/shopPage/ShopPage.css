@@ -167,8 +167,15 @@ header {
 .productCard .productPicture {
 	width: 160px;
 	height: 160px;
-	background-color: rgb(210, 210, 210);
-	align-self: center;
+	background-color: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 1px 5px 9px rgb(235, 233, 233);
+}
+.srednjaSlika {
+	width: 160px;
+	height: 160px;
 }
 
 .productInfo {

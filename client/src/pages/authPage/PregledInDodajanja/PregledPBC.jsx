@@ -7,7 +7,7 @@ const PregledPB = ({ props }) => {
 	const PORT = 3005; // !!!
 	const [stavek, setStavek] = useState(null);
 	const [naslovnaVrstica, setNaslovnaVrstica] = useState([]);
-
+	console.log('PregledPB');
 	return (
 		<>
 			<h2>{props.naslov}</h2>
@@ -17,18 +17,18 @@ const PregledPB = ({ props }) => {
 				) : (
 					<>
 						<div>
-						<button
-									className='backBtn'
-									onClick={(e) => {
-										e.preventDefault();
-										props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
-										props.setStanjeAdmin(0);
-										props.setTabela(null);
-										props.setFilter(-1);
-									}}>
-									<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
-									<div>Nazaj</div>
-								</button>
+							<button
+								className='backBtn'
+								onClick={(e) => {
+									e.preventDefault();
+									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
+									props.setStanjeAdmin(0);
+									props.setTabela(null);
+									props.setFilter(-1);
+								}}>
+								<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+								<div>Nazaj</div>
+							</button>
 							<label>Vnesite stavek SQL: </label>
 							<textarea
 								onChange={(e) => {
@@ -58,6 +58,7 @@ const PregledPB = ({ props }) => {
 										})}
 									</tr>
 									{props.tabela.map((el) => {
+										console.log('el');
 										return (
 											<TabelskaVrstica
 												props={{

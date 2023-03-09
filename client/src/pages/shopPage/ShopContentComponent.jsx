@@ -30,21 +30,30 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 					noDups: prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
-			let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
-				method: 'get',
-				responseType: 'blob',
-			});
-			// dodamo vsakemu izdelku kolicino v kosarici
+			// dodamo vsakemu izdelku kolicino v kosarici in sliko
 			response = response.data;
-			response.forEach((element) => {
+			response.forEach(async (element) => {
+				let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+					method: 'get',
+					responseType: 'blob',
+					params: {
+						ID_izdelka: element.ID_izdelka,
+					},
+				});
+				/*
+									params: {
+						ID_izdelka: element.ID_izdelka,
+					},
+				*/
 				element.kolicina = 0;
-				element.slika = res.data;
-				console.log(element);
+				console.log(res.data);
+				if (res.data.size === 0) {
+					element.slika = null;
+				} else {
+					element.slika = URL.createObjectURL(res.data);
+				}
+				console.log(element.slika);
 			});
-			/*response = response.data.map((product) => ({
-				...product,
-				kolicina: 0,
-			}));*/
 			setPrikazaniProdukti([...prikazaniProdukti, ...response]);
 			setNiProduktov(false);
 		} catch (error) {
@@ -65,7 +74,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			setPrikazaniProdukti([]);
 			pridobiProdukte();
 		}
-	});
+	}, [setCenaKosarice, cart, niProduktov]);
 
 	if (napaka) {
 		return (

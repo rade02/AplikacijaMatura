@@ -26,16 +26,18 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 	let slika = useRef(null);
 
 	const pridobiSliko = async () => {
-		console.log('pridobiSliko');
 		let res;
 		try {
 			res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
 				method: 'get',
 				responseType: 'blob',
+				params: {
+					ID_izdelka: props.ID_izdelka,
+				},
 			});
-			console.log(res.data);
+			console.log(res.data); // Blob {size: 4434, type: 'application/octet-stream'}
 			slika.current = URL.createObjectURL(res.data);
-			console.log(slika.current);
+			console.log(slika.current); // blob:http://localhost:3000/5f083eb9-9b2a-4cd6-a047-597200d524d4
 			setSporociloONapaki({ ...sporociloONapaki }); // za refresh
 		} catch (error) {
 			setSporociloONapaki({
@@ -98,7 +100,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 
 					e.target.reset();
 					setFile(null);
-					URL.revokeObjectURL();
+					//URL.revokeObjectURL();
 				}}
 				className='obrazecZaVnosUporabnika'>
 				<img

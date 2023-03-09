@@ -41,7 +41,6 @@ const Shopping = ({ props }) => {
 					popustF: popustF,
 				},
 			});
-			console.log(response.data);
 			response.data.forEach((element) => {
 				element.kolicina = 0;
 			});
@@ -94,7 +93,7 @@ const Shopping = ({ props }) => {
 						<div className='naslov'>Po kategoriji izdelka</div>
 						{kategorijeNaVoljo.map((kategorija) => {
 							return (
-								<div className='checkbox'>
+								<div className='checkbox' key={kategorija.kategorija}>
 									<input
 										id={kategorija.kategorija}
 										type='checkbox'

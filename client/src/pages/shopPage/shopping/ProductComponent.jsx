@@ -19,53 +19,32 @@ const Product = ({
 	const { cart, setCart, state } = useContext(ShopContext);
 	let slika = useRef(null);
 
-	const pridobiSliko = async () => {
-		console.log('pridobiSliko');
-		let res;
-		try {
-			res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
-				method: 'get',
-				responseType: 'blob',
-			});
-			console.log(res.data);
-			slika.current = URL.createObjectURL(res.data);
-			console.log(slika.current);
-			// set nekaj za refresh
-			//setSporociloONapaki({ ...sporociloONapaki }); // za refresh
-		} catch (error) {
-			/*setSporociloONapaki({
-				...sporociloONapaki,
-				dbS: 'Napaka pri vnosu v bazo podatkov',
-			});*/
-			console.log('Prišlo je do napake: ' + error.toString());
-		}
-	};
-
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);
-		pridobiSliko();
 	}, [taProdukt, setIzbranProdukt]);
 
-	console.log(taProdukt.slika);
-	//<img src={taProdukt.slika} alt='ni slike'></img>
 	return (
 		<div
 			className='productCard'
 			onClick={(e) => {
 				e.preventDefault();
-				//console.log('taProdukt');
-				//console.log(taProdukt);
 				setIzbranProdukt(taProdukt);
 				setPrikazi('produkt');
 				setIzKosarice(false);
 			}}>
 			<div>
 				<div>
-					<img
-						src={slika.current}
-						className='majhnaSlika'
-						alt={`ni slike ${slika.current !== null ? JSON.stringify(slika.current) : ''}`}
-					/>
+					{taProdukt.slika === null ? (
+						<div className='productPicture'>slika ni na voljo</div>
+					) : (
+						<div className='productPicture'>
+							<img
+								src={taProdukt.slika}
+								className='srednjaSlika'
+								alt={`ni slike ${taProdukt.slika !== null ? JSON.stringify(taProdukt.slika) : ''}`}
+							/>
+						</div>
+					)}
 				</div>
 				<hr></hr>
 				<div className='productInfo'>

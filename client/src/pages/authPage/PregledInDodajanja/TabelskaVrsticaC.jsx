@@ -104,6 +104,9 @@ const TabelskaVrstica = ({ props }) => {
 					props.setStanjeAdmin(9);
 				}}>
 				{Object.keys(props.element).map((key) => {
+					if (key === 'slika') {
+						return <td></td>;
+					}
 					return <td>{props.element[key]}</td>;
 				})}
 			</tr>
