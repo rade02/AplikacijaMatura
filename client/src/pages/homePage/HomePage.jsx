@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import NotificationCard from '../authPage/NotificationCardComponent';
-import FileUpload from '../FileUpload';
 
 const HomePage = () => {
 	const location = useLocation();
@@ -8,7 +7,6 @@ const HomePage = () => {
 	return (
 		<div>
 			<p>To je domača stran</p>
-			<FileUpload />
 		</div>
 	);
 };

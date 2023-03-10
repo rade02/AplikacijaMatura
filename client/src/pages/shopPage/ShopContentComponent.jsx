@@ -47,7 +47,8 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				} else {
 					element.slika = URL.createObjectURL(res.data);
 				}
-				console.log(element.slika);
+				//console.log('element.slika');
+				//console.log(element.slika);
 			});
 			setPrikazaniProdukti([...prikazaniProdukti, ...response]);
 			setNiProduktov(false);
@@ -69,7 +70,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			setPrikazaniProdukti([]);
 			pridobiProdukte();
 		}
-	}, [setCenaKosarice, cart, niProduktov]);
+	});
 
 	if (napaka) {
 		return (

@@ -72,8 +72,10 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 					console.log(naslovDostava);
 					if (naslovDostava === null) {
 						let n =
-							result.data.ulica_in_hisna_stevilka === null ? '' : result.data.ulica_in_hisna_stevilka;
-						n += result.data.postna_stevilka === null ? '' : result.data.postna_stevilka;
+							result.data.ulica_in_hisna_stevilka === null
+								? ''
+								: result.data.ulica_in_hisna_stevilka + ' ';
+						n += result.data.postna_stevilka === null ? '' : result.data.postna_stevilka + ' ';
 						n += result.data.kraj === null ? '' : result.data.kraj;
 						console.log(n);
 						if (n !== null && n.length > 0) {

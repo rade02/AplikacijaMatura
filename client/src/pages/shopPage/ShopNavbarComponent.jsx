@@ -5,6 +5,7 @@ import { UserContext } from '../../contexts/UserContext';
 
 const ShopNavbar = ({ visible, setVisible, prikazi, setPrikazi, cenaKosarice }) => {
 	const { user } = useContext(UserContext);
+	//&& prikazi === 'nakupovanje'
 
 	return (
 		<header className={visible === 0 ? 'shopNavbarTop' : visible === 1 ? 'invisibleNavbar' : 'shopNavbar'}>

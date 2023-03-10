@@ -1,16 +1,12 @@
 .authPage {
 }
 .notificationCard {
-	display: block;
-	justify-content: center;
-	align-items: center;
-	background-color: rgba(122, 123, 123, 0.558);
+	position: fixed;
+	background-color: rgba(255, 255, 255, 0.558);
 	max-width: 400px;
-	border-radius: 8px;
-	color: white;
-	box-shadow: 3px 3px 1px 1px rgba(146, 146, 151, 0.2);
-	padding: 10px 30px 10px 30px;
-	text-align: left;
+	color: rgb(0, 0, 0);
+	text-align: center;
+	z-index: 50;
 }
 
 .moznostiProfila {

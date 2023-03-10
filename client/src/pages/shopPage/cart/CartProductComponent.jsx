@@ -1,24 +1,19 @@
 import { useContext } from 'react';
 import { ShopContext } from '../../../contexts/ShopContext';
 
-const CartProduct = ({ props }) => {
+const CartProduct = ({ props, refresh, setRefresh }) => {
 	const { cart, setCart, setState } = useContext(ShopContext);
 	// TODO: SPREMENI, DA BO NAMESTO += 0.5 : += 1
-	console.log(props.product);
+	//console.log(props.product);
 	return (
 		<div className='cartProduct'>
-			<div className='cartProductIndex'>#{(props.counter.current += 0.5)}</div>
-			{props.product.slika === null ? (
-				<div className='productPicture'>ni slike</div>
-			) : (
-				<div className='productPicture'>
-					<img
-						src={props.product.slika}
-						className='majhnaSlika'
-						alt={`ni slike ${props.product.slika !== null ? JSON.stringify(props.product.slika) : ''}`}
-					/>
-				</div>
-			)}
+			<div className='productPicture'>
+				<img
+					src={props.product.slika}
+					className='majhnaSlika'
+					alt={`ni slike ${props.product.slika !== null ? 'Nalaganje...' : ''}`}
+				/>
+			</div>
 
 			<div className='productLaneInfo'>
 				<div
@@ -30,7 +25,8 @@ const CartProduct = ({ props }) => {
 						props.setIzKosarice(true);
 						props.setPrikazi('produkt');
 					}}>
-					[{props.product.ID_izdelka}] {props.product.ime} -- {props.product.kratek_opis}
+					[{props.product.ID_izdelka}] {props.product.ime}{' '}
+					{props.product.kratek_opis !== null ? ` ${props.product.kratek_opis}` : ''}
 				</div>
 				<div className='productLaneDetailInfo'>
 					<div>{parseFloat(props.product.cena_za_kos).toFixed(2)} €</div>
@@ -45,10 +41,13 @@ const CartProduct = ({ props }) => {
 
 								props.setRemovedMsg(
 									// nujno za rerendering cart componenta !!
-									`Odstranjen izdelek: ${props.product.ime} -- ${props.product.kratek_opis} `
+									`Odstranjen izdelek: ${props.product.ime} ${
+										props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
+									} `
 								);
 								Math.random().toFixed(3);
 								props.preveriZalogoIzdelkov();
+								setRefresh(!refresh);
 							}}>
 							-
 						</button>{' '}
@@ -70,13 +69,19 @@ const CartProduct = ({ props }) => {
 								) {
 									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
 									props.setRemovedMsg(
-										`Dodan izdelek: ${props.product.ime} -- ${props.product.kratek_opis} `
+										`Dodan izdelek: ${props.product.ime} ${
+											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
+										} `
 									);
 								} else {
 									props.setRemovedMsg(
-										`Izdelka: ${props.product.ime} -- ${props.product.kratek_opis} ni več na zalogi `
+										`Izdelka: ${props.product.ime} ${
+											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
+										} ni več na zalogi `
 									);
 								}
+								setRefresh(!refresh);
+
 								//console.log(props.product);
 							}}>
 							+

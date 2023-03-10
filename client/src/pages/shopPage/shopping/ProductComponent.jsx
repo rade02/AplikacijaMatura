@@ -17,11 +17,11 @@ const Product = ({
 	const PORT = 3005; // !!!
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
 	const { cart, setCart, state } = useContext(ShopContext);
-	let slika = useRef(null);
 
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);
 	}, [taProdukt, setIzbranProdukt]);
+	//console.log(taProdukt);
 
 	return (
 		<div
@@ -41,7 +41,7 @@ const Product = ({
 							<img
 								src={taProdukt.slika}
 								className='srednjaSlika'
-								alt={`ni slike ${taProdukt.slika !== null ? JSON.stringify(taProdukt.slika) : ''}`}
+								alt={`${taProdukt.slika !== null ? 'Nalaganje...' : ''}`}
 							/>
 						</div>
 					)}

@@ -28,6 +28,8 @@ import PregledIzdelkov from './PregledInDodajanja/PregledIzdelkovC';
 import PregledNarocil from './PregledInDodajanja/PregledNarocilC';
 import PregledPB from './PregledInDodajanja/PregledPBC';
 import DodajanjeIzdelkov from './PregledInDodajanja/DodajanjeIzdelkovC';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const Profile = () => {
 	const PORT = 3005; // !!!
@@ -41,14 +43,15 @@ const Profile = () => {
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
 	const [oseba, setOseba] = useState(null); // podatki o osebi
 
+	const [file, setFile] = useState(null); // za dodajanjeIzdelkov in FileUpload
 	// ----------- fileupload -------------------
-	const [file, setFile] = useState(null);
-	const uploadFile = async (e) => {
+	const uploadFile = async (e, ID_izdelka) => {
 		const formData = new FormData();
-		formData.append('file', file);
+		formData.append('slika', file);
+		formData.append('ID_izdelka', oseba.ID_izdelka);
 
 		try {
-			const res = await axios.post(`http://localhost:${PORT}/api/admin/upload`, formData, {
+			const res = await axios.post(`http://localhost:${PORT}/api/admin/naloziSliko`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -63,7 +66,7 @@ const Profile = () => {
 	// TODO: na domaci strani naredi okno ki se pojavi ob izbrisu profila
 	// TODO: PREVERI CE JE VNOS PRAVILEN (int, date ...)
 	// TODO: ne dela ce refreshamo na profile page in gremo nazaj na prijavo (isAuth se ponastavi, ostalo pa ne)
-	// TODO: ne dela ce refreshamo - prikaze napacne podatke
+	// TODO: ne dela ce refreshamo - prikaze napacne
 	// ce vnesemo nove podatke v prazno polje in nato pritisnemo Ponastavi, se ne izbriše vsebina
 	useEffect(() => {
 		const pridobiVlogo = async () => {
@@ -81,11 +84,16 @@ const Profile = () => {
 		pridobiVlogo();
 	}, [user.uporabnisko_ime]);
 
-	console.log(user);
-
 	if (vloga === null) {
 		// pridobivanje vloge profila
-		return <>Nalaganje profila ...</>;
+		return (
+			<>
+				<label>Nalaganje profila ...</label>
+				<Box sx={{ display: 'flex' }} className='nalaganje'>
+					<CircularProgress color='inherit' />
+				</Box>
+			</>
+		);
 	}
 	// ################################################ ADMIN ######################################################
 	else if (parseInt(vloga) === 0) {
@@ -263,13 +271,12 @@ const Profile = () => {
 			return (
 				<>
 					<DodajanjeIzdelkov
-						file={file}
-						setFile={setFile}
-						uploadFile={uploadFile}
 						props={{
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
+						file={file}
+						setFile={setFile}
 					/>
 					<button
 						className='backBtn'
@@ -288,6 +295,20 @@ const Profile = () => {
 				try {
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					r.data.forEach(async (element) => {
+						let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+							method: 'get',
+							responseType: 'blob',
+							params: {
+								ID_izdelka: element.ID_izdelka,
+							},
+						});
+						if (res.data.size === 0) {
+							element.slika = null;
+						} else {
+							element.slika = URL.createObjectURL(res.data);
+						}
 					});
 					setTabela(r.data);
 				} catch (error) {
@@ -455,12 +476,19 @@ const Profile = () => {
 			);
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
+			var niIzbrisa = false;
+			if (prejsnjeStanjeAdmin === 8) {
+				niIzbrisa = true;
+			}
 			return (
 				<PodatkiOOsebi
+					niIzbrisa={niIzbrisa}
+					file={file}
 					setFile={setFile}
 					uploadFile={uploadFile}
 					stranka={false}
 					oseba={oseba}
+					setOseba={setOseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -607,10 +635,12 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					file={file}
 					setFile={setFile}
 					uploadFile={uploadFile}
 					stranka={true}
 					oseba={oseba}
+					setOseba={setOseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -679,6 +709,8 @@ const Profile = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
+						file={file}
+						setFile={setFile}
 					/>
 					<button
 						className='backBtn'
@@ -827,8 +859,12 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					file={file}
+					setFile={setFile}
+					uploadFile={uploadFile}
 					stranka={false}
 					oseba={oseba}
+					setOseba={setOseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -906,6 +942,8 @@ const Profile = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
+						file={file}
+						setFile={setFile}
 					/>
 					<button
 						className='backBtn'
@@ -1084,10 +1122,12 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
+					file={file}
 					setFile={setFile}
 					uploadFile={uploadFile}
 					stranka={true}
 					oseba={oseba}
+					setOseba={setOseba}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}

@@ -28,7 +28,7 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 										src={izbranProdukt.slika}
 										className='velikaSlika'
 										alt={`ni slike ${
-											izbranProdukt.slika !== null ? JSON.stringify(izbranProdukt.slika) : ''
+											izbranProdukt.slika !== null ? 'Nalaganje...' : ''
 										}`}
 									/>
 								</div>

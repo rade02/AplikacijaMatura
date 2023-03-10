@@ -2,24 +2,24 @@ import { useState } from 'react';
 import axios from 'axios';
 import TabelskaVrstica from './TabelskaVrsticaC';
 import { CaretCircleLeft } from 'phosphor-react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const PregledIzdelkov = ({ props }) => {
 	const PORT = 3005; // !!!
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID_izdelka');
 	const [iskalniNiz, setIskalniNiz] = useState(0);
 
-	if (props.tabela !== null) {
-		props.tabela.forEach((element) => {
-			console.log(element);
-		});
-	}
+	//console.log(props.tabela);
 
 	return (
 		<>
 			<h2>{props.naslov}</h2>
 			<div>
 				{props.tabela === null ? (
-					<>Nalaganje...</>
+					<Box sx={{ display: 'flex' }} className='nalaganje'>
+						<CircularProgress color='inherit' />
+					</Box>
 				) : (
 					<>
 						<div>
@@ -85,8 +85,8 @@ const PregledIzdelkov = ({ props }) => {
 										})}
 									</tr>
 									{props.tabela.map((el) => {
-										console.log('----------------');
-										console.log(el);
+										//console.log('----------------');
+										//console.log(el);
 										if (props.filter === -1) {
 											// prikazi vse
 											return (

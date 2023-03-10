@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
 import { useState, useRef, useEffect } from 'react';
-import FileUpload from '../../FileUpload';
 
 const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 	const PORT = 3005; // !!!
@@ -23,9 +22,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 		popust: '',
 	});
 
-	let slika = useRef(null);
-
-	const pridobiSliko = async () => {
+	/*const pridobiSliko = async () => {
 		let res;
 		try {
 			res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
@@ -35,10 +32,12 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 					ID_izdelka: props.ID_izdelka,
 				},
 			});
-			console.log(res.data); // Blob {size: 4434, type: 'application/octet-stream'}
-			slika.current = URL.createObjectURL(res.data);
-			console.log(slika.current); // blob:http://localhost:3000/5f083eb9-9b2a-4cd6-a047-597200d524d4
-			setSporociloONapaki({ ...sporociloONapaki }); // za refresh
+			if (res.data.size > 0) {
+				console.log(res.data.size); // Blob {size: 4434, type: 'application/octet-stream'}
+				slika.current = URL.createObjectURL(res.data);
+				console.log(slika.current); // blob:http://localhost:3000/5f083eb9-9b2a-4cd6-a047-597200d524d4
+				setSporociloONapaki({ ...sporociloONapaki }); // za refresh
+			}
 		} catch (error) {
 			setSporociloONapaki({
 				...sporociloONapaki,
@@ -50,7 +49,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 
 	useEffect(() => {
 		pridobiSliko();
-	}, []);
+	}, []);*/
 
 	return (
 		<div>
@@ -70,50 +69,65 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 				encType='multipart/form-data'
 				onSubmit={async (e) => {
 					e.preventDefault();
-					//------------------------
-					const formData = new FormData();
-					formData.append('slika', file);
-					formData.append('ime', vneseniPodatki.ime);
-					formData.append('kategorija', vneseniPodatki.kategorija);
-					formData.append('cena_za_kos', vneseniPodatki.cena_za_kos);
-					formData.append('kosov_na_voljo', vneseniPodatki.kosov_na_voljo);
-					formData.append('kratek_opis', vneseniPodatki.kratek_opis);
-					formData.append('informacije', vneseniPodatki.informacije);
-					formData.append('popust', vneseniPodatki.popust);
+					if (
+						sporociloONapaki.ime === '' &&
+						sporociloONapaki.kategorija === '' &&
+						sporociloONapaki.cenaZaKos === '' &&
+						sporociloONapaki.kosovNaVoljo === '' &&
+						sporociloONapaki.kratekOpis === '' &&
+						sporociloONapaki.popust === '' &&
+						sporociloONapaki.dbS === ''
+					) {
+						const formData = new FormData();
+						formData.append('slika', file);
+						formData.append('ime', vneseniPodatki.ime);
+						formData.append('kategorija', vneseniPodatki.kategorija);
+						formData.append('cena_za_kos', vneseniPodatki.cena_za_kos);
+						formData.append('kosov_na_voljo', vneseniPodatki.kosov_na_voljo);
+						formData.append('kratek_opis', vneseniPodatki.kratek_opis);
+						formData.append('informacije', vneseniPodatki.informacije);
+						formData.append('popust', vneseniPodatki.popust);
 
-					const posodobiVlogo = async () => {
-						let res;
-						try {
-							res = await axios.post(`http://localhost:${PORT}/api/admin/dodajIzdelek`, formData, {
-								headers: { 'Content-Type': 'multipart/form-data' },
-							});
-						} catch (error) {
-							setSporociloONapaki({
-								...sporociloONapaki,
-								dbS: 'Napaka pri vnosu v bazo podatkov',
-							});
-							console.log('Prišlo je do napake: ' + error.toString());
-						}
-					};
+						const posodobiVlogo = async () => {
+							let res;
+							try {
+								res = await axios.post(`http://localhost:${PORT}/api/admin/dodajIzdelek`, formData, {
+									headers: { 'Content-Type': 'multipart/form-data' },
+								});
+							} catch (error) {
+								setSporociloONapaki({
+									...sporociloONapaki,
+									dbS: 'Napaka pri vnosu v bazo podatkov',
+								});
+								console.log('Prišlo je do napake: ' + error.toString());
+							}
+						};
 
-					posodobiVlogo();
-
-					e.target.reset();
-					setFile(null);
+						posodobiVlogo();
+						e.target.reset();
+					} else {
+						setSporociloONapaki({
+							...sporociloONapaki,
+							dbS: 'Neustrezni podatki',
+						});
+					}
 					//URL.revokeObjectURL();
 				}}
 				className='obrazecZaVnosUporabnika'>
-				<img
-					src={slika.current}
-					className='majhnaSlika'
-					alt={`ni slike ${slika.current !== null ? JSON.stringify(slika.current) : ''}`}
-				/>
-
 				<table>
 					<tbody>
 						<tr>
 							<td className='opisPodatka'>Naložite sliko:</td>
-							<FileUpload setFile={setFile} uploadFile={uploadFile} />
+							<input
+								style={{ minWidth: '300px' }}
+								type='file'
+								encType='multipart/form-data'
+								name='image'
+								accept='image/gif, image/jpeg, image/png'
+								onChange={(e) => {
+									setFile(e.target.files[0]);
+								}}
+							/>
 						</tr>
 						<tr>
 							<td className='opisPodatka'>Ime izdelka</td>
@@ -210,6 +224,11 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 												...sporociloONapaki,
 												kosovNaVoljo: 'Kosov na voljo mora biti število',
 											});
+										} else if (parseFloat(e.target.value) - parseInt(e.target.value) !== 0) {
+											setSporociloONapaki({
+												...sporociloONapaki,
+												kosovNaVoljo: 'Kosov na voljo mora biti celo število',
+											});
 										} else {
 											setSporociloONapaki({ ...sporociloONapaki, kosovNaVoljo: '', dbS: '' });
 										}
@@ -277,6 +296,11 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 													...sporociloONapaki,
 													popust: 'Popust mora biti število',
 												});
+											} else if (parseFloat(e.target.value) - parseInt(e.target.value) !== 0) {
+												setSporociloONapaki({
+													...sporociloONapaki,
+													popust: 'Popust mora biti celo število med 0 in 100',
+												});
 											} else if (parseFloat(e.target.value) >= 100) {
 												setSporociloONapaki({
 													...sporociloONapaki,
@@ -297,7 +321,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 											});
 										}
 									}}
-									placeholder='decimalna pika'
+									placeholder=''
 									className='tekstovnoPolje'></input>
 								{sporociloONapaki.popust === '' ? (
 									<></>

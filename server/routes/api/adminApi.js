@@ -259,13 +259,18 @@ router.post('/dodajUporabnika', async (req, res) => {
 router.post('/dodajIzdelek', async (req, res) => {
 	const ime = req.body.ime;
 	const kategorija = req.body.kategorija;
-	const cena_za_kos = parseFloat(req.body.cena_za_kos);
+	const cena_za_kos = parseFloat(req.body.cena_za_kos).toFixed(2);
 	const kosov_na_voljo = parseInt(req.body.kosov_na_voljo);
 	const kratek_opis = req.body.kratek_opis === 'null' ? null : req.body.kratek_opis;
 	const informacije = req.body.informacije === 'null' ? null : req.body.informacije;
 	const popust = parseInt(req.body.popust);
+
+	let slika = null;
 	//console.log(req.files);
-	const slika = req.files.slika.data === 'null' ? null : req.files.slika.data;
+	if (req.files !== null && req.files.slika !== null && req.files.slika.data !== null) {
+		slika = req.files.slika.data;
+	}
+	//console.log(slika);
 
 	try {
 		let response = await pool.query(`insert into Izdelki values (default,?,?,?,?,?,?,?,?)`, [
@@ -381,7 +386,7 @@ router.get('/racuniUporabnika', async (req, res) => {
 			(select ID from Stranke_in_zaposleni where uporabnisko_ime = ?));`,
 			[uporabnisko_ime]
 		);
-		console.log(response[0]);
+		//console.log(response[0]);
 		res.status(200).send(response[0]);
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
@@ -390,23 +395,58 @@ router.get('/racuniUporabnika', async (req, res) => {
 });
 
 router.get('/pridobiSliko', async (req, res) => {
-	//console.log(req.query.ID_izdelka);
-
 	try {
 		if (req.query.ID_izdelka !== undefined && req.query.ID_izdelka !== null) {
 			let response = await pool.query(`select slika from Izdelki where ID_izdelka = ?;`, [
 				req.query.ID_izdelka,
 			]);
-			console.log(response[0][0].slika);
-			res.status(200).send(response[0][0].slika);
+			//console.log(response[0][0].slika);
+			if (response[0][0].slika !== undefined) {
+				res.status(200).send(response[0][0].slika);
+			}
 		} else {
-			/*let response = await pool.query(`select slika from Izdelki where ID_izdelka = 37;`);
-			console.log(response[0][0].slika);
-			res.status(200).send(response[0][0].slika);*/
+			//let response = await pool.query(`select slika from Izdelki where ID_izdelka = 37;`);
+			//console.log(response[0][0].slika);
+			//res.status(200).send(response[0][0].slika);
 			res.status(200).send('');
 			console.log('napacen ID_izdelka:');
 			console.log(req._parsedOriginalUrl.query);
 		}
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/naloziSliko', async (req, res) => {
+	const ID_izdelka = parseInt(req.body.ID_izdelka);
+	let slika = null;
+	if (req.files !== null && req.files.slika !== null && req.files.slika.data !== null) {
+		slika = req.files.slika.data;
+	}
+
+	try {
+		let response1 = await pool.query(`update Izdelki set slika = (?) where ID_izdelka = ?`, [
+			slika,
+			ID_izdelka,
+		]);
+
+		res.status(200).send('uspešna operacija');
+	} catch (onRejectedError) {
+		console.log(onRejectedError);
+		res.status(400).send(`error`);
+	}
+});
+
+router.post('/izbrisiElement', async (req, res) => {
+	const DB = req.body.DB;
+	const IDtip = req.body.IDtip;
+	const ID = req.body.ID;
+
+	try {
+		let response1 = await pool.query(`delete from ${DB} where ${IDtip} = ?`, [ID]);
+
+		res.status(200).send('uspešna operacija');
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);

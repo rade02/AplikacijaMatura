@@ -173,10 +173,7 @@ header {
 	align-items: center;
 	box-shadow: 1px 5px 9px rgb(235, 233, 233);
 }
-.srednjaSlika {
-	width: 160px;
-	height: 160px;
-}
+
 
 .productInfo {
 	display: flex;

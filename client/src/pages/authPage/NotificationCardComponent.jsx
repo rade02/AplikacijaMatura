@@ -18,7 +18,7 @@ const NotificationCard = () => {
 		};
 	}, [location.state.msg]);
 
-	return message === '' ? <></> : <div className='notificationCard'>NC: {message}</div>;
+	return message === '' ? <></> : <div className='notificationCard'>Obvestilo: {message}</div>;
 };
 
 export default NotificationCard;

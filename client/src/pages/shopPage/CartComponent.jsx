@@ -20,6 +20,7 @@ const Cart = ({
 }) => {
 	const PORT = 3005; // !!!
 	const { state, setState, cart, setCart } = useContext(ShopContext);
+	const [refresh, setRefresh] = useState(false);
 
 	let counter = useRef(0);
 
@@ -28,6 +29,7 @@ const Cart = ({
 		counter.current = 0;
 		preveriZalogoIzdelkov();
 	}, []);
+	console.log(cart);
 
 	const preveriZalogoIzdelkov = async () => {
 		let vsota = 0;
@@ -91,6 +93,8 @@ const Cart = ({
 									setState: setState,
 									setRemovedMsg: setRemovedMsg,
 								}}
+								refresh={refresh}
+								setRefresh={setRefresh}
 							/>
 						);
 					})

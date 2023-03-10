@@ -48,6 +48,8 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={(e) => {
 					e.preventDefault();
+					console.log('props.element');
+					console.log(props.element);
 					props.setOseba(props.element);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
@@ -118,6 +120,7 @@ const TabelskaVrstica = ({ props }) => {
 			className='vrstica'
 			onClick={(e) => {
 				e.preventDefault();
+
 				props.setOseba(props.element);
 				props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 				props.setStanjeAdmin(9);

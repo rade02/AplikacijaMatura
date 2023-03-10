@@ -56,11 +56,10 @@ const Shopping = ({ props }) => {
 				} else {
 					element.slika = URL.createObjectURL(res.data);
 				}
-				console.log(element.slika);
+				//console.log(element.slika);
 			});
 
 			props.setPrikazaniProdukti(response.data);
-			setStVsehProduktov(response.data.length);
 		} catch (error) {
 			console.log(error);
 		}

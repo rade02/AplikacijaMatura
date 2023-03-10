@@ -1,17 +1,19 @@
 import axios from 'axios';
-import { CaretCircleLeft } from 'phosphor-react';
-import { useRef, useState } from 'react';
-import FileUpload from '../../FileUpload';
+import { CaretCircleLeft, X } from 'phosphor-react';
+import { useRef, useState, useEffect } from 'react';
 
 const PodatkiOOsebi = ({
+	niIzbrisa,
+	file,
+	setFile,
+	uploadFile,
 	stranka,
 	oseba,
+	setOseba,
 	prejsnjeStanjeAdmin,
 	setStanjeAdmin,
 	tabela,
 	setTabela,
-	setFile,
-	uploadFile,
 }) => {
 	const PORT = 3005; // !!!
 	const [placa, setPlaca] = useState(oseba.placa);
@@ -20,24 +22,48 @@ const PodatkiOOsebi = ({
 	const [izdelek, setIzdelek] = useState(oseba);
 	const [opravljeno, setOpravljeno] = useState(false);
 	const [napaka, setNapaka] = useState(null);
+	const [DB, setDB] = useState(null);
 
-	console.log(oseba);
-	if (oseba === null) {
-		return (
-			<div>
-				<div>Prišlo je do napake pri prikazu osebe</div>
-				<button
-					className='backBtn'
-					onClick={(e) => {
-						e.preventDefault();
-						setStanjeAdmin(prejsnjeStanjeAdmin);
-					}}>
-					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
-					<div>Nazaj</div>
-				</button>
-			</div>
-		);
-	}
+	useEffect(() => {
+		if (oseba === null) {
+			setDB(null);
+			return (
+				<div>
+					<div>Prišlo je do napake pri prikazu osebe</div>
+					<button
+						className='backBtn'
+						onClick={(e) => {
+							e.preventDefault();
+							setStanjeAdmin(prejsnjeStanjeAdmin);
+						}}>
+						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+						<div>Nazaj</div>
+					</button>
+				</div>
+			);
+		} else if (oseba.ID_izdelka !== null || oseba.ID_izdelka !== undefined) {
+			setDB({ DB: 'Izdelki', IDtip: 'ID_izdelka' });
+		} else if (oseba.ID_narocila !== null || oseba.ID_narocila !== undefined) {
+			setDB({ DB: 'Narocila', IDtip: 'ID_narocila' });
+		} else if (oseba.ID_racuna !== null || oseba.ID_racuna !== undefined) {
+			setDB({ DB: 'Racuni', IDtip: 'ID_racuna' });
+		}
+	}, []);
+
+	const izbris = async () => {
+		if (DB !== null) {
+			try {
+				const result = await axios.post(`http://localhost:${PORT}/api/admin/izbrisiElement`, {
+					DB: DB.DB,
+					IDtip: DB.IDtip,
+					ID: oseba[DB.IDtip],
+				});
+				setTabela(null);
+			} catch (error) {
+				console.log(error);
+			}
+		}
+	};
 
 	const handleChangePlaca = async () => {
 		try {
@@ -102,15 +128,44 @@ const PodatkiOOsebi = ({
 			console.log(onRejectedError);
 		}
 	};
-
+	console.log(oseba);
+	console.log(niIzbrisa);
 	return (
 		<div>
+			<button
+				className='backBtn'
+				onClick={(e) => {
+					e.preventDefault();
+					setStanjeAdmin(prejsnjeStanjeAdmin);
+					setTabela(null);
+				}}>
+				<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+				<div>Nazaj</div>
+			</button>
+			{(oseba.uporabnisko_ime === null || oseba.uporabnisko_ime === undefined) &&
+			(oseba.ID === null || oseba.ID === undefined) &&
+			niIzbrisa !== null &&
+			!niIzbrisa ? (
+				<button
+					className=''
+					onClick={(e) => {
+						e.preventDefault();
+						izbris();
+						setTabela(null);
+						setStanjeAdmin(prejsnjeStanjeAdmin);
+					}}>
+					<X size={25} style={{ marginRight: '5px' }} />
+					<div>Odstrani iz PB</div>
+				</button>
+			) : (
+				<></>
+			)}
 			<div className='podrobniPodatki'>
 				<table className='tabela'>
 					<tbody>
 						{Object.keys(oseba).map((pr) => {
 							return (
-								<tr>
+								<tr key={pr}>
 									<td>{pr}:</td>
 									{pr === 'vloga' ? (
 										<td>
@@ -290,12 +345,65 @@ const PodatkiOOsebi = ({
 											</button>
 										</td>
 									) : pr === 'slika' ? (
-										<td style={{ minWidth: '200px' }}>
-											<FileUpload
-												setFile={setFile}
-												uploadFile={uploadFile}
-											/>
-										</td>
+										oseba.slika === null ? (
+											<td style={{ minWidth: '200px' }}>
+												<label>V bazi ni naložene slike</label>
+												<br />
+												<input
+													style={{ minWidth: '300px' }}
+													type='file'
+													encType='multipart/form-data'
+													name='image'
+													accept='image/gif, image/jpeg, image/png'
+													onChange={(e) => {
+														setFile(e.target.files[0]);
+													}}
+												/>
+												<button
+													onClick={(e) => {
+														e.preventDefault();
+														try {
+															uploadFile();
+															setNapaka('Podatki spremenjeni');
+														} catch (error) {
+															setNapaka(error);
+														}
+													}}>
+													Naloži sliko
+												</button>
+											</td>
+										) : (
+											<td style={{ minWidth: '200px' }}>
+												<img
+													src={oseba.slika}
+													className='velikaSlika'
+													alt={`${oseba.slika !== null ? 'Nalaganje...' : ''}`}
+												/>
+												<br />
+												<input
+													style={{ minWidth: '300px' }}
+													type='file'
+													encType='multipart/form-data'
+													name='image'
+													accept='image/gif, image/jpeg, image/png'
+													onChange={(e) => {
+														setFile(e.target.files[0]);
+													}}
+												/>
+												<button
+													onClick={async (e) => {
+														e.preventDefault();
+														try {
+															uploadFile();
+															setNapaka('Podatki spremenjeni');
+														} catch (error) {
+															setNapaka(error);
+														}
+													}}>
+													Naloži novo sliko
+												</button>
+											</td>
+										)
 									) : pr === 'opravljeno' && !stranka ? (
 										<td>
 											{oseba[pr] === 1 || opravljeno === true ? (

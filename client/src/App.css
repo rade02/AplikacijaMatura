@@ -636,6 +636,10 @@ h2 {
 	max-height: 50px;
 	margin-right: 10px;
 }
+.srednjaSlika {
+	min-width: 100px;
+	min-height: 100px;
+}
 .velikaSlika {
 	background-color: #868686;
 	min-width: 150px;
@@ -643,4 +647,12 @@ h2 {
 	max-width: 250px;
 	max-height: 250px;
 	margin-right: 10px;
+}
+
+.nalaganje {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 100px;
 }

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import TabelskaVrstica from './TabelskaVrsticaC';
 import { CaretCircleLeft } from 'phosphor-react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const PregledNarocil = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -15,7 +17,9 @@ const PregledNarocil = ({ props }) => {
 			<h2>{!props.stranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnisko_ime}</h2>
 			<div>
 				{props.tabela === null ? (
-					<>Nalaganje...</>
+					<Box sx={{ display: 'flex' }} className='nalaganje'>
+						<CircularProgress color='inherit' />
+					</Box>
 				) : (
 					<>
 						<div>
