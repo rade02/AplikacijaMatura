@@ -2,11 +2,11 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // elements:
-import Navbar from './pages/mainPage/NavbarComponent';
-import HomePage from './pages/homePage/HomePage';
-import AboutPage from './pages/aboutPage/AboutPage';
+import NavigacijskaVrstica from './pages/mainPage/NavigacijskaVrsticaC';
+import Domov from './pages/homePage/Domov';
+import ONas from './pages/aboutPage/ONas';
 import ShopPage from './pages/shopPage/ShopPage';
-import ErrorPage from './pages/errorPage/ErrorPage';
+import Error from './pages/errorPage/Error';
 import AboutRibbon from './pages/mainPage/AboutRibbon';
 // context:
 import { UporabniskiKontekstProvider } from './contexts/UporabniskiKontekst';
@@ -45,14 +45,14 @@ function App() {
 		<Router>
 			<UporabniskiKontekstProvider>
 				<div className='main'>
-					<Navbar />
+					<NavigacijskaVrstica />
 					<div>
 						<Routes>
-							<Route path='/' element={<HomePage />} />
-							<Route path='/about' element={<AboutPage />} />
+							<Route path='/' element={<Domov />} />
+							<Route path='/about' element={<ONas />} />
 							<Route path='/auth' element={<Avtentikacija />} />
 							<Route path='/shop' element={<ShopPage />} />
-							<Route path='*' element={<ErrorPage />} />
+							<Route path='*' element={<Error />} />
 						</Routes>
 					</div>
 					<AboutRibbon />

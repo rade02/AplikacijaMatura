@@ -1,10 +1,10 @@
 import { Warning } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 
-const ErrorPage = () => {
+const Error = () => {
 	return (
 		<div className='errorDiv'>
-			<div className='warning'>
+			<div className='napaka'>
 				<Warning size={30} style={{ marginRight: '10px' }} />
 				Napaka, stran ni bila najdena
 			</div>
@@ -15,4 +15,4 @@ const ErrorPage = () => {
 	);
 };
 
-export default ErrorPage;
+export default Error;

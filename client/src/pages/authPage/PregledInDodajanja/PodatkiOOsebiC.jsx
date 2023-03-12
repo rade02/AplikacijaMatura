@@ -15,7 +15,6 @@ const PodatkiOOsebi = ({
 	tabela,
 	setTabela,
 }) => {
-	const PORT = 3005; // !!!
 	const [placa, setPlaca] = useState(oseba.placa);
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
 	const poljePlaca = useRef(null);
@@ -56,11 +55,14 @@ const PodatkiOOsebi = ({
 		if (DB !== null) {
 			console.log('brisem...');
 			try {
-				const result = await axios.post(`http://localhost:${PORT}/api/admin/izbrisiElement`, {
-					DB: DB.DB,
-					IDtip: DB.IDtip,
-					ID: oseba[DB.IDtip],
-				});
+				const result = await axios.post(
+					`http://localhost:${global.config.port}/api/admin/izbrisiElement`,
+					{
+						DB: DB.DB,
+						IDtip: DB.IDtip,
+						ID: oseba[DB.IDtip],
+					}
+				);
 				setTabela(null);
 			} catch (error) {
 				console.log(error);
@@ -75,7 +77,7 @@ const PodatkiOOsebi = ({
 				console.log('Napaka pri vnosu podatkov');
 				console.log(placa);
 			} else {
-				const result = await axios.post(`http://localhost:${PORT}/api/admin/urediPlaco`, {
+				const result = await axios.post(`http://localhost:${global.config.port}/api/admin/urediPlaco`, {
 					novaPlaca: placa,
 					uporabnisko_ime: uporabniskoIme,
 				});
@@ -101,7 +103,7 @@ const PodatkiOOsebi = ({
 				parseInt(izdelek.popust) <= 100 &&
 				!isNaN(parseInt(izdelek.popust))
 			) {
-				const result = await axios.post(`http://localhost:${PORT}/api/admin/urediIzdelek`, {
+				const result = await axios.post(`http://localhost:${global.config.port}/api/admin/urediIzdelek`, {
 					izdelek: izdelek,
 				});
 				setNapaka('Podatki spremenjeni');
@@ -116,10 +118,10 @@ const PodatkiOOsebi = ({
 	};
 	const handleChangeNarocilo = async () => {
 		try {
-			const result = await axios.post(`http://localhost:${PORT}/api/admin/urediNarocilo`, {
+			const result = await axios.post(`http://localhost:${global.config.port}/api/admin/urediNarocilo`, {
 				ID_narocila: oseba.ID_narocila,
 			});
-			const result2 = await axios.post(`http://localhost:${PORT}/api/admin/izdajRacun`, {
+			const result2 = await axios.post(`http://localhost:${global.config.port}/api/admin/izdajRacun`, {
 				ID_narocila: oseba.ID_narocila,
 				kupec: oseba.imeStranke + ' ' + oseba.priimekStranke,
 				datumIzdaje: oseba.datum,

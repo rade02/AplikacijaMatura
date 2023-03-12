@@ -5,40 +5,46 @@ import { Link } from 'react-router-dom';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import Logo from './LogoComponent';
 
-const Navbar = () => {
+const NavigacijskaVrstica = () => {
 	const { uporabnik, jeAvtenticiran, setJeAvtenticiran } = useContext(UporabniskiKontekst);
-	const msg = {
-		msg1: 'Za ponovno prijavo se morate najprej odjaviti',
-		msg2: 'Za registracijo se morate najprej odjaviti',
+	const sporocilo = {
+		sporocilo1: 'Za ponovno prijavo se morate najprej odjaviti',
+		sporocilo2: 'Za registracijo se morate najprej odjaviti',
 	};
 
 	return (
-		<div className='navbar'>
-			<div className='bar'>
+		<div className='navigacija1'>
+			<div className='vrstica1'>
 				<Logo />
 				<div>
-					<Link to='/' className='links'>
+					<Link to='/' className='linki'>
 						Domov
 					</Link>
 				</div>
 				<div>
-					<Link to='/shop' className='links'>
+					<Link to='/trgovina' className='linki'>
 						Trgovina
 					</Link>
 				</div>
 				<div>
 					<Link
-						to='/auth'
-						state={{ loggingMode: 'signup', msg: jeAvtenticiran ? msg.msg2 : '' }}
-						className='links'>
+						to='/avtentikacija'
+						state={{
+							prikazAvtentikacija: 'registracija',
+							sporocilo: jeAvtenticiran ? sporocilo.sporocilo2 : '',
+						}}
+						className='linki'>
 						Registracija
 					</Link>
 				</div>
 				<div>
 					<Link
-						to='/auth'
-						state={{ loggingMode: 'signin', msg: jeAvtenticiran ? msg.msg1 : '' }}
-						className='links'>
+						to='/avtentikacija'
+						state={{
+							prikazAvtentikacija: 'prijava',
+							sporocilo: jeAvtenticiran ? sporocilo.sporocilo1 : '',
+						}}
+						className='linki'>
 						{jeAvtenticiran ? (
 							<>
 								<UserCircle size={28} style={{ marginRight: '4px' }} />
@@ -63,4 +69,4 @@ const Navbar = () => {
 	);
 };
 
-export default Navbar;
+export default NavigacijskaVrstica;

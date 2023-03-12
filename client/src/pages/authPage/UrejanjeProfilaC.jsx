@@ -7,7 +7,6 @@ import ChangePassword from './SpreminjanjeGeslaC';
 import DeleteProfile from './IzbrisProfilaC';
 
 const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
-	const PORT = 3005; // !!!
 	const { uporabnik, setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const [edit, setEdit] = useState(false);
 	const [editPw, setEditPw] = useState(false);
@@ -17,7 +16,7 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 
 	const handleClick = async () => {
 		try {
-			const result = await axios.post(`http://localhost:${PORT}/api/login/updt`, updatedUser);
+			const result = await axios.post(`http://localhost:${global.config.port}/api/login/updt`, updatedUser);
 			setUporabnik(updatedUser);
 			setEdit(false);
 			//console.log(result.data);

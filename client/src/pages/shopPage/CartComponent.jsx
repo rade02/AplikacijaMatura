@@ -2,7 +2,7 @@ import axios from 'axios';
 import { CaretCircleLeft, CaretCircleRight } from 'phosphor-react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useRef, useState } from 'react';
-import CartProduct from './cart/CartProductComponent';
+import CartProduct from './shopping/CartProductComponent';
 
 const Cart = ({
 	setPrikazi,
@@ -18,7 +18,6 @@ const Cart = ({
 	setRemovedMsg,
 	setNiProduktov,
 }) => {
-	const PORT = 3005; // !!!
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 	const [refresh, setRefresh] = useState(false);
 
@@ -36,11 +35,14 @@ const Cart = ({
 
 		const f = async (product) => {
 			try {
-				let response = await axios.get(`http://localhost:${PORT}/api/products/availability`, {
-					params: {
-						ID_izdelka: product.ID_izdelka,
-					},
-				});
+				let response = await axios.get(
+					`http://localhost:${global.config.port}/api/products/availability`,
+					{
+						params: {
+							ID_izdelka: product.ID_izdelka,
+						},
+					}
+				);
 				// za odstranjevanje z "-" in preverjanje ce je produkt ze nekdo kupil in ga ni več
 				if (product.kolicina <= 0) {
 					setRemovedMsg('Izdelek ' + product.ime + ' je bil odstranjen.');

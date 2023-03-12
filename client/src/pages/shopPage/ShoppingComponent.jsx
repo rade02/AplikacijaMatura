@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import ProductsPanel from './shopping/ProductsPanelComponent';
 
 const Shopping = ({ props }) => {
-	const PORT = 3005; // !!!
 	const [kategorijeNaVoljo, setKategorijenaVoljo] = useState([]);
 	const [kategorijeF, setKategorijeF] = useState([]);
 	const [cenaF, setCenaF] = useState({ od: undefined, do: undefined });
@@ -14,7 +13,7 @@ const Shopping = ({ props }) => {
 
 	const pridobiSteviloVsehProduktov = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${PORT}/api/products/stVsehProduktov`);
+			let response = await axios.get(`http://localhost:${global.config.port}/api/products/stVsehProduktov`);
 			setStVsehProduktov(response.data);
 		} catch (error) {
 			console.log(error);
@@ -22,7 +21,7 @@ const Shopping = ({ props }) => {
 	};
 	const pridobiKategorije = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${PORT}/api/products/kategorije`);
+			let response = await axios.get(`http://localhost:${global.config.port}/api/products/kategorije`);
 
 			setKategorijenaVoljo([...response.data]);
 		} catch (error) {
@@ -32,7 +31,7 @@ const Shopping = ({ props }) => {
 	const filtriraj = async (dodatno) => {
 		console.log('filtriraj');
 		try {
-			let response = await axios.get(`http://localhost:${PORT}/api/products/filtriranje`, {
+			let response = await axios.get(`http://localhost:${global.config.port}/api/products/filtriranje`, {
 				params: {
 					number: 6,
 					kategorijeF: kategorijeF,
@@ -44,7 +43,7 @@ const Shopping = ({ props }) => {
 			setStVsehProduktov(response.data.stProduktovKiUstrezajoFiltru);
 
 			response.data.produkti.forEach(async (element) => {
-				let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+				let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
 					method: 'get',
 					responseType: 'blob',
 					params: {

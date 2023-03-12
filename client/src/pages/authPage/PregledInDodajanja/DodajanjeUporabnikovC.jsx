@@ -3,7 +3,6 @@ import { CaretCircleLeft } from 'phosphor-react';
 import { useState } from 'react';
 
 const DodajanjeUporabnikov = ({ props }) => {
-	const PORT = 3005; // !!!
 	const [vneseniPodatki, setVneseniPodatki] = useState({
 		uporabnisko_ime: null,
 		geslo: null,
@@ -53,22 +52,25 @@ const DodajanjeUporabnikov = ({ props }) => {
 					const posodobiVlogo = async () => {
 						let res;
 						try {
-							res = await axios.post(`http://localhost:${PORT}/api/admin/dodajUporabnika`, {
-								uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
-								geslo: vneseniPodatki.geslo,
-								vloga: vneseniPodatki.vloga,
-								omogocen: vneseniPodatki.omogocen,
-								elektronski_naslov: vneseniPodatki.elektronski_naslov,
-								ime: vneseniPodatki.ime,
-								priimek: vneseniPodatki.priimek,
-								ulica_in_hisna_stevilka: vneseniPodatki.ulica_in_hisna_stevilka,
-								kraj: vneseniPodatki.kraj,
-								postna_stevilka: vneseniPodatki.postna_stevilka,
-								telefonska_stevilka: vneseniPodatki.telefonska_stevilka,
-								podjetje: vneseniPodatki.podjetje,
-								oddelek: vneseniPodatki.oddelek,
-								placa: vneseniPodatki.placa,
-							});
+							res = await axios.post(
+								`http://localhost:${global.config.port}/api/admin/dodajUporabnika`,
+								{
+									uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
+									geslo: vneseniPodatki.geslo,
+									vloga: vneseniPodatki.vloga,
+									omogocen: vneseniPodatki.omogocen,
+									elektronski_naslov: vneseniPodatki.elektronski_naslov,
+									ime: vneseniPodatki.ime,
+									priimek: vneseniPodatki.priimek,
+									ulica_in_hisna_stevilka: vneseniPodatki.ulica_in_hisna_stevilka,
+									kraj: vneseniPodatki.kraj,
+									postna_stevilka: vneseniPodatki.postna_stevilka,
+									telefonska_stevilka: vneseniPodatki.telefonska_stevilka,
+									podjetje: vneseniPodatki.podjetje,
+									oddelek: vneseniPodatki.oddelek,
+									placa: vneseniPodatki.placa,
+								}
+							);
 						} catch (error) {
 							setSporociloONapaki({
 								...sporociloONapaki,
@@ -148,7 +150,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 														setOKuporabniskoIme(1);
 													} else {
 														const result = await axios.get(
-															`http://localhost:${PORT}/api/login/user`,
+															`http://localhost:${global.config.port}/api/login/user`,
 															{
 																params: { username: e.target.value },
 															}
@@ -383,7 +385,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 														});
 													} else {
 														const result = await axios.get(
-															`http://localhost:${PORT}/api/login/email`,
+															`http://localhost:${global.config.port}/api/login/email`,
 															{
 																params: { email: e.target.value },
 															}

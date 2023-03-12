@@ -22,35 +22,6 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 		popust: '',
 	});
 
-	/*const pridobiSliko = async () => {
-		let res;
-		try {
-			res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
-				method: 'get',
-				responseType: 'blob',
-				params: {
-					ID_izdelka: props.ID_izdelka,
-				},
-			});
-			if (res.data.size > 0) {
-				console.log(res.data.size); // Blob {size: 4434, type: 'application/octet-stream'}
-				slika.current = URL.createObjectURL(res.data);
-				console.log(slika.current); // blob:http://localhost:3000/5f083eb9-9b2a-4cd6-a047-597200d524d4
-				setSporociloONapaki({ ...sporociloONapaki }); // za refresh
-			}
-		} catch (error) {
-			setSporociloONapaki({
-				...sporociloONapaki,
-				dbS: 'Napaka pri vnosu v bazo podatkov',
-			});
-			console.log('Prišlo je do napake: ' + error.toString());
-		}
-	};
-
-	useEffect(() => {
-		pridobiSliko();
-	}, []);*/
-
 	return (
 		<div>
 			<h2 className='naslov'>{props.naslov}</h2>
@@ -91,9 +62,13 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 						const posodobiVlogo = async () => {
 							let res;
 							try {
-								res = await axios.post(`http://localhost:${PORT}/api/admin/dodajIzdelek`, formData, {
-									headers: { 'Content-Type': 'multipart/form-data' },
-								});
+								res = await axios.post(
+									`http://localhost:${global.config.port}/api/admin/dodajIzdelek`,
+									formData,
+									{
+										headers: { 'Content-Type': 'multipart/form-data' },
+									}
+								);
 							} catch (error) {
 								setSporociloONapaki({
 									...sporociloONapaki,
@@ -111,7 +86,6 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 							dbS: 'Neustrezni podatki',
 						});
 					}
-					//URL.revokeObjectURL();
 				}}
 				className='obrazecZaVnosUporabnika'>
 				<table>
@@ -337,30 +311,6 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 			</form>
 		</div>
 	);
-	/*{napakaPriVnosu !== null ? <div>{napakaPriVnosu}</div> : <></>}
-		<div>
-			:
-			{Object.keys(vneseniPodatki).map((key) => {
-				return <div>{vneseniPodatki[key]}</div>;
-			})}
-			:
-		</div>
-	*/
-	/*
-<table style={{ border: '1px solid black' }}>
-						<tbody style={{ border: '1px solid black' }}>
-							<tr>
-								<td>a</td>
-								<td>b</td>
-							</tr>
-							<tr>
-								<td>rieuwofdshouwqjbsafuewbsduihfbsdvbzauichsdi</td>
-							</tr>
-						</tbody>
-					</table>
-
-		
-	*/
 };
 
 export default DodajanjeIzdelkov;

@@ -12,7 +12,6 @@ const Prijava = () => {
 	const pwd = useRef(null);
 
 	const navigate = useNavigate();
-	const PORT = 3005; // !!!
 
 	// TODO: check password validity when changing in component
 	// TODO: ce nima naslova, ne prikazemo naslova pri podatkih nakupa
@@ -23,7 +22,7 @@ const Prijava = () => {
 		try {
 			if (typedUsername !== '' && typedPassword !== '') {
 				// check un-pwd pair in the DB:
-				let response = await axios.get(`http://localhost:${PORT}/api/login/`, {
+				let response = await axios.get(`http://localhost:${global.config.port}/api/login/`, {
 					params: {
 						username: typedUsername,
 						password: typedPassword,
@@ -38,7 +37,7 @@ const Prijava = () => {
 						setMsg('Vaš profil je bil onemogočen');
 					} else {
 						// get all user's data from DB using request:
-						var data = await axios.get(`http://localhost:${PORT}/api/login/user`, {
+						var data = await axios.get(`http://localhost:${global.config.port}/api/login/user`, {
 							params: { username: typedUsername },
 						});
 						let userData = { ...data.data, geslo: typedPassword };

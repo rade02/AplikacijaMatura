@@ -1,4 +1,4 @@
-const AboutPage = () => {
+const ONas = () => {
 	return (
 		<div>
 			<h2>O nas</h2>
@@ -11,4 +11,4 @@ const AboutPage = () => {
 	);
 };
 
-export default AboutPage;
+export default ONas;

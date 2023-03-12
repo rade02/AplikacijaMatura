@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
 const IzbrisProfila = ({ props }) => {
-	const PORT = 3005; // !!!
-	const [repeatPwd, setRepeatPwd] = useState(true);
-	const [pwd, setPwd] = useState('');
-	const [confirmation, setConfirmation] = useState(null);
-	const [msg, setMsg] = useState({ pwdmsg: '' });
+	const [ponovljenoGeslo, setPonovljenoGeslo] = useState(true);
+	const [geslo, setGeslo] = useState('');
+	const [potrditev, setPotrditev] = useState(null);
+	const [sporocilo, setSporocilo] = useState({ sporociloGeslo: '' });
 	const [error, setError] = useState(false);
 
 	const { uporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
@@ -16,40 +15,40 @@ const IzbrisProfila = ({ props }) => {
 
 	const handleClickCheckExisting = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${PORT}/api/login/`, {
+			let response = await axios.get(`http://localhost:${global.config.port}/api/login/`, {
 				params: {
 					username: uporabnik.uporabnisko_ime,
-					password: pwd,
+					password: geslo,
 				},
 			});
 			if (response.data) {
-				setRepeatPwd(false);
-				setMsg({ ...msg, pwdmsg: `` });
+				setPonovljenoGeslo(false);
+				setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 			} else {
-				setMsg({ ...msg, pwdmsg: `Nepravilno geslo` });
+				setSporocilo({ ...sporocilo, sporociloGeslo: `Nepravilno geslo` });
 			}
 		} catch (error) {
 			console.log(error);
-			setMsg({ ...msg, errmsg: `${error.message} (${error.name})` });
+			setSporocilo({ ...sporocilo, sporociloNapaka: `${error.message} (${error.name})` });
 			setError(true);
 		}
 	};
 
-	const handleClickDelete = async () => {
+	const izbrisi = async () => {
 		try {
-			let response = await axios.delete(`http://localhost:${PORT}/api/login/del`, {
+			let response = await axios.delete(`http://localhost:${global.config.port}/api/login/del`, {
 				params: {
 					username: uporabnik.uporabnisko_ime,
 				},
 			});
 		} catch (error) {
 			console.log(error);
-			setMsg({ ...msg, errmsg: `${error.message} (${error.name})` });
+			setSporocilo({ ...sporocilo, sporociloNapaka: `${error.message} (${error.name})` });
 			setError(true);
 		}
 	};
 
-	if (repeatPwd) {
+	if (ponovljenoGeslo) {
 		return (
 			<div>
 				<h2>Izbris računa {uporabnik.uporabnisko_ime}</h2>
@@ -60,9 +59,9 @@ const IzbrisProfila = ({ props }) => {
 						key='1'
 						onChange={(e) => {
 							e.preventDefault();
-							setPwd(e.target.value);
+							setGeslo(e.target.value);
 							setError(false);
-							setMsg({ ...msg, pwdmsg: `` });
+							setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 						}}></input>
 				</div>
 
@@ -81,7 +80,7 @@ const IzbrisProfila = ({ props }) => {
 					Potrdi
 				</button>
 
-				{error ? <label>{msg.errmsg}</label> : msg.pwdmsg}
+				{error ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
 			</div>
 		);
 	}
@@ -95,27 +94,26 @@ const IzbrisProfila = ({ props }) => {
 					key='2'
 					onChange={(e) => {
 						e.preventDefault();
-						setConfirmation(e.target.value);
+						setPotrditev(e.target.value);
 						setError(false);
-						setMsg({ ...msg, pwdmsg: `` });
+						setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 					}}></input>
 			</div>
 			<button
 				onClick={(e) => {
 					e.preventDefault();
-					if (confirmation === `briši račun ${uporabnik.uporabnisko_ime}`) {
-						handleClickDelete();
+					if (potrditev === `briši račun ${uporabnik.uporabnisko_ime}`) {
+						izbrisi();
 						if (!error) {
-							console.log('brišem...');
 							setJeAvtenticiran(false);
-							navigate('/', { state: { msg: `račun ${uporabnik.uporabnisko_ime} izbrisan` } });
+							navigate('/', { state: { sporocilo: `račun ${uporabnik.uporabnisko_ime} izbrisan` } });
 						} else {
 							console.log('Napaka');
 						}
 					} else {
-						setMsg({
-							...msg,
-							pwdmsg: `Če želite izbrisati račun, vpišite: "briši račun ${uporabnik.uporabnisko_ime}"`,
+						setSporocilo({
+							...sporocilo,
+							sporociloGeslo: `Če želite izbrisati račun, vpišite: "briši račun ${uporabnik.uporabnisko_ime}"`,
 						});
 					}
 				}}>
@@ -128,7 +126,7 @@ const IzbrisProfila = ({ props }) => {
 				}}>
 				Nazaj na profil
 			</button>
-			{error ? <label>{msg.errmsg}</label> : msg.pwdmsg}
+			{error ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
 		</div>
 	);
 };

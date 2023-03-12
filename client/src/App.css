@@ -28,7 +28,7 @@ hr {
 	padding: 10px;
 	box-shadow: 1px 1px 1px 1px rgb(128, 128, 128);
 }
-.navbar {
+.navigacija1 {
 	background: linear-gradient(45deg, #e66465, #9198e5);
 	width: 100%;
 	min-height: 40px;
@@ -59,7 +59,7 @@ hr {
 	font-size: 17px;
 	cursor: pointer;
 }
-.bar {
+.vrstica1 {
 	margin: 0 auto 0 auto;
 	background: blur(2px);
 	display: flex;
@@ -69,7 +69,7 @@ hr {
 	min-width: 600px;
 	padding: 10px;
 }
-.bar div {
+.vrstica1 div {
 	width: auto;
 	height: 50px;
 	display: flex;
@@ -87,8 +87,8 @@ hr {
 .bar #right {
 	border-right: none;
 }
-.links,
-.links > label {
+.linki,
+.linki > label {
 	color: white;
 	text-decoration: none;
 	cursor: pointer;
@@ -97,8 +97,8 @@ hr {
 	align-items: center;
 	font-size: 15px;
 }
-.links:hover,
-.links > label:hover {
+.linki:hover,
+.linki > label:hover {
 	color: rgba(243, 241, 241, 0.979);
 }
 
@@ -616,7 +616,7 @@ h2 {
 	justify-content: center;
 	align-items: center;
 }
-.warning {
+.napaka {
 	display: flex;
 	justify-content: center;
 	align-items: center;

@@ -6,7 +6,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const PregledPB = ({ props }) => {
-	const PORT = 3005; // !!!
 	const [stavek, setStavek] = useState(null);
 	const [naslovnaVrstica, setNaslovnaVrstica] = useState([]);
 
@@ -43,7 +42,7 @@ const PregledPB = ({ props }) => {
 								onClick={async (e) => {
 									e.preventDefault();
 									try {
-										let r = await axios.get(`http://localhost:${PORT}/api/admin/PB`, {
+										let r = await axios.get(`http://localhost:${global.config.port}/api/admin/PB`, {
 											params: { poizvedba: stavek },
 										});
 										props.setTabela(r.data.data);

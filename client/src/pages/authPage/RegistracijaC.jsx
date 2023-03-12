@@ -9,7 +9,6 @@ const Registracija = () => {
 	// TODO: geslu dodaj se obvezne posebne znake (!, ., ...)
 	// TODO: popravi msg: setterje izven eventa (ne dela ce popravljamo)
 
-	const PORT = 3005; // !!!
 	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
 
@@ -68,7 +67,7 @@ const Registracija = () => {
 				alert(`Registracija NEuspešna: \n${warn}`);
 			} else {
 				console.log(inputData);
-				let response = await axios.post(`http://localhost:${PORT}/api/login/newUser`, {
+				let response = await axios.post(`http://localhost:${global.config.port}/api/login/newUser`, {
 					uporabnisko_ime: inputData.uporabnisko_ime,
 					geslo: inputData.geslo,
 					elektronski_naslov: inputData.elektronski_naslov,
@@ -103,7 +102,7 @@ const Registracija = () => {
 					setOKusername(1);
 					setMsg({ ...msg, UNmsg: checkUn.msg });
 				} else {
-					const result = await axios.get(`http://localhost:${PORT}/api/login/user`, {
+					const result = await axios.get(`http://localhost:${global.config.port}/api/login/user`, {
 						params: { username: uname },
 					});
 					if (result.data !== '') {
@@ -192,7 +191,7 @@ const Registracija = () => {
 					setOKemail(1);
 					setMsg({ ...msg, EMmsg: checkEm.msg });
 				} else {
-					const result = await axios.get(`http://localhost:${PORT}/api/login/email`, {
+					const result = await axios.get(`http://localhost:${global.config.port}/api/login/email`, {
 						params: { email: email },
 					});
 					if (result.data !== '') {

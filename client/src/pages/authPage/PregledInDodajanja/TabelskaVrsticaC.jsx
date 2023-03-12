@@ -3,8 +3,6 @@ import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus } from 'phosp
 import '../Avtentikacija.css';
 
 const TabelskaVrstica = ({ props }) => {
-	const PORT = 3005; // !!!
-
 	if (props.naslov === 'Pregled oseb') {
 		return (
 			<tr
@@ -65,7 +63,7 @@ const TabelskaVrstica = ({ props }) => {
 	} else if (props.naslov === 'Pregled naročil') {
 		const pridobiIzdelke = async (IDNarocila) => {
 			try {
-				let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelkiPriNarocilu`, {
+				let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelkiPriNarocilu`, {
 					params: { ID_narocila: IDNarocila },
 				});
 				props.setTabela(r.data);
@@ -149,10 +147,13 @@ const TabelskaVrstica = ({ props }) => {
 							e.stopPropagation();
 							if (e.target.value !== '' && typeof parseInt(e.target.value) === 'number') {
 								try {
-									let res = await axios.post(`http://localhost:${PORT}/api/admin/updtVloga`, {
-										uporabnisko_ime: props.element.uporabnisko_ime,
-										vloga: e.target.value,
-									});
+									let res = await axios.post(
+										`http://localhost:${global.config.port}/api/admin/updtVloga`,
+										{
+											uporabnisko_ime: props.element.uporabnisko_ime,
+											vloga: e.target.value,
+										}
+									);
 									if (res.data === 'success') props.setTabela(null);
 								} catch (error) {
 									console.log(error);
@@ -186,10 +187,13 @@ const TabelskaVrstica = ({ props }) => {
 								e.preventDefault();
 								e.stopPropagation();
 								try {
-									let res = await axios.post(`http://localhost:${PORT}/api/admin/omogoci`, {
-										uporabnisko_ime: props.element.uporabnisko_ime,
-										omogoci: !props.element.omogocen,
-									});
+									let res = await axios.post(
+										`http://localhost:${global.config.port}/api/admin/omogoci`,
+										{
+											uporabnisko_ime: props.element.uporabnisko_ime,
+											omogoci: !props.element.omogocen,
+										}
+									);
 									if (res.data === 'success') props.setTabela(null);
 								} catch (error) {
 									console.log(error);
@@ -214,10 +218,13 @@ const TabelskaVrstica = ({ props }) => {
 							e.preventDefault();
 							e.stopPropagation();
 							try {
-								let res = await axios.post(`http://localhost:${PORT}/api/admin/omogoci`, {
-									uporabnisko_ime: props.element.uporabnisko_ime,
-									omogoci: !props.element.omogocen,
-								});
+								let res = await axios.post(
+									`http://localhost:${global.config.port}/api/admin/omogoci`,
+									{
+										uporabnisko_ime: props.element.uporabnisko_ime,
+										omogoci: !props.element.omogocen,
+									}
+								);
 								if (res.data === 'success') props.setTabela(null);
 							} catch (error) {
 								console.log(error);

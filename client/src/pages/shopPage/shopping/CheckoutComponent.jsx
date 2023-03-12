@@ -6,7 +6,6 @@ import PostaSlovenije from '../../../assets/PSlogo.png';
 import axios from 'axios';
 
 const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) => {
-	const PORT = 3005; // !!!
 	const { user, isAuth } = useContext(UporabniskiKontekst);
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 	const [userData, setUserData] = useState(null);
@@ -36,7 +35,7 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 		if (isAuth) {
 			const fetchUserData = async () => {
 				try {
-					const result = await axios.get(`http://localhost:${PORT}/api/login/user`, {
+					const result = await axios.get(`http://localhost:${global.config.port}/api/login/user`, {
 						params: { username: user.uporabnisko_ime },
 					});
 					console.log('result.data');
@@ -100,36 +99,45 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 			console.log('deliveryCost');
 			console.log(deliveryCost);
 			if (userData !== null && userData.uporabnisko_ime !== 'admin') {
-				let resp = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
+				let resp = await axios.get(`http://localhost:${global.config.port}/api/admin/idUporabnika`, {
 					params: {
 						uporabnisko_ime: userData.uporabnisko_ime,
 					},
 				});
 				id = resp.data;
 			}
-			const result = await axios.get(`http://localhost:${PORT}/api/products/ustvariNarocilo`, {
-				params: {
-					ID_stranke: id,
-					imeStranke: kupec.ime,
-					priimekStranke: kupec.priimek,
-					naslovDostave: naslovDostava,
-					postnina: deliveryCost,
-				},
-			});
+			const result = await axios.get(
+				`http://localhost:${global.config.port}/api/products/ustvariNarocilo`,
+				{
+					params: {
+						ID_stranke: id,
+						imeStranke: kupec.ime,
+						priimekStranke: kupec.priimek,
+						naslovDostave: naslovDostava,
+						postnina: deliveryCost,
+					},
+				}
+			);
 			IDnarocila = result.data;
 
 			for (let element of kosarica) {
-				const result1 = await axios.post(`http://localhost:${PORT}/api/products/dodajIzdelkeNarocilu`, {
-					ID_narocila: IDnarocila,
-					ID_izdelka: element.ID_izdelka,
-					kolicina: element.kolicina,
-					cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
-				});
+				const result1 = await axios.post(
+					`http://localhost:${global.config.port}/api/products/dodajIzdelkeNarocilu`,
+					{
+						ID_narocila: IDnarocila,
+						ID_izdelka: element.ID_izdelka,
+						kolicina: element.kolicina,
+						cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
+					}
+				);
 				// zmanjšanje zaloge
-				const result12 = await axios.post(`http://localhost:${PORT}/api/products/zmanjsajZalogo`, {
-					kolicina_kupljeno: element.kolicina,
-					ID_izdelka: element.ID_izdelka,
-				});
+				const result12 = await axios.post(
+					`http://localhost:${global.config.port}/api/products/zmanjsajZalogo`,
+					{
+						kolicina_kupljeno: element.kolicina,
+						ID_izdelka: element.ID_izdelka,
+					}
+				);
 			}
 		} catch (onRejectedError) {
 			setOddano(false);

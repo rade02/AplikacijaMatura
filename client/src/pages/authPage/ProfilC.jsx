@@ -32,8 +32,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const Profile = () => {
-	const PORT = 3005; // !!!
-	const { uporabnik} = useContext(UporabniskiKontekst);
+	const { uporabnik } = useContext(UporabniskiKontekst);
 
 	const [vloga, setVloga] = useState(null);
 	const [msg, setMsg] = useState('');
@@ -51,11 +50,15 @@ const Profile = () => {
 		formData.append('ID_izdelka', oseba.ID_izdelka);
 
 		try {
-			const res = await axios.post(`http://localhost:${PORT}/api/admin/naloziSliko`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			});
+			const res = await axios.post(
+				`http://localhost:${global.config.port}/api/admin/naloziSliko`,
+				formData,
+				{
+					headers: {
+						'Content-Type': 'multipart/form-data',
+					},
+				}
+			);
 			//console.log(res);
 		} catch (ex) {
 			console.log(ex);
@@ -71,7 +74,7 @@ const Profile = () => {
 	useEffect(() => {
 		const pridobiVlogo = async () => {
 			try {
-				let response = await axios.get(`http://localhost:${PORT}/api/login/vloga`, {
+				let response = await axios.get(`http://localhost:${global.config.port}/api/login/vloga`, {
 					params: {
 						uporabnisko_ime: uporabnik.uporabnisko_ime,
 					},
@@ -186,7 +189,7 @@ const Profile = () => {
 			// pregled uporabnikov
 			const pridobiInfoOUporabnikih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/uporabniki`);
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/uporabniki`);
 					setTabela(r.data);
 				} catch (error) {
 					console.log('Prišlo je do napake');
@@ -220,7 +223,7 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -293,11 +296,11 @@ const Profile = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					r.data.forEach(async (element) => {
-						let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+						let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
 							method: 'get',
 							responseType: 'blob',
 							params: {
@@ -352,7 +355,7 @@ const Profile = () => {
 			// PREGLED RAČUNOV
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -393,7 +396,7 @@ const Profile = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -442,7 +445,7 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 8) {
 			const pridobiInfoOPB = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/PBzacetna`);
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/PBzacetna`);
 					setTabela(r.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -535,12 +538,12 @@ const Profile = () => {
 			// PREGLED NAROČIL STRANKE
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r1 = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
+					let r1 = await axios.get(`http://localhost:${global.config.port}/api/admin/idUporabnika`, {
 						params: {
 							uporabnisko_ime: uporabnik.uporabnisko_ime,
 						},
 					});
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: {
 							iskalniKriterij: 'ID_stranke',
 							iskalniNiz: r1.data,
@@ -595,7 +598,7 @@ const Profile = () => {
 			// PREGLED RAČUNOV STRANKE
 			const pridobiRacuneUporabnika = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuniUporabnika`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuniUporabnika`, {
 						params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
 					});
 					setTabela(r.data);
@@ -728,11 +731,11 @@ const Profile = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					r.data.forEach(async (element) => {
-						let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+						let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
 							method: 'get',
 							responseType: 'blob',
 							params: {
@@ -783,7 +786,7 @@ const Profile = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -833,7 +836,7 @@ const Profile = () => {
 			// PREGLED RAČUNOV ZAPOSLENEGA
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -975,11 +978,11 @@ const Profile = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					r.data.forEach(async (element) => {
-						let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+						let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
 							method: 'get',
 							responseType: 'blob',
 							params: {
@@ -1030,7 +1033,7 @@ const Profile = () => {
 			// PREGLED RAČUNOV
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuni`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -1071,7 +1074,7 @@ const Profile = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -1121,7 +1124,7 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
+					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(r.data);
@@ -1171,7 +1174,7 @@ const Profile = () => {
 		const posodobiVlogo = async () => {
 			let res;
 			try {
-				res = await axios.post(`http://localhost:${PORT}/api/login/vloga`, {
+				res = await axios.post(`http://localhost:${global.config.port}/api/login/vloga`, {
 					uporabnisko_ime: uporabnik.uporabnisko_ime,
 				});
 			} catch (error) {

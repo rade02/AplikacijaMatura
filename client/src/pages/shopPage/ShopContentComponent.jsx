@@ -3,16 +3,13 @@ import { useContext, useEffect, useState } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import Shopping from './ShoppingComponent';
 import Cart from './CartComponent';
-import Checkout from './checkout/CheckoutComponent';
-import Error from '../errorPage/ErrorPage';
+import Checkout from './shopping/CheckoutComponent';
+import Error from '../errorPage/Error';
 import ProductInfo from './shopping/ProductInfoComponent';
-import CardInput from './checkout/CardInputComponent';
 import { WarningCircle } from 'phosphor-react';
 
 const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	const { kosarica } = useContext(NakupovalniKontekst);
-
-	const PORT = 3005; // !!!
 
 	const [prikazaniProdukti, setPrikazaniProdukti] = useState([]);
 	const [niProduktov, setNiProduktov] = useState(true);
@@ -24,7 +21,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 
 	const pridobiProdukte = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${PORT}/api/products/`, {
+			let response = await axios.get(`http://localhost:${global.config.port}/api/products/`, {
 				params: {
 					number: 6,
 					noDups: prikazaniProdukti.map((a) => a.ID_izdelka),
@@ -33,7 +30,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			// dodamo vsakemu izdelku kolicino v kosarici in sliko
 			response = response.data;
 			response.forEach(async (element) => {
-				let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+				let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
 					method: 'get',
 					responseType: 'blob',
 					params: {
@@ -145,8 +142,6 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				setPrikazi={setPrikazi}
 			/>
 		);
-	} else if (prikazi === 'vnosKartice') {
-		return <CardInput setPrikazi={setPrikazi} />;
 	} else {
 		return <Error />;
 	}

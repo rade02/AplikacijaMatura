@@ -6,7 +6,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const PregledNarocil = ({ props }) => {
-	const PORT = 3005; // !!!
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID_narocila');
 	const [iskalniNiz, setIskalniNiz] = useState(null);
 	const [razvrstiPo, setRazvrstiPo] = useState('ID_narocila');
@@ -93,24 +92,30 @@ const PregledNarocil = ({ props }) => {
 									e.preventDefault();
 									try {
 										if (iskalniNiz === null) {
-											let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
-												params: {
-													iskalniKriterij: 1,
-													iskalniNiz: 1,
-													razvrscanje_po: razvrstiPo,
-													razvrscanje_razvrsti: razvrsti,
-												},
-											});
+											let r = await axios.get(
+												`http://localhost:${global.config.port}/api/admin/narocila`,
+												{
+													params: {
+														iskalniKriterij: 1,
+														iskalniNiz: 1,
+														razvrscanje_po: razvrstiPo,
+														razvrscanje_razvrsti: razvrsti,
+													},
+												}
+											);
 											props.setTabela(r.data);
 										} else {
-											let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
-												params: {
-													iskalniKriterij: iskalniKriterij,
-													iskalniNiz: iskalniNiz,
-													razvrscanje_po: razvrstiPo,
-													razvrscanje_razvrsti: razvrsti,
-												},
-											});
+											let r = await axios.get(
+												`http://localhost:${global.config.port}/api/admin/narocila`,
+												{
+													params: {
+														iskalniKriterij: iskalniKriterij,
+														iskalniNiz: iskalniNiz,
+														razvrscanje_po: razvrstiPo,
+														razvrscanje_razvrsti: razvrsti,
+													},
+												}
+											);
 											props.setTabela(r.data);
 										}
 									} catch (error) {

@@ -3,7 +3,6 @@ import { useState, useContext } from 'react';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
 const SpreminjanjeGesla = ({ props }) => {
-	const PORT = 3005; // !!!
 	const { uporabnik, setUporabnik } = useContext(UporabniskiKontekst);
 	const [password, setPassword] = useState('');
 	const [isCorrect, setIsCorrect] = useState(null);
@@ -60,7 +59,7 @@ const SpreminjanjeGesla = ({ props }) => {
 	const handleSubmitNewPw = async () => {
 		if (OKpassword === 2) {
 			try {
-				let response = await axios.post(`http://localhost:${PORT}/api/login/pwdUpdt`, {
+				let response = await axios.post(`http://localhost:${global.config.port}/api/login/pwdUpdt`, {
 					username: uporabnik.uporabnisko_ime,
 					password: password,
 				});

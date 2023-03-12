@@ -10,9 +10,8 @@ const Product = ({
 	izKosarice,
 	setIzKosarice,
 }) => {
-	const PORT = 3005; // !!!
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
-	const { kosarica, setKosarica} = useContext(NakupovalniKontekst);
+	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);

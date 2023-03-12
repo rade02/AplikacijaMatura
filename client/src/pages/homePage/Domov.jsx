@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-const HomePage = () => {
+const Domov = () => {
 	const location = useLocation();
 	if (location.state !== null) return <div>{location.state.msg}</div>;
 	return (
@@ -10,4 +10,4 @@ const HomePage = () => {
 	);
 };
 
-export default HomePage;
+export default Domov;

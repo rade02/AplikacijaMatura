@@ -6,7 +6,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const Pregled = ({ props }) => {
-	const PORT = 3005; // !!!
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID');
 	const [iskalniNiz, setIskalniNiz] = useState(0);
 
@@ -68,9 +67,12 @@ const Pregled = ({ props }) => {
 										//console.log('iskalniNiz');
 										//console.log(iskalniNiz);
 										try {
-											let r = await axios.get(`http://localhost:${PORT}/api/admin/osebe`, {
-												params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
-											});
+											let r = await axios.get(
+												`http://localhost:${global.config.port}/api/admin/osebe`,
+												{
+													params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
+												}
+											);
 											props.setTabela(r.data);
 										} catch (error) {
 											console.log(`Prišlo je do napake: ${error}`);

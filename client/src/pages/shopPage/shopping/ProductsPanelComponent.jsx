@@ -4,7 +4,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const ProductsPanel = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, popustF }) => {
-	const PORT = 3005; // !!!
 	const [nalaganje, setNalaganje] = useState(false);
 
 	useEffect(() => {

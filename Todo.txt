@@ -25,3 +25,5 @@
 // TODO: dodaj datoteko z sql stavki v mapo na github
 // TODO: izbriši neuporabljane module
 
+// state.loggingMode --> state.prikazAvtentikacija
+// state.msg --> state.sporocilo
