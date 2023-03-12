@@ -2,7 +2,9 @@
 }
 .notificationCard {
 	position: fixed;
-	background-color: rgba(255, 255, 255, 0.558);
+	background-color: rgb(214, 223, 223);
+	padding: 12px;
+	border-radius: 5px;
 	max-width: 400px;
 	color: rgb(0, 0, 0);
 	text-align: center;

@@ -46,7 +46,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 								<option value='ID_racuna'>ID-ju računa</option>
 								<option value='ID_narocila'>ID-ju naročila</option>
 								<option value='kupec'>Kupcu</option>
-								<option value='placano'>Datumu placila</option>
+								<option value='datumIzdaje'>Datumu izdaje</option>
 							</select>
 							<input
 								type='text'
@@ -60,7 +60,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 									}
 								}}
 								placeholder={
-									iskalniKriterij === 'placano' ? 'LLLL-MM-DD' : 'Vnesite iskalni niz'
+									iskalniKriterij === 'datumIzdaje' ? 'LLLL-MM-DD' : 'Vnesite iskalni niz'
 								}></input>
 							<br />
 							<label>Razvrsti po: </label>
@@ -71,7 +71,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 								}}>
 								<option value={null}>-</option>
 								<option value='ID_racuna'>ID-ju računa</option>
-								<option value='datum'>datumu</option>
+								<option value='datumIzdaje'>datumu izdaje</option>
 								<option value='za_placilo'>znesku</option>
 							</select>
 							<select
@@ -127,8 +127,8 @@ const PregledRacunov = ({ props, jeStranka }) => {
 										</tr>
 									)}
 									{props.tabela.map((el) => {
-										console.log('----------------');
-										console.log(el);
+										//console.log('----------------');
+										//console.log(el);
 										if (props.filter === -1) {
 											// prikazi vse
 											return (

@@ -17,9 +17,9 @@ import {
 	ListDashes,
 } from 'phosphor-react';
 import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../contexts/UserContext';
-import NotificationCard from './NotificationCardComponent';
-import UrediProfil from './UrediProfilC';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
+import Obvestilo from './ObvestiloC';
+import UrejanjeProfila from './UrejanjeProfilaC';
 import Pregled from './PregledInDodajanja/PregledC';
 import PodatkiOOsebi from './PregledInDodajanja/PodatkiOOsebiC';
 import DodajanjeUporabnikov from './PregledInDodajanja/DodajanjeUporabnikovC';
@@ -33,7 +33,7 @@ import Box from '@mui/material/Box';
 
 const Profile = () => {
 	const PORT = 3005; // !!!
-	const { user, setUser, setIsAuth } = useContext(UserContext);
+	const { uporabnik} = useContext(UporabniskiKontekst);
 
 	const [vloga, setVloga] = useState(null);
 	const [msg, setMsg] = useState('');
@@ -73,7 +73,7 @@ const Profile = () => {
 			try {
 				let response = await axios.get(`http://localhost:${PORT}/api/login/vloga`, {
 					params: {
-						uporabnisko_ime: user.uporabnisko_ime,
+						uporabnisko_ime: uporabnik.uporabnisko_ime,
 					},
 				});
 				setVloga(parseInt(response.data));
@@ -82,7 +82,7 @@ const Profile = () => {
 			}
 		};
 		pridobiVlogo();
-	}, [user.uporabnisko_ime]);
+	}, [uporabnik.uporabnisko_ime]);
 
 	if (vloga === null) {
 		// pridobivanje vloge profila
@@ -101,9 +101,9 @@ const Profile = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<NotificationCard />
+					<Obvestilo />
 					<div className='moznostiProfila'>
-						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
 							<h4>Funkcije</h4>
 							<button
@@ -319,6 +319,7 @@ const Profile = () => {
 			if (tabela === null) {
 				pridobiInfoOIzdelkih();
 			}
+
 			return (
 				<>
 					<PregledIzdelkov
@@ -365,7 +366,7 @@ const Profile = () => {
 					<PregledRacunov
 						props={{
 							naslov: 'Pregled računov',
-							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Datum izdaje'],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -503,9 +504,9 @@ const Profile = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<NotificationCard />
+					<Obvestilo />
 					<div className='moznostiProfila'>
-						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
 							<h4>Funkcije</h4>
 							<button
@@ -536,7 +537,7 @@ const Profile = () => {
 				try {
 					let r1 = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
 						params: {
-							uporabnisko_ime: user.uporabnisko_ime,
+							uporabnisko_ime: uporabnik.uporabnisko_ime,
 						},
 					});
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/narocila`, {
@@ -575,7 +576,7 @@ const Profile = () => {
 							setStanjeAdmin: setStanjeAdmin,
 							setOseba: setOseba,
 							stranka: true,
-							uporabnisko_ime: user.uporabnisko_ime,
+							uporabnisko_ime: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -595,7 +596,7 @@ const Profile = () => {
 			const pridobiRacuneUporabnika = async () => {
 				try {
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/racuniUporabnika`, {
-						params: { uporabnisko_ime: user.uporabnisko_ime },
+						params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
 					});
 					setTabela(r.data);
 				} catch (error) {
@@ -608,7 +609,7 @@ const Profile = () => {
 					<PregledRacunov
 						props={{
 							naslov: 'Pregled računov',
-							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Datum izdaje'],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -655,9 +656,9 @@ const Profile = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<NotificationCard />
+					<Obvestilo />
 					<div className='moznostiProfila'>
-						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
 							<h4>Funkcije</h4>
 							<button
@@ -729,6 +730,20 @@ const Profile = () => {
 				try {
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					r.data.forEach(async (element) => {
+						let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+							method: 'get',
+							responseType: 'blob',
+							params: {
+								ID_izdelka: element.ID_izdelka,
+							},
+						});
+						if (res.data.size === 0) {
+							element.slika = null;
+						} else {
+							element.slika = URL.createObjectURL(res.data);
+						}
 					});
 					setTabela(r.data);
 				} catch (error) {
@@ -832,7 +847,7 @@ const Profile = () => {
 					<PregledRacunov
 						props={{
 							naslov: 'Pregled računov',
-							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
+							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Datum izdaje'],
 							tabela: tabela,
 							setTabela: setTabela,
 							filter: filterUporabniki,
@@ -879,9 +894,9 @@ const Profile = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<NotificationCard />
+					<Obvestilo />
 					<div className='moznostiProfila'>
-						<UrediProfil uporabnisko_ime={user.uporabnisko_ime} vloga={vloga} />
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
 							<h4>Funkcije</h4>
 							<button
@@ -962,6 +977,20 @@ const Profile = () => {
 				try {
 					let r = await axios.get(`http://localhost:${PORT}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
+					});
+					r.data.forEach(async (element) => {
+						let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
+							method: 'get',
+							responseType: 'blob',
+							params: {
+								ID_izdelka: element.ID_izdelka,
+							},
+						});
+						if (res.data.size === 0) {
+							element.slika = null;
+						} else {
+							element.slika = URL.createObjectURL(res.data);
+						}
 					});
 					setTabela(r.data);
 				} catch (error) {
@@ -1143,7 +1172,7 @@ const Profile = () => {
 			let res;
 			try {
 				res = await axios.post(`http://localhost:${PORT}/api/login/vloga`, {
-					uporabnisko_ime: user.uporabnisko_ime,
+					uporabnisko_ime: uporabnik.uporabnisko_ime,
 				});
 			} catch (error) {
 				res.data = 'Prišlo je do napake';

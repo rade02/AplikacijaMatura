@@ -1,4 +1,4 @@
-const UserDataComponent = ({ props }) => {
+const PodatkiUporabnika = ({ props }) => {
 	return (
 		<table>
 			<tbody>
@@ -112,4 +112,4 @@ const UserDataComponent = ({ props }) => {
 	);*/
 };
 
-export default UserDataComponent;
+export default PodatkiUporabnika;

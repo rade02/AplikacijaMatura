@@ -2,15 +2,15 @@ import axios from 'axios';
 import { CheckCircle, XCircle } from 'phosphor-react';
 import { useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
-const SignUpComponent = () => {
+const Registracija = () => {
 	// TODO: enter --> skoči na drugo vnosno polje
 	// TODO: geslu dodaj se obvezne posebne znake (!, ., ...)
 	// TODO: popravi msg: setterje izven eventa (ne dela ce popravljamo)
 
 	const PORT = 3005; // !!!
-	const { setUser, setIsAuth } = useContext(UserContext);
+	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
 
 	const [inputData, setInputData] = useState({
@@ -81,8 +81,8 @@ const SignUpComponent = () => {
 				});
 
 				if (response.data === 'insertion successful') {
-					setIsAuth(true);
-					setUser(inputData);
+					setJeAvtenticiran(true);
+					setUporabnik(inputData);
 					//TODO: notification card - success
 				}
 				alert('Registracija uspešna: ' + JSON.stringify(inputData));
@@ -570,4 +570,4 @@ const SignUpComponent = () => {
 	);
 };
 
-export default SignUpComponent;
+export default Registracija;

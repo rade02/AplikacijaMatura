@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
-const DeleteProfile = ({ props }) => {
+const IzbrisProfila = ({ props }) => {
 	const PORT = 3005; // !!!
 	const [repeatPwd, setRepeatPwd] = useState(true);
 	const [pwd, setPwd] = useState('');
@@ -11,14 +11,14 @@ const DeleteProfile = ({ props }) => {
 	const [msg, setMsg] = useState({ pwdmsg: '' });
 	const [error, setError] = useState(false);
 
-	const { user, setIsAuth } = useContext(UserContext);
+	const { uporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
 
 	const handleClickCheckExisting = async () => {
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/login/`, {
 				params: {
-					username: user.uporabnisko_ime,
+					username: uporabnik.uporabnisko_ime,
 					password: pwd,
 				},
 			});
@@ -39,7 +39,7 @@ const DeleteProfile = ({ props }) => {
 		try {
 			let response = await axios.delete(`http://localhost:${PORT}/api/login/del`, {
 				params: {
-					username: user.uporabnisko_ime,
+					username: uporabnik.uporabnisko_ime,
 				},
 			});
 		} catch (error) {
@@ -52,7 +52,7 @@ const DeleteProfile = ({ props }) => {
 	if (repeatPwd) {
 		return (
 			<div>
-				<h2>Izbris računa {user.uporabnisko_ime}</h2>
+				<h2>Izbris računa {uporabnik.uporabnisko_ime}</h2>
 				<div>
 					<label>Vnesite geslo: </label>
 					<input
@@ -87,9 +87,9 @@ const DeleteProfile = ({ props }) => {
 	}
 	return (
 		<div>
-			<h2>Izbris računa {user.uporabnisko_ime}</h2>
+			<h2>Izbris računa {uporabnik.uporabnisko_ime}</h2>
 			<div>
-				<label>Vnesite 'briši račun {user.uporabnisko_ime}': </label>
+				<label>Vnesite 'briši račun {uporabnik.uporabnisko_ime}': </label>
 				<input
 					type='text'
 					key='2'
@@ -103,19 +103,19 @@ const DeleteProfile = ({ props }) => {
 			<button
 				onClick={(e) => {
 					e.preventDefault();
-					if (confirmation === `briši račun ${user.uporabnisko_ime}`) {
+					if (confirmation === `briši račun ${uporabnik.uporabnisko_ime}`) {
 						handleClickDelete();
 						if (!error) {
 							console.log('brišem...');
-							setIsAuth(false);
-							navigate('/', { state: { msg: `račun ${user.uporabnisko_ime} izbrisan` } });
+							setJeAvtenticiran(false);
+							navigate('/', { state: { msg: `račun ${uporabnik.uporabnisko_ime} izbrisan` } });
 						} else {
 							console.log('Napaka');
 						}
 					} else {
 						setMsg({
 							...msg,
-							pwdmsg: `Če želite izbrisati račun, vpišite: "briši račun ${user.uporabnisko_ime}"`,
+							pwdmsg: `Če želite izbrisati račun, vpišite: "briši račun ${uporabnik.uporabnisko_ime}"`,
 						});
 					}
 				}}>
@@ -133,4 +133,4 @@ const DeleteProfile = ({ props }) => {
 	);
 };
 
-export default DeleteProfile;
+export default IzbrisProfila;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { ShopContext } from '../../contexts/ShopContext';
+import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import Shopping from './ShoppingComponent';
 import Cart from './CartComponent';
 import Checkout from './checkout/CheckoutComponent';
@@ -10,7 +10,7 @@ import CardInput from './checkout/CardInputComponent';
 import { WarningCircle } from 'phosphor-react';
 
 const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
-	const { cart } = useContext(ShopContext);
+	const { kosarica } = useContext(NakupovalniKontekst);
 
 	const PORT = 3005; // !!!
 
@@ -60,7 +60,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 
 	useEffect(() => {
 		let vsota = 0;
-		cart.forEach((element) => {
+		kosarica.forEach((element) => {
 			vsota +=
 				element.cena_za_kos * element.kolicina -
 				element.cena_za_kos * element.kolicina * (element.popust / 100.0);

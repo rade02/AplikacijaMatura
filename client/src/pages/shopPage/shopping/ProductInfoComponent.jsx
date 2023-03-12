@@ -1,12 +1,11 @@
-import { ShoppingCart, CaretCircleLeft } from 'phosphor-react';
-import { useContext, useMemo, useState } from 'react';
-import { ShopContext } from '../../../contexts/ShopContext';
-import AddToCartButton from './AddToCartButtonComponent';
+import { CaretCircleLeft } from 'phosphor-react';
+import { useContext } from 'react';
+import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
 
 const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKosarice }) => {
-	const { cart, setCart, state } = useContext(ShopContext);
+	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 
-	console.log(izbranProdukt);
+	//console.log(izbranProdukt);
 
 	return (
 		<div className='productsMenu'>
@@ -27,9 +26,7 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 									<img
 										src={izbranProdukt.slika}
 										className='velikaSlika'
-										alt={`ni slike ${
-											izbranProdukt.slika !== null ? 'Nalaganje...' : ''
-										}`}
+										alt={`ni slike ${izbranProdukt.slika !== null ? 'Nalaganje...' : ''}`}
 									/>
 								</div>
 							)}
@@ -87,7 +84,7 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 									<CaretCircleLeft size={25} />
 									<div>Nazaj</div>
 								</button>
-								{cart.find((element) => element.ID_izdelka === izbranProdukt.ID_izdelka) ===
+								{kosarica.find((element) => element.ID_izdelka === izbranProdukt.ID_izdelka) ===
 								undefined ? (
 									<button
 										className='dodajVKosarico'
@@ -95,7 +92,7 @@ const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izK
 										onClick={(e) => {
 											e.preventDefault();
 											izbranProdukt.kolicina++;
-											setCart([...cart, izbranProdukt]);
+											setKosarica([...kosarica, izbranProdukt]);
 										}}>
 										Dodaj v košarico
 									</button>

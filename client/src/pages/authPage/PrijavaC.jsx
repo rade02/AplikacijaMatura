@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
-const SignInComponent = () => {
-	const { setUser, setIsAuth } = useContext(UserContext);
+const Prijava = () => {
+	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const [typedUsername, setTypedUsername] = useState('');
 	const [typedPassword, setTypedPassword] = useState('');
 	const [msg, setMsg] = useState('');
@@ -43,8 +43,8 @@ const SignInComponent = () => {
 						});
 						let userData = { ...data.data, geslo: typedPassword };
 						// into context:
-						setUser({ ...userData, uporabnisko_ime: typedUsername });
-						setIsAuth(true);
+						setUporabnik({ ...userData, uporabnisko_ime: typedUsername });
+						setJeAvtenticiran(true);
 					}
 				} else {
 					setTypedUsername('');
@@ -108,4 +108,4 @@ const SignInComponent = () => {
 	);
 };
 
-export default SignInComponent;
+export default Prijava;

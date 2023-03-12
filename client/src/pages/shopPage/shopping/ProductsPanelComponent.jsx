@@ -1,11 +1,9 @@
-import axios from 'axios';
 import Product from './ProductComponent';
-import { useContext, useEffect, useState } from 'react';
-import { ShopContext } from '../../../contexts/ShopContext';
+import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-const ProductsPanel = ({ props, stVsehProduktov, kategorijeF, cenaF, popustF }) => {
+const ProductsPanel = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, popustF }) => {
 	const PORT = 3005; // !!!
 	const [nalaganje, setNalaganje] = useState(false);
 
@@ -55,7 +53,9 @@ const ProductsPanel = ({ props, stVsehProduktov, kategorijeF, cenaF, popustF }) 
 						<button
 							onClick={(e) => {
 								e.preventDefault();
-								props.pridobiProdukte();
+								//props.pridobiProdukte();
+								//props.prikazaniProdukti = [];
+								filtriraj(true);
 							}}>
 							Prikaži več
 						</button>

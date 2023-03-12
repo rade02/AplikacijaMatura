@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useState, useContext } from 'react';
-import { UserContext } from '../../contexts/UserContext';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
-const ChangePassword = ({ props }) => {
+const SpreminjanjeGesla = ({ props }) => {
 	const PORT = 3005; // !!!
-	const { user, setUser } = useContext(UserContext);
+	const { uporabnik, setUporabnik } = useContext(UporabniskiKontekst);
 	const [password, setPassword] = useState('');
 	const [isCorrect, setIsCorrect] = useState(null);
 
@@ -13,7 +13,7 @@ const ChangePassword = ({ props }) => {
 	const [msg, setMsg] = useState('');
 
 	const handleSubmitOldPw = () => {
-		if (user.geslo === password) {
+		if (uporabnik.geslo === password) {
 			setIsCorrect(true);
 			setPassword('');
 		} else {
@@ -61,11 +61,11 @@ const ChangePassword = ({ props }) => {
 		if (OKpassword === 2) {
 			try {
 				let response = await axios.post(`http://localhost:${PORT}/api/login/pwdUpdt`, {
-					username: user.uporabnisko_ime,
+					username: uporabnik.uporabnisko_ime,
 					password: password,
 				});
 				//console.log(response.data);
-				setUser({ ...user, geslo: password });
+				setUporabnik({ ...uporabnik, geslo: password });
 				props.setUpdatedUser({ ...props.updatedUser, geslo: password });
 				props.setEditPw(false);
 			} catch (onRejectedError) {
@@ -148,4 +148,4 @@ const ChangePassword = ({ props }) => {
 	);
 };
 
-export default ChangePassword;
+export default SpreminjanjeGesla;

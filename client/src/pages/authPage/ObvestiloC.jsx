@@ -1,11 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
 
-const NotificationCard = () => {
+const Obvestilo = () => {
 	const location = useLocation();
 	const [message, setMessage] = useState('');
-	const { user } = useContext(UserContext);
 
 	useEffect(() => {
 		setMessage(location.state.msg);
@@ -21,4 +19,4 @@ const NotificationCard = () => {
 	return message === '' ? <></> : <div className='notificationCard'>Obvestilo: {message}</div>;
 };
 
-export default NotificationCard;
+export default Obvestilo;

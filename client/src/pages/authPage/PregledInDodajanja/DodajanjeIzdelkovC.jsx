@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 
 const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 	const PORT = 3005; // !!!

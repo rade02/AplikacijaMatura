@@ -1,8 +1,6 @@
 import axios from 'axios';
-import { useContext, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProductsPanel from './shopping/ProductsPanelComponent';
-import ProductInfo from './shopping/ProductInfoComponent';
-import { ShopContext } from '../../contexts/ShopContext';
 
 const Shopping = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -31,7 +29,7 @@ const Shopping = ({ props }) => {
 			console.log(error);
 		}
 	};
-	const filtriraj = async () => {
+	const filtriraj = async (dodatno) => {
 		console.log('filtriraj');
 		try {
 			let response = await axios.get(`http://localhost:${PORT}/api/products/filtriranje`, {
@@ -40,9 +38,12 @@ const Shopping = ({ props }) => {
 					kategorijeF: kategorijeF,
 					cenaF: cenaF,
 					popustF: popustF,
+					noDups: props.prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
-			response.data.forEach(async (element) => {
+			setStVsehProduktov(response.data.stProduktovKiUstrezajoFiltru);
+
+			response.data.produkti.forEach(async (element) => {
 				let res = await axios.get(`http://localhost:${PORT}/api/admin/pridobiSliko`, {
 					method: 'get',
 					responseType: 'blob',
@@ -50,6 +51,7 @@ const Shopping = ({ props }) => {
 						ID_izdelka: element.ID_izdelka,
 					},
 				});
+
 				element.kolicina = 0;
 				if (res.data.size === 0) {
 					element.slika = null;
@@ -59,7 +61,11 @@ const Shopping = ({ props }) => {
 				//console.log(element.slika);
 			});
 
-			props.setPrikazaniProdukti(response.data);
+			if (dodatno) {
+				props.setPrikazaniProdukti([...props.prikazaniProdukti, ...response.data.produkti]);
+			} else {
+				props.setPrikazaniProdukti([...response.data.produkti]);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -77,6 +83,7 @@ const Shopping = ({ props }) => {
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
+						// setting input fields
 						if (cenaF.od !== undefined) {
 							od.current.value = cenaF.od;
 						} else {
@@ -87,12 +94,16 @@ const Shopping = ({ props }) => {
 						} else {
 							Do.current.value = '';
 						}
+
+						console.log(parseFloat(cenaF.od));
 						if (isNaN(parseFloat(cenaF.od)) || parseFloat(cenaF.od) < 0) {
 							cenaF.od = undefined;
 						}
-						if (isNaN(parseFloat(cenaF.od)) || parseFloat(cenaF.do) < 0) {
+						console.log(parseFloat(cenaF.do));
+						if (isNaN(parseFloat(cenaF.do)) || parseFloat(cenaF.do) < 0) {
 							cenaF.do = undefined;
 						}
+						props.prikazaniProdukti = []; // nujno pred filtrireanjem, da ne vzame prejsnjih izdelkov kot podvojene
 						filtriraj();
 						if (
 							(kategorijeF === undefined || kategorijeF.length === 0) &&
@@ -139,14 +150,23 @@ const Shopping = ({ props }) => {
 									placeholder={cenaF.od === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
+										console.log((!isNaN(parseInt(e.target.value))).toString());
+										console.log((parseInt(e.target.value) > 0).toString());
+										console.log(
+											(
+												cenaF.do === undefined || parseInt(e.target.value) < parseInt(cenaF.do)
+											).toString()
+										);
 										if (
-											(!isNaN(parseInt(e.target.value)) &&
-												parseInt(e.target.value) > 0 &&
-												parseInt(e.target.value) < parseInt(cenaF.do)) ||
-											cenaF.do === undefined
+											!isNaN(parseInt(e.target.value)) &&
+											parseInt(e.target.value) > 0 &&
+											(cenaF.do === undefined || parseInt(e.target.value) < parseInt(cenaF.do))
 										) {
+											console.log('setting cenaf');
 											setCenaF({ ...cenaF, od: e.target.value });
 										} else {
+											console.log('setting cenaf UNDEFINED');
+
 											setCenaF({ ...cenaF, od: undefined });
 										}
 									}}></input>
@@ -161,14 +181,22 @@ const Shopping = ({ props }) => {
 									placeholder={cenaF.do === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
+										console.log((!isNaN(parseInt(e.target.value))).toString());
+										console.log((parseInt(e.target.value) > 0).toString());
+										console.log(
+											(
+												cenaF.od === undefined || parseInt(e.target.value) > parseInt(cenaF.od)
+											).toString()
+										);
 										if (
-											(!isNaN(parseInt(e.target.value)) &&
-												parseInt(e.target.value) > 0 &&
-												parseInt(e.target.value) > parseInt(cenaF.od)) ||
-											cenaF.od === undefined
+											!isNaN(parseInt(e.target.value)) &&
+											parseInt(e.target.value) > 0 &&
+											(cenaF.od === undefined || parseInt(e.target.value) > parseInt(cenaF.od))
 										) {
+											console.log('setting cenaf');
 											setCenaF({ ...cenaF, do: e.target.value });
 										} else {
+											console.log('setting cenaf UNDEFINED');
 											setCenaF({ ...cenaF, do: undefined });
 										}
 									}}></input>
@@ -219,6 +247,7 @@ const Shopping = ({ props }) => {
 			</div>
 			<ProductsPanel
 				props={props}
+				filtriraj={filtriraj}
 				stVsehProduktov={stVsehProduktov}
 				kategorijeF={kategorijeF}
 				cenaF={cenaF}

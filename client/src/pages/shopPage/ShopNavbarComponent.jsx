@@ -1,10 +1,9 @@
 import { ShoppingCart } from 'phosphor-react';
-import { useContext, useState } from 'react';
-import { ShopContext } from '../../contexts/ShopContext';
-import { UserContext } from '../../contexts/UserContext';
+import { useContext } from 'react';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
 const ShopNavbar = ({ visible, setVisible, prikazi, setPrikazi, cenaKosarice }) => {
-	const { user } = useContext(UserContext);
+	const { uporabnik } = useContext(UporabniskiKontekst);
 	//&& prikazi === 'nakupovanje'
 
 	return (
@@ -12,10 +11,10 @@ const ShopNavbar = ({ visible, setVisible, prikazi, setPrikazi, cenaKosarice }) 
 			<div className='shopNavbarHeading'>
 				{prikazi === 'nakupovanje' ? (
 					<label>
-						Pozdravljeni <i>{user.uporabnisko_ime}</i>, izberite naše izdelke po ugodni ceni
+						Pozdravljeni <i>{uporabnik.uporabnisko_ime}</i>, izberite naše izdelke po ugodni ceni
 					</label>
 				) : prikazi === 'kosarica' ? (
-					<label>Košarica uporabnika: {user.uporabnisko_ime}</label>
+					<label>Košarica uporabnika: {uporabnik.uporabnisko_ime}</label>
 				) : prikazi === 'produkt' ? (
 					<label>Izdelek</label>
 				) : prikazi === 'blagajna' ? (
@@ -38,7 +37,7 @@ const ShopNavbar = ({ visible, setVisible, prikazi, setPrikazi, cenaKosarice }) 
 						<ShoppingCart size={25} style={{ marginRight: '17px' }} />
 					</div>
 					<div className='cartbuttonText'>
-						<div>{user.uporabnisko_ime}</div>
+						<div>{uporabnik.uporabnisko_ime}</div>
 						<div>{cenaKosarice.toFixed(2)} €</div>
 					</div>
 				</button>

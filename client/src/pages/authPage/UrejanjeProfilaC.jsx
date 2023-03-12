@@ -1,33 +1,24 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../contexts/UserContext';
-import {
-	Pencil,
-	Password,
-	FloppyDisk,
-	ClockCounterClockwise,
-	SignOut,
-	Key,
-	Eraser,
-	UserMinus,
-} from 'phosphor-react';
-import UserDataComponent from './UserDataComponent';
-import ChangePassword from './ChangePasswordComponent';
-import DeleteProfile from './DeleteProfileComponent';
+import { useContext, useState } from 'react';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
+import { Pencil, FloppyDisk, ClockCounterClockwise, SignOut, Key, UserMinus } from 'phosphor-react';
+import PodatkiUporabnika from './PodatkiUporabnikaC';
+import ChangePassword from './SpreminjanjeGeslaC';
+import DeleteProfile from './IzbrisProfilaC';
 
-const UrediProfil = ({ vloga, setStanjeAdmin }) => {
+const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 	const PORT = 3005; // !!!
-	const { user, setUser, setIsAuth } = useContext(UserContext);
+	const { uporabnik, setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const [edit, setEdit] = useState(false);
 	const [editPw, setEditPw] = useState(false);
-	const [updatedUser, setUpdatedUser] = useState(user);
+	const [updatedUser, setUpdatedUser] = useState(uporabnik);
 	const [error, setError] = useState(false);
 	const [del, setDel] = useState(false);
 
 	const handleClick = async () => {
 		try {
 			const result = await axios.post(`http://localhost:${PORT}/api/login/updt`, updatedUser);
-			setUser(updatedUser);
+			setUporabnik(updatedUser);
 			setEdit(false);
 			//console.log(result.data);
 		} catch (onRejectedError) {
@@ -38,7 +29,7 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 	if (editPw) {
 		return (
 			<>
-				<h2>Profil: {user.uporabnisko_ime}</h2>
+				<h2>Profil: {uporabnik.uporabnisko_ime}</h2>
 				<ChangePassword
 					props={{
 						updatedUser: updatedUser,
@@ -62,7 +53,7 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 	return (
 		<div className='funkcije'>
 			<h2>
-				Profil: {user.uporabnisko_ime}{' '}
+				Profil: {uporabnik.uporabnisko_ime}{' '}
 				{vloga !== 2
 					? vloga === 0
 						? '(administrator)'
@@ -98,18 +89,18 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 					</button>
 				</div>
 				<div>
-					<UserDataComponent
+					<PodatkiUporabnika
 						props={{
 							updatedUser: updatedUser,
 							setUpdatedUser: setUpdatedUser,
 							edit: edit,
-							user: user,
+							user: uporabnik,
 						}}
 					/>
 					{vloga !== 0 ? (
 						<>
 							<button
-								disabled={JSON.stringify(updatedUser) === JSON.stringify(user) ? 'disabled' : ''}
+								disabled={JSON.stringify(updatedUser) === JSON.stringify(uporabnik) ? 'disabled' : ''}
 								onClick={(e) => {
 									e.preventDefault();
 									setEdit(false);
@@ -118,13 +109,13 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 								Shrani spremembe <FloppyDisk size={22} />
 							</button>
 							<button
-								disabled={JSON.stringify(updatedUser) === JSON.stringify(user) ? 'disabled' : ''}
+								disabled={JSON.stringify(updatedUser) === JSON.stringify(uporabnik) ? 'disabled' : ''}
 								onClick={(e) => {
 									e.preventDefault();
 
-									console.log(user);
+									console.log(uporabnik);
 									console.log(updatedUser);
-									setUpdatedUser(user);
+									setUpdatedUser(uporabnik);
 									setEdit(false);
 								}}>
 								Ponastavi <ClockCounterClockwise size={22} />
@@ -140,7 +131,7 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 					<button
 						onClick={(e) => {
 							e.preventDefault();
-							setIsAuth(false);
+							setJeAvtenticiran(false);
 						}}>
 						Odjava <SignOut size={22} />
 					</button>
@@ -167,4 +158,4 @@ const UrediProfil = ({ vloga, setStanjeAdmin }) => {
 	);
 };
 
-export default UrediProfil;
+export default UrejanjeProfila;

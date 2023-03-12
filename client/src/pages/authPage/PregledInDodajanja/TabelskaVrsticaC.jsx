@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus } from 'phosphor-react';
-import '../AuthPage.css';
+import '../Avtentikacija.css';
 
 const TabelskaVrstica = ({ props }) => {
 	const PORT = 3005; // !!!
@@ -38,7 +38,7 @@ const TabelskaVrstica = ({ props }) => {
 				<td>{props.element.ID_narocila}</td>
 				<td>{props.element.kupec}</td>
 				<td>{props.element.za_placilo}</td>
-				<td>{props.element.placano}</td>
+				<td>{props.element.datumIzdaje}</td>
 			</tr>
 		);
 	} else if (props.naslov === 'Pregled izdelkov') {
@@ -48,7 +48,7 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={(e) => {
 					e.preventDefault();
-					console.log('props.element');
+					console.log('props.elementTTT');
 					console.log(props.element);
 					props.setOseba(props.element);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);

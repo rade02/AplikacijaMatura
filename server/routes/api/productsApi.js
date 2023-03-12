@@ -60,9 +60,11 @@ router.get('/filtriranje', async (req, res) => {
 	let kategorijeF = req.query.kategorijeF;
 	let cenaF = req.query.cenaF;
 	let popustF = req.query.popustF;
-	let sqlQ;
+	let noDuplicates = req.query.noDups;
+	let sqlQ = '';
+	//'select * from Izdelki where (';
+	//let sqlCount = 'select count(*) from Izdelki where ('
 
-	sqlQ = `select * from Izdelki where (`;
 	if (kategorijeF !== undefined && kategorijeF.length > 0) {
 		sqlQ = sqlQ.concat(
 			`Izdelki.kategorija in (${kategorijeF.map((k) => {
@@ -88,11 +90,21 @@ router.get('/filtriranje', async (req, res) => {
 	);
 
 	//console.log(sqlQ);
-
 	try {
-		let newProducts = await pool.query(sqlQ);
-
-		res.status(200).send(newProducts[0]);
+		let newProducts;
+		if (noDuplicates !== null && noDuplicates !== undefined) {
+			newProducts = await pool.query(`select * from Izdelki where (ID_izdelka not in ? and ${sqlQ}`, [
+				[noDuplicates],
+			]);
+		} else {
+			newProducts = await pool.query(`select * from Izdelki where (${sqlQ}`);
+		}
+		let steviloProduktov = await pool.query(`select count(*) from Izdelki where (${sqlQ}`);
+		//console.log(steviloProduktov[0][0]['count(*)']);
+		res.status(200).send({
+			produkti: newProducts[0],
+			stProduktovKiUstrezajoFiltru: steviloProduktov[0][0]['count(*)'],
+		});
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
 		res.status(400).send(`error`);
@@ -101,7 +113,7 @@ router.get('/filtriranje', async (req, res) => {
 
 router.get('/stVsehProduktov', async (req, res) => {
 	try {
-		let number = await pool.query(`select count(*) from Izdelki where Izdelki.kosov_na_voljo > 0`);
+		let number = await pool.query(`select distinct count(*) from Izdelki where Izdelki.kosov_na_voljo > 0`);
 		res.status(200).send(number[0][0]['count(*)'].toString());
 	} catch (onRejectedError) {
 		console.log(onRejectedError);
@@ -114,12 +126,13 @@ router.get('/ustvariNarocilo', async (req, res) => {
 	const imeStranke = req.query.imeStranke;
 	const priimekStranke = req.query.priimekStranke;
 	const naslovDostave = req.query.naslovDostave;
+	const postnina = req.query.postnina;
 
 	try {
 		// dodajanje naročila
 		let response3 = await pool.query(
-			`insert into Narocila (datum, ID_stranke, opravljeno, imeStranke, priimekStranke, naslovDostave) values ((select current_date() as cd), ?, default, ?, ?, ?);`,
-			[ID_stranke, imeStranke, priimekStranke, naslovDostave]
+			`insert into Narocila (datum, ID_stranke, opravljeno, imeStranke, priimekStranke, naslovDostave, postnina) values ((select current_date() as cd), ?, default, ?, ?, ?, ?);`,
+			[ID_stranke, imeStranke, priimekStranke, naslovDostave, postnina]
 		);
 		// pridobivanje ID-ja zdajšnjega naročila
 		let response22 = await pool.query(

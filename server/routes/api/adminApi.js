@@ -93,7 +93,7 @@ router.get('/racuni', async (req, res) => {
 	} else {
 		sql = `select * from Racuni where ${kriterij} = '${niz}' order by ${razvrscanje_po} ${razvrscanje_razvrsti}`;
 	}
-	console.log(sql);
+	//console.log(sql);
 	try {
 		let response = await pool.query(sql, [niz]);
 
@@ -352,7 +352,7 @@ router.post('/urediNarocilo', async (req, res) => {
 router.post('/izdajRacun', async (req, res) => {
 	const ID_narocila = req.body.ID_narocila;
 	const kupec = req.body.kupec;
-	const placano = req.body.placano;
+	const datumIzdaje = req.body.datumIzdaje;
 
 	try {
 		let response1 = await pool.query(`select * from Izdelki_pri_narocilu where ID_narocila = ?`, [
@@ -364,9 +364,12 @@ router.post('/izdajRacun', async (req, res) => {
 			skupnaCena += parseFloat(izdelek.kolicina) * parseFloat(izdelek.cena);
 		});
 
+		let response2 = await pool.query(`select postnina from Narocila where ID_narocila = ?`, [ID_narocila]);
+		skupnaCena += response2[0][0].postnina;
+
 		let response = await pool.query(
-			`insert into Racuni (ID_narocila, kupec, za_placilo, placano) values (?,?,?,?);`,
-			[ID_narocila, kupec, skupnaCena.toFixed(2), placano]
+			`insert into Racuni (ID_narocila, kupec, za_placilo, datumIzdaje) values (?,?,?,?);`,
+			[ID_narocila, kupec, skupnaCena.toFixed(2), datumIzdaje]
 		);
 
 		res.status(200).send('uspešna operacija');
@@ -445,7 +448,7 @@ router.post('/izbrisiElement', async (req, res) => {
 
 	try {
 		let response1 = await pool.query(`delete from ${DB} where ${IDtip} = ?`, [ID]);
-
+		console.log(response1[0]);
 		res.status(200).send('uspešna operacija');
 	} catch (onRejectedError) {
 		console.log(onRejectedError);

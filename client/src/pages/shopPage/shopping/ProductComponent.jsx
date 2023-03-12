@@ -1,9 +1,5 @@
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { useEffect, useState, useContext, useMemo, useRef } from 'react';
-import AddToCartButton from './AddToCartButtonComponent';
-import { ShopContext } from '../../../contexts/ShopContext';
-import AddingNotification from './AddingNotification';
+import { useState, useContext, useMemo } from 'react';
+import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
 
 const Product = ({
 	prikazi,
@@ -16,7 +12,7 @@ const Product = ({
 }) => {
 	const PORT = 3005; // !!!
 	const [showNotif, setShowNotif] = useState({ show: false, content: '' }); // show: boolean and content:'what to show'
-	const { cart, setCart, state } = useContext(ShopContext);
+	const { kosarica, setKosarica} = useContext(NakupovalniKontekst);
 
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);
@@ -94,7 +90,7 @@ const Product = ({
 						<div></div>
 					</div>
 				</div>
-				{cart.find((element) => element.ID_izdelka === taProdukt.ID_izdelka) === undefined ? (
+				{kosarica.find((element) => element.ID_izdelka === taProdukt.ID_izdelka) === undefined ? (
 					<button
 						className='dodajVKosarico'
 						onClick={(e) => {
@@ -102,7 +98,7 @@ const Product = ({
 							e.stopPropagation();
 							//console.log(taProdukt);
 							taProdukt.kolicina++;
-							setCart([...cart, taProdukt]);
+							setKosarica([...kosarica, taProdukt]);
 						}}>
 						Dodaj v košarico
 					</button>

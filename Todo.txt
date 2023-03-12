@@ -1,12 +1,12 @@
 // TODO: ne nalozijo se vse slike (rabi da scrollamo in potem malo pocakamo)
-// TODO: pri neadminih preveri nalaganje slik
-// TODO: 
-// TODO: 
-// TODO: 
-// TODO: 
-// TODO: znesek pri narocilih (z dodano poštnino - dostavo na koncu dodaj kot izdelek da se šteje v ceni)
+// TODO: pri poskusi ponovno ciklanje v loopu pri nalaganju izdelkov
 // TODO: 
 // TODO: shop navbar napaka ce odpremo product info po dodajanju in ko smo spodaj
+// TODO: 
+// TODO: 3, 4 izdelek v kosrici ni posodobil skupne cene - napacen pristop k spreminjanju kolicin v cartu
+// TODO: 
+// TODO: 
+// TODO: 
 // TODO: 
 // TODO: 
 // TODO: 
@@ -19,8 +19,8 @@
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: 
-// TODO: 
-// TODO: 
+// TODO: preimenuj mape (odpri kot admin)
+// TODO: profil admin je na zacetku narejen v Uporabnikih in Stranke_in_zaposleni
 // TODO: daj port kot globalno dostopno spremenljivko
 // TODO: dodaj datoteko z sql stavki v mapo na github
 // TODO: izbriši neuporabljane module

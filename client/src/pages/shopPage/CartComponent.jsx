@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { CaretCircleLeft, CaretCircleRight } from 'phosphor-react';
-import { ShopContext } from '../../contexts/ShopContext';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
+import { useContext, useEffect, useRef, useState } from 'react';
 import CartProduct from './cart/CartProductComponent';
 
 const Cart = ({
@@ -19,7 +19,7 @@ const Cart = ({
 	setNiProduktov,
 }) => {
 	const PORT = 3005; // !!!
-	const { state, setState, cart, setCart } = useContext(ShopContext);
+	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 	const [refresh, setRefresh] = useState(false);
 
 	let counter = useRef(0);
@@ -29,7 +29,7 @@ const Cart = ({
 		counter.current = 0;
 		preveriZalogoIzdelkov();
 	}, []);
-	console.log(cart);
+	console.log(kosarica);
 
 	const preveriZalogoIzdelkov = async () => {
 		let vsota = 0;
@@ -56,7 +56,7 @@ const Cart = ({
 				console.log(error);
 			}
 		};
-		for (let product of cart) {
+		for (let product of kosarica) {
 			counter.current = 0;
 			vsota +=
 				product.cena_za_kos *
@@ -66,7 +66,7 @@ const Cart = ({
 				(product.popust / 100.0);
 
 			if (!(await f(product))) {
-				setCart(cart.filter((p) => p.ID_izdelka !== product.ID_izdelka));
+				setKosarica(kosarica.filter((p) => p.ID_izdelka !== product.ID_izdelka));
 				setPrikazaniProdukti(prikazaniProdukti.filter((p) => p.ID_izdelka !== product.ID_izdelka));
 			}
 			setCenaKosarice(vsota);
@@ -76,8 +76,8 @@ const Cart = ({
 	return (
 		<div>
 			<div>
-				{cart.length > 0 ? (
-					cart.map((product) => {
+				{kosarica.length > 0 ? (
+					kosarica.map((product) => {
 						return (
 							<CartProduct
 								key={product.ID_izdelka}
@@ -90,7 +90,6 @@ const Cart = ({
 									setPrikazi: setPrikazi,
 									product: product,
 									counter: counter,
-									setState: setState,
 									setRemovedMsg: setRemovedMsg,
 								}}
 								refresh={refresh}
@@ -118,12 +117,12 @@ const Cart = ({
 						<div>Nazaj</div>
 					</button>
 					<button
-						className={cart.length <= 0 ? 'disabledBtn' : 'fwdButton'}
-						disabled={cart.length <= 0 ? 'disabled' : ''}
+						className={kosarica.length <= 0 ? 'disabledBtn' : 'fwdButton'}
+						disabled={kosarica.length <= 0 ? 'disabled' : ''}
 						onClick={(e) => {
 							e.preventDefault();
 							preveriZalogoIzdelkov();
-							if (cart.length > 0) {
+							if (kosarica.length > 0) {
 								setPrikazi('blagajna');
 								setRemovedMsg('');
 							} else {

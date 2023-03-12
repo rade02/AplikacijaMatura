@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { ShopContext } from '../../../contexts/ShopContext';
+import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
 
 const CartProduct = ({ props, refresh, setRefresh }) => {
-	const { cart, setCart, setState } = useContext(ShopContext);
+	const { kosarica } = useContext(NakupovalniKontekst);
 	// TODO: SPREMENI, DA BO NAMESTO += 0.5 : += 1
 	//console.log(props.product);
 	return (
@@ -29,15 +29,15 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 					{props.product.kratek_opis !== null ? ` ${props.product.kratek_opis}` : ''}
 				</div>
 				<div className='productLaneDetailInfo'>
-					<div>{parseFloat(props.product.cena_za_kos).toFixed(2)} €</div>
+					<div>
+						{parseFloat(props.product.cena_za_kos * (1 - props.product.popust / 100.0)).toFixed(2)} €
+					</div>
 
 					<div>
 						<button
 							title='odstrani kos'
 							onClick={(e) => {
-								e.preventDefault();
-
-								cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina--;
+								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina--;
 
 								props.setRemovedMsg(
 									// nujno za rerendering cart componenta !!
@@ -55,19 +55,18 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 						<button
 							title='dodaj kos'
 							disabled={
-								cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 >
-								cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
+								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 >
+								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
 									? 'disabled'
 									: ''
 							}
 							onClick={(e) => {
-								e.preventDefault();
 								console.log('click');
 								if (
-									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 <=
-									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
+									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 <=
+									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
 								) {
-									cart.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
+									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
 									props.setRemovedMsg(
 										`Dodan izdelek: ${props.product.ime} ${
 											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
@@ -80,6 +79,7 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 										} ni več na zalogi `
 									);
 								}
+								Math.random().toFixed(3);
 								setRefresh(!refresh);
 
 								//console.log(props.product);

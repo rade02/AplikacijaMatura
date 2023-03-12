@@ -23,13 +23,14 @@ const PodatkiOOsebi = ({
 	const [opravljeno, setOpravljeno] = useState(false);
 	const [napaka, setNapaka] = useState(null);
 	const [DB, setDB] = useState(null);
-
+	console.log(oseba);
 	useEffect(() => {
+		console.log(oseba);
 		if (oseba === null) {
 			setDB(null);
 			return (
 				<div>
-					<div>Prišlo je do napake pri prikazu osebe</div>
+					<div>Prišlo je do napake pri prikazu podrobnosti</div>
 					<button
 						className='backBtn'
 						onClick={(e) => {
@@ -41,17 +42,19 @@ const PodatkiOOsebi = ({
 					</button>
 				</div>
 			);
-		} else if (oseba.ID_izdelka !== null || oseba.ID_izdelka !== undefined) {
+		} else if (oseba.ID_izdelka !== null && oseba.ID_izdelka !== undefined) {
 			setDB({ DB: 'Izdelki', IDtip: 'ID_izdelka' });
-		} else if (oseba.ID_narocila !== null || oseba.ID_narocila !== undefined) {
-			setDB({ DB: 'Narocila', IDtip: 'ID_narocila' });
-		} else if (oseba.ID_racuna !== null || oseba.ID_racuna !== undefined) {
+		} else if (oseba.ID_racuna !== null && oseba.ID_racuna !== undefined) {
 			setDB({ DB: 'Racuni', IDtip: 'ID_racuna' });
+		} else if (oseba.ID_narocila !== null && oseba.ID_narocila !== undefined) {
+			setDB({ DB: 'Narocila', IDtip: 'ID_narocila' });
 		}
 	}, []);
+	console.log(DB);
 
 	const izbris = async () => {
 		if (DB !== null) {
+			console.log('brisem...');
 			try {
 				const result = await axios.post(`http://localhost:${PORT}/api/admin/izbrisiElement`, {
 					DB: DB.DB,
@@ -119,7 +122,7 @@ const PodatkiOOsebi = ({
 			const result2 = await axios.post(`http://localhost:${PORT}/api/admin/izdajRacun`, {
 				ID_narocila: oseba.ID_narocila,
 				kupec: oseba.imeStranke + ' ' + oseba.priimekStranke,
-				placano: oseba.datum,
+				datumIzdaje: oseba.datum,
 			});
 			// TODO: ustvari racun
 			setNapaka('Podatki spremenjeni');
@@ -128,8 +131,8 @@ const PodatkiOOsebi = ({
 			console.log(onRejectedError);
 		}
 	};
-	console.log(oseba);
-	console.log(niIzbrisa);
+	//console.log(oseba);
+	//console.log(niIzbrisa);
 	return (
 		<div>
 			<button
@@ -155,7 +158,7 @@ const PodatkiOOsebi = ({
 						setStanjeAdmin(prejsnjeStanjeAdmin);
 					}}>
 					<X size={25} style={{ marginRight: '5px' }} />
-					<div>Odstrani iz PB</div>
+					<div>Izbriši iz PB</div>
 				</button>
 			) : (
 				<></>
@@ -420,6 +423,8 @@ const PodatkiOOsebi = ({
 												</button>
 											)}
 										</td>
+									) : pr === 'postnina' || pr === 'za_placilo' ? (
+										<td>{oseba[pr].toFixed(2)} €</td>
 									) : (
 										<td>{oseba[pr]}</td>
 									)}
@@ -453,6 +458,7 @@ const PodatkiOOsebi = ({
 													);
 													return <td key={key + '' + izdelek[key]}>{imeIzdelka[0].ime}</td>;
 												} else if (key === 'cena') {
+													console.log(izdelek);
 													return (
 														<td key={key + '' + izdelek[key]}>
 															{(izdelek[key] / parseFloat(izdelek.kolicina)).toFixed(2)} €

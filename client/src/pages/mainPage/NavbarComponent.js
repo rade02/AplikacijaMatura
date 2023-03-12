@@ -1,12 +1,12 @@
 import '../../App.css';
 import { UserCircle } from 'phosphor-react';
-import { useContext, useMemo, useEffect } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import Logo from './LogoComponent';
 
 const Navbar = () => {
-	const { user, isAuth, setIsAuth } = useContext(UserContext);
+	const { uporabnik, jeAvtenticiran, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const msg = {
 		msg1: 'Za ponovno prijavo se morate najprej odjaviti',
 		msg2: 'Za registracijo se morate najprej odjaviti',
@@ -29,7 +29,7 @@ const Navbar = () => {
 				<div>
 					<Link
 						to='/auth'
-						state={{ loggingMode: 'signup', msg: isAuth ? msg.msg2 : '' }}
+						state={{ loggingMode: 'signup', msg: jeAvtenticiran ? msg.msg2 : '' }}
 						className='links'>
 						Registracija
 					</Link>
@@ -37,17 +37,17 @@ const Navbar = () => {
 				<div>
 					<Link
 						to='/auth'
-						state={{ loggingMode: 'signin', msg: isAuth ? msg.msg1 : '' }}
+						state={{ loggingMode: 'signin', msg: jeAvtenticiran ? msg.msg1 : '' }}
 						className='links'>
-						{isAuth ? (
+						{jeAvtenticiran ? (
 							<>
 								<UserCircle size={28} style={{ marginRight: '4px' }} />
-								<label style={{ marginRight: '12px' }}>{user.uporabnisko_ime}</label>
+								<label style={{ marginRight: '12px' }}>{uporabnik.uporabnisko_ime}</label>
 								<label
 									onClick={(e) => {
 										e.preventDefault();
 										e.stopPropagation();
-										setIsAuth(false);
+										setJeAvtenticiran(false);
 									}}
 									style={{ textDecoration: 'underline' }}>
 									Odjava

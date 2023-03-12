@@ -1,9 +1,8 @@
 import './ShopPage.css';
-import { useEffect, useState, useContext, useRef } from 'react';
-import { ShopContextProvider } from '../../contexts/ShopContext';
+import { useEffect, useState, useRef } from 'react';
+import { NakupovalniKontekstProvider } from '../../contexts/NakupovalniKontekst';
 import ShopContent from './ShopContentComponent';
 import ShopNavbar from './ShopNavbarComponent';
-import { ShopContext } from '../../contexts/ShopContext';
 
 const ShopPage = () => {
 	const [position, setPosition] = useState(window.pageYOffset);
@@ -34,7 +33,7 @@ const ShopPage = () => {
 	});
 
 	return (
-		<ShopContextProvider>
+		<NakupovalniKontekstProvider>
 			<div className='shop' ref={zgoraj}>
 				<ShopNavbar
 					visible={visible}
@@ -61,7 +60,7 @@ const ShopPage = () => {
 					<></>
 				)}
 			</div>
-		</ShopContextProvider>
+		</NakupovalniKontekstProvider>
 	);
 };
 

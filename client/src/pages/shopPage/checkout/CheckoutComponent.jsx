@@ -1,14 +1,14 @@
 import { CaretCircleLeft, CaretCircleRight, CreditCard, Money, Package, Truck } from 'phosphor-react';
-import { UserContext } from '../../../contexts/UserContext';
-import { ShopContext } from '../../../contexts/ShopContext';
+import { UporabniskiKontekst } from '../../../contexts/UporabniskiKontekst';
+import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useState } from 'react';
 import PostaSlovenije from '../../../assets/PSlogo.png';
 import axios from 'axios';
 
 const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) => {
 	const PORT = 3005; // !!!
-	const { user, isAuth } = useContext(UserContext);
-	const { state, setState, cart, setCart } = useContext(ShopContext);
+	const { user, isAuth } = useContext(UporabniskiKontekst);
+	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 	const [userData, setUserData] = useState(null);
 	const [totalPrice, setTotalPrice] = useState(0);
 	const [deliveryCost, setDeliveryCost] = useState(0);
@@ -23,10 +23,10 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 		const cartTotalPrice = () => {
 			let total = 0;
 
-			for (let i = 0; i < cart.length; i++) {
+			for (let i = 0; i < kosarica.length; i++) {
 				total +=
-					cart[i].cena_za_kos * cart[i].kolicina -
-					cart[i].cena_za_kos * cart[i].kolicina * (cart[i].popust / 100.0);
+					kosarica[i].cena_za_kos * kosarica[i].kolicina -
+					kosarica[i].cena_za_kos * kosarica[i].kolicina * (kosarica[i].popust / 100.0);
 			}
 			if (deliveryCost > 0) {
 				total += deliveryCost;
@@ -90,13 +90,16 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 			fetchUserData();
 		}
 		setTotalPrice(cartTotalPrice());
-	}, [isAuth, cart, deliveryCost]);
+	}, [isAuth, kosarica, deliveryCost]);
 
 	const handleSubmit = async (e) => {
 		let IDnarocila = null;
 		try {
 			let id = null;
-			if (userData !== null) {
+			console.log(userData);
+			console.log('deliveryCost');
+			console.log(deliveryCost);
+			if (userData !== null && userData.uporabnisko_ime !== 'admin') {
 				let resp = await axios.get(`http://localhost:${PORT}/api/admin/idUporabnika`, {
 					params: {
 						uporabnisko_ime: userData.uporabnisko_ime,
@@ -110,16 +113,17 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 					imeStranke: kupec.ime,
 					priimekStranke: kupec.priimek,
 					naslovDostave: naslovDostava,
+					postnina: deliveryCost,
 				},
 			});
 			IDnarocila = result.data;
 
-			for (let element of cart) {
+			for (let element of kosarica) {
 				const result1 = await axios.post(`http://localhost:${PORT}/api/products/dodajIzdelkeNarocilu`, {
 					ID_narocila: IDnarocila,
 					ID_izdelka: element.ID_izdelka,
 					kolicina: element.kolicina,
-					cena: element.cena_za_kos,
+					cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
 				});
 				// zmanjšanje zaloge
 				const result12 = await axios.post(`http://localhost:${PORT}/api/products/zmanjsajZalogo`, {
@@ -132,7 +136,7 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 			setRemovedMsg('Potrditev naročila neuspešna (prišlo je do napake)');
 			console.log(onRejectedError);
 		}
-		cart.forEach((element) => {
+		kosarica.forEach((element) => {
 			element.kolicina = 0;
 		});
 
@@ -193,7 +197,7 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 				//console.log(cart);
 				setOddano(true);
 
-				setCart([]);
+				setKosarica([]);
 				/*console.log('kupec');
 				console.log(kupec);
 				console.log('prejemnik');
@@ -431,11 +435,13 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 				<div className='smallProductDesc'>
 					<table>
 						<tbody>
-							{cart.map((product) => {
+							{kosarica.map((product) => {
 								return (
 									<tr>
 										<td>
-											{product.ime}, {product.kratek_opis}
+											{product.kratek_opis !== '' && product.kratek_opis !== null
+												? `${product.ime}, ${product.kratek_opis}`
+												: product.ime}
 										</td>
 										<td>kol: {product.kolicina}</td>{' '}
 										<td>
@@ -494,7 +500,7 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 					<div>Nazaj</div>
 				</button>
-				<button className='fwdButton' type='submit' disabled={cart.length === 0 ? 'disabled' : ''}>
+				<button className='fwdButton' type='submit' disabled={kosarica.length === 0 ? 'disabled' : ''}>
 					<div>Oddaj naročilo</div>
 					<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
 				</button>

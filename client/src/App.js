@@ -5,12 +5,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './pages/mainPage/NavbarComponent';
 import HomePage from './pages/homePage/HomePage';
 import AboutPage from './pages/aboutPage/AboutPage';
-import AuthPage from './pages/authPage/AuthPage';
 import ShopPage from './pages/shopPage/ShopPage';
 import ErrorPage from './pages/errorPage/ErrorPage';
 import AboutRibbon from './pages/mainPage/AboutRibbon';
 // context:
-import { UserContextProvider } from './contexts/UserContext';
+import { UporabniskiKontekstProvider } from './contexts/UporabniskiKontekst';
+import Avtentikacija from './pages/authPage/AvtentikacijaC';
 
 // EXPORTS AND IMPORTS:
 // export ---> import {} from ... (can export many values from single file)
@@ -43,21 +43,21 @@ function App() {
 	// TA; KJER SO ROUTE TAM SO PAGES, na pages so komponente
 	return (
 		<Router>
-			<UserContextProvider>
+			<UporabniskiKontekstProvider>
 				<div className='main'>
 					<Navbar />
 					<div>
 						<Routes>
 							<Route path='/' element={<HomePage />} />
 							<Route path='/about' element={<AboutPage />} />
-							<Route path='/auth' element={<AuthPage />} />
+							<Route path='/auth' element={<Avtentikacija />} />
 							<Route path='/shop' element={<ShopPage />} />
 							<Route path='*' element={<ErrorPage />} />
 						</Routes>
 					</div>
 					<AboutRibbon />
 				</div>
-			</UserContextProvider>
+			</UporabniskiKontekstProvider>
 		</Router>
 	);
 }
@@ -65,6 +65,12 @@ function App() {
 export default App;
 
 /*
+
+
+
+
+
+
 <Route path='/' element={<Navigate replace to='/gost/*' />} />
 							<Route path='/:uname/*' element={<Home />} />
 
