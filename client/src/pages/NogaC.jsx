@@ -1,10 +1,10 @@
-import '../../App.css';
+import '../App.css';
 import { FacebookLogo, InstagramLogo, TwitterLogo } from 'phosphor-react';
 
-const AboutRibbon = () => {
+const Noga = () => {
 	return (
-		<div className='aboutRibbon'>
-			<div className='leftInfoBox'>
+		<div className='noga'>
+			<div className='informacijeLevo'>
 				<b>Podatki o podjetju</b>
 				<br />
 				<hr />
@@ -13,7 +13,7 @@ const AboutRibbon = () => {
 				Slovenska cesta 1<br />
 				1000 Ljubljana
 			</div>
-			<div className='centerInfoBox'>
+			<div className='informacijeSredina'>
 				<div>Sledite nam na družbenih omrežjih:</div>
 				<div>
 					<button
@@ -40,13 +40,13 @@ const AboutRibbon = () => {
 					</button>
 				</div>
 			</div>
-			<div className='rightInfoBox'>
+			<div className='informacijeDesno'>
 				<b>Kontakt</b>
 				<br />
 				<hr />
 				<div>
 					<div>Telefon:</div>
-					<div className='phoneNums'>
+					<div className='telefonskeStevilke'>
 						041 123 456
 						<br />
 						01 123 45 67
@@ -57,4 +57,4 @@ const AboutRibbon = () => {
 	);
 };
 
-export default AboutRibbon;
+export default Noga;

@@ -1,4 +1,4 @@
-import Product from './ProductComponent';
+import Product from './ProduktC';
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';

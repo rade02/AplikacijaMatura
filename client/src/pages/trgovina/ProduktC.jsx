@@ -1,5 +1,5 @@
 import { useState, useContext, useMemo } from 'react';
-import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
+import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 
 const Product = ({
 	prikazi,

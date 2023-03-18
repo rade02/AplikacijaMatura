@@ -20,66 +20,54 @@ import { useContext, useEffect, useState } from 'react';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import Obvestilo from './ObvestiloC';
 import UrejanjeProfila from './UrejanjeProfilaC';
-import Pregled from './PregledInDodajanja/PregledC';
-import PodatkiOOsebi from './PregledInDodajanja/PodatkiOOsebiC';
-import DodajanjeUporabnikov from './PregledInDodajanja/DodajanjeUporabnikovC';
-import PregledRacunov from './PregledInDodajanja/PregledRacunovC';
-import PregledIzdelkov from './PregledInDodajanja/PregledIzdelkovC';
-import PregledNarocil from './PregledInDodajanja/PregledNarocilC';
-import PregledPB from './PregledInDodajanja/PregledPBC';
-import DodajanjeIzdelkov from './PregledInDodajanja/DodajanjeIzdelkovC';
+import Pregled from './pregledi_in_dodajanja/PregledC';
+import PodatkiOOsebi from './pregledi_in_dodajanja/PodatkiOOsebiC';
+import DodajanjeUporabnikov from './pregledi_in_dodajanja/DodajanjeUporabnikovC';
+import PregledRacunov from './pregledi_in_dodajanja/PregledRacunovC';
+import PregledIzdelkov from './pregledi_in_dodajanja/PregledIzdelkovC';
+import PregledNarocil from './pregledi_in_dodajanja/PregledNarocilC';
+import PregledPB from './pregledi_in_dodajanja/PregledPBC';
+import DodajanjeIzdelkov from './pregledi_in_dodajanja/DodajanjeIzdelkovC';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-const Profile = () => {
+const Profil = () => {
 	const { uporabnik } = useContext(UporabniskiKontekst);
 
 	const [vloga, setVloga] = useState(null);
-	const [msg, setMsg] = useState('');
+	const [sporocilo, setSporocilo] = useState('');
 	const [stanjeAdmin, setStanjeAdmin] = useState(0);
 	const [prejsnjeStanjeAdmin, setPrejsnjeStanjeAdmin] = useState(0);
 	const [tabela, setTabela] = useState(null);
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
 	const [oseba, setOseba] = useState(null); // podatki o osebi
+	const [datoteka, setDatoteka] = useState(null); // za dodajanjeIzdelkov in FileUpload
 
-	const [file, setFile] = useState(null); // za dodajanjeIzdelkov in FileUpload
-	// ----------- fileupload -------------------
-	const uploadFile = async (e, ID_izdelka) => {
-		const formData = new FormData();
-		formData.append('slika', file);
-		formData.append('ID_izdelka', oseba.ID_izdelka);
+	const naloziDatoteko = async (e, ID_izdelka) => {
+		const podatki = new FormData();
+		podatki.append('slika', datoteka);
+		podatki.append('ID_izdelka', oseba.ID_izdelka);
 
 		try {
-			const res = await axios.post(
-				`http://localhost:${global.config.port}/api/admin/naloziSliko`,
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				}
-			);
-			//console.log(res);
-		} catch (ex) {
-			console.log(ex);
+			await axios.post(`http://localhost:${global.config.port}/api/admin/naloziSliko`, podatki, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+		} catch (error) {
+			console.log(error);
 		}
 	};
-	// ----------- fileupload -------------------
 
-	// TODO: na domaci strani naredi okno ki se pojavi ob izbrisu profila
-	// TODO: PREVERI CE JE VNOS PRAVILEN (int, date ...)
-	// TODO: ne dela ce refreshamo na profile page in gremo nazaj na prijavo (isAuth se ponastavi, ostalo pa ne)
-	// TODO: ne dela ce refreshamo - prikaze napacne
-	// ce vnesemo nove podatke v prazno polje in nato pritisnemo Ponastavi, se ne izbriše vsebina
 	useEffect(() => {
 		const pridobiVlogo = async () => {
 			try {
-				let response = await axios.get(`http://localhost:${global.config.port}/api/login/vloga`, {
+				let odziv = await axios.get(`http://localhost:${global.config.port}/api/login/vloga`, {
 					params: {
 						uporabnisko_ime: uporabnik.uporabnisko_ime,
 					},
 				});
-				setVloga(parseInt(response.data));
+				setVloga(parseInt(odziv.data));
 			} catch (error) {
 				console.log(error);
 			}
@@ -105,12 +93,22 @@ const Profile = () => {
 			return (
 				<>
 					<Obvestilo />
+					<h2>
+						Profil: {uporabnik.uporabnisko_ime}{' '}
+						{vloga !== 2
+							? vloga === 0
+								? '(administrator)'
+								: vloga === 1
+								? '(zaposleni)'
+								: vloga === 3
+								? '(računovodja)'
+								: ''
+							: ''}
+					</h2>
 					<div className='moznostiProfila'>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
-							<h4>Funkcije</h4>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
@@ -119,7 +117,7 @@ const Profile = () => {
 								<div>Pregled uporabnikov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(2);
@@ -128,7 +126,7 @@ const Profile = () => {
 								<div>Pregled oseb</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
@@ -137,7 +135,7 @@ const Profile = () => {
 								<div>Dodajanje uporabnikov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(4);
@@ -146,7 +144,7 @@ const Profile = () => {
 								<div>Dodajanje izdelkov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(5);
@@ -155,7 +153,7 @@ const Profile = () => {
 								<div>Pregled izdelkov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(7);
@@ -164,7 +162,7 @@ const Profile = () => {
 								<div>Pregled naročil</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(6);
@@ -173,7 +171,7 @@ const Profile = () => {
 								<div>Pregled računov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(8);
@@ -182,6 +180,7 @@ const Profile = () => {
 								<div>Upravljanje s PB</div>
 							</button>
 						</div>
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 					</div>
 				</>
 			);
@@ -189,10 +188,11 @@ const Profile = () => {
 			// pregled uporabnikov
 			const pridobiInfoOUporabnikih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/uporabniki`);
-					setTabela(r.data);
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/uporabniki`);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log('Prišlo je do napake');
+					console.log(error);
 				}
 			};
 			if (tabela === null) pridobiInfoOUporabnikih();
@@ -223,10 +223,10 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -259,7 +259,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -278,11 +278,11 @@ const Profile = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
-						file={file}
-						setFile={setFile}
+						file={datoteka}
+						setFile={setDatoteka}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -296,24 +296,27 @@ const Profile = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					r.data.forEach(async (element) => {
-						let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
-							method: 'get',
-							responseType: 'blob',
-							params: {
-								ID_izdelka: element.ID_izdelka,
-							},
-						});
-						if (res.data.size === 0) {
+					odziv.data.forEach(async (element) => {
+						let odziv1 = await axios.get(
+							`http://localhost:${global.config.port}/api/admin/pridobiSliko`,
+							{
+								method: 'get',
+								responseType: 'blob',
+								params: {
+									ID_izdelka: element.ID_izdelka,
+								},
+							}
+						);
+						if (odziv1.data.size === 0) {
 							element.slika = null;
 						} else {
-							element.slika = URL.createObjectURL(res.data);
+							element.slika = URL.createObjectURL(odziv1.data);
 						}
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -340,7 +343,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -355,10 +358,10 @@ const Profile = () => {
 			// PREGLED RAČUNOV
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -381,7 +384,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -396,10 +399,10 @@ const Profile = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -431,7 +434,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -445,8 +448,8 @@ const Profile = () => {
 		} else if (parseInt(stanjeAdmin) === 8) {
 			const pridobiInfoOPB = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/PBzacetna`);
-					setTabela(r.data);
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/PBzacetna`);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -467,7 +470,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -487,9 +490,9 @@ const Profile = () => {
 			return (
 				<PodatkiOOsebi
 					niIzbrisa={niIzbrisa}
-					file={file}
-					setFile={setFile}
-					uploadFile={uploadFile}
+					file={datoteka}
+					setFile={setDatoteka}
+					naloziDatoteko={naloziDatoteko}
 					stranka={false}
 					oseba={oseba}
 					setOseba={setOseba}
@@ -508,12 +511,22 @@ const Profile = () => {
 			return (
 				<>
 					<Obvestilo />
+					<h2>
+						Profil: {uporabnik.uporabnisko_ime}{' '}
+						{vloga !== 2
+							? vloga === 0
+								? '(administrator)'
+								: vloga === 1
+								? '(zaposleni)'
+								: vloga === 3
+								? '(računovodja)'
+								: ''
+							: ''}
+					</h2>
 					<div className='moznostiProfila'>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
-							<h4>Funkcije</h4>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
@@ -522,7 +535,7 @@ const Profile = () => {
 								<div>Pregled naročil</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
@@ -531,6 +544,7 @@ const Profile = () => {
 								<div>Pregled računov</div>
 							</button>
 						</div>
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 					</div>
 				</>
 			);
@@ -538,18 +552,18 @@ const Profile = () => {
 			// PREGLED NAROČIL STRANKE
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r1 = await axios.get(`http://localhost:${global.config.port}/api/admin/idUporabnika`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/idUporabnika`, {
 						params: {
 							uporabnisko_ime: uporabnik.uporabnisko_ime,
 						},
 					});
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
+					let odziv1 = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: {
 							iskalniKriterij: 'ID_stranke',
-							iskalniNiz: r1.data,
+							iskalniNiz: odziv.data,
 						},
 					});
-					setTabela(r.data);
+					setTabela(odziv1.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -583,7 +597,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -598,10 +612,13 @@ const Profile = () => {
 			// PREGLED RAČUNOV STRANKE
 			const pridobiRacuneUporabnika = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuniUporabnika`, {
-						params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
-					});
-					setTabela(r.data);
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/admin/racuniUporabnika`,
+						{
+							params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
+						}
+					);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -624,7 +641,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -639,9 +656,9 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
-					file={file}
-					setFile={setFile}
-					uploadFile={uploadFile}
+					file={datoteka}
+					setFile={setDatoteka}
+					naloziDatoteko={naloziDatoteko}
 					stranka={true}
 					oseba={oseba}
 					setOseba={setOseba}
@@ -660,12 +677,22 @@ const Profile = () => {
 			return (
 				<>
 					<Obvestilo />
+					<h2>
+						Profil: {uporabnik.uporabnisko_ime}{' '}
+						{vloga !== 2
+							? vloga === 0
+								? '(administrator)'
+								: vloga === 1
+								? '(zaposleni)'
+								: vloga === 3
+								? '(računovodja)'
+								: ''
+							: ''}
+					</h2>
 					<div className='moznostiProfila'>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
-							<h4>Funkcije</h4>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
@@ -674,7 +701,7 @@ const Profile = () => {
 								<div>Dodajanje izdelkov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(2);
@@ -683,7 +710,7 @@ const Profile = () => {
 								<div>Pregled izdelkov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
@@ -692,7 +719,7 @@ const Profile = () => {
 								<div>Pregled naročil</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(6);
@@ -701,6 +728,7 @@ const Profile = () => {
 								<div>Pregled računov</div>
 							</button>
 						</div>
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 					</div>
 				</>
 			);
@@ -713,11 +741,11 @@ const Profile = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
-						file={file}
-						setFile={setFile}
+						file={datoteka}
+						setFile={setDatoteka}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -731,24 +759,27 @@ const Profile = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					r.data.forEach(async (element) => {
-						let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
-							method: 'get',
-							responseType: 'blob',
-							params: {
-								ID_izdelka: element.ID_izdelka,
-							},
-						});
-						if (res.data.size === 0) {
+					odziv.data.forEach(async (element) => {
+						let odziv1 = await axios.get(
+							`http://localhost:${global.config.port}/api/admin/pridobiSliko`,
+							{
+								method: 'get',
+								responseType: 'blob',
+								params: {
+									ID_izdelka: element.ID_izdelka,
+								},
+							}
+						);
+						if (odziv1.data.size === 0) {
 							element.slika = null;
 						} else {
-							element.slika = URL.createObjectURL(res.data);
+							element.slika = URL.createObjectURL(odziv1.data);
 						}
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -771,7 +802,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -786,10 +817,10 @@ const Profile = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -821,7 +852,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -836,10 +867,10 @@ const Profile = () => {
 			// PREGLED RAČUNOV ZAPOSLENEGA
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -862,7 +893,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -877,9 +908,9 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
-					file={file}
-					setFile={setFile}
-					uploadFile={uploadFile}
+					file={datoteka}
+					setFile={setDatoteka}
+					naloziDatoteko={naloziDatoteko}
 					stranka={false}
 					oseba={oseba}
 					setOseba={setOseba}
@@ -898,12 +929,22 @@ const Profile = () => {
 			return (
 				<>
 					<Obvestilo />
+					<h2>
+						Profil: {uporabnik.uporabnisko_ime}{' '}
+						{vloga !== 2
+							? vloga === 0
+								? '(administrator)'
+								: vloga === 1
+								? '(zaposleni)'
+								: vloga === 3
+								? '(računovodja)'
+								: ''
+							: ''}
+					</h2>
 					<div className='moznostiProfila'>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 						<div className='funkcije'>
-							<h4>Funkcije</h4>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(5);
@@ -912,7 +953,7 @@ const Profile = () => {
 								<div>Pregled oseb</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(1);
@@ -921,7 +962,7 @@ const Profile = () => {
 								<div>Dodajanje izdelkov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(2);
@@ -930,7 +971,7 @@ const Profile = () => {
 								<div>Pregled izdelkov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(3);
@@ -939,7 +980,7 @@ const Profile = () => {
 								<div>Pregled računov</div>
 							</button>
 							<button
-								className='actionBtn'
+								className='gumbZaFunkcije'
 								onClick={(e) => {
 									e.preventDefault();
 									setStanjeAdmin(4);
@@ -948,6 +989,7 @@ const Profile = () => {
 								<div>Pregled naročil</div>
 							</button>
 						</div>
+						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
 					</div>
 				</>
 			);
@@ -960,11 +1002,11 @@ const Profile = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
-						file={file}
-						setFile={setFile}
+						file={datoteka}
+						setFile={setDatoteka}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -978,24 +1020,27 @@ const Profile = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					r.data.forEach(async (element) => {
-						let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
-							method: 'get',
-							responseType: 'blob',
-							params: {
-								ID_izdelka: element.ID_izdelka,
-							},
-						});
-						if (res.data.size === 0) {
+					odziv.data.forEach(async (element) => {
+						let odziv1 = await axios.get(
+							`http://localhost:${global.config.port}/api/admin/pridobiSliko`,
+							{
+								method: 'get',
+								responseType: 'blob',
+								params: {
+									ID_izdelka: element.ID_izdelka,
+								},
+							}
+						);
+						if (odziv1.data.size === 0) {
 							element.slika = null;
 						} else {
-							element.slika = URL.createObjectURL(res.data);
+							element.slika = URL.createObjectURL(odziv1.data);
 						}
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -1018,7 +1063,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1033,10 +1078,10 @@ const Profile = () => {
 			// PREGLED RAČUNOV
 			const pridobiInfoORacunih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -1059,7 +1104,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1074,10 +1119,10 @@ const Profile = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -1109,7 +1154,7 @@ const Profile = () => {
 						}}
 					/>
 					<button
-						className='backBtn'
+						className='gumbZaNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1124,10 +1169,10 @@ const Profile = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let r = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
-					setTabela(r.data);
+					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
@@ -1154,9 +1199,9 @@ const Profile = () => {
 			// prikazi osebo
 			return (
 				<PodatkiOOsebi
-					file={file}
-					setFile={setFile}
-					uploadFile={uploadFile}
+					file={datoteka}
+					setFile={setDatoteka}
+					naloziDatoteko={naloziDatoteko}
 					stranka={true}
 					oseba={oseba}
 					setOseba={setOseba}
@@ -1172,16 +1217,16 @@ const Profile = () => {
 	else {
 		// napacna vloga (profilu dodamo vlogo stranke)
 		const posodobiVlogo = async () => {
-			let res;
+			let odziv;
 			try {
-				res = await axios.post(`http://localhost:${global.config.port}/api/login/vloga`, {
+				odziv = await axios.post(`http://localhost:${global.config.port}/api/login/vloga`, {
 					uporabnisko_ime: uporabnik.uporabnisko_ime,
 				});
 			} catch (error) {
-				res.data = 'Prišlo je do napake';
+				odziv.data = 'Prišlo je do napake';
 			}
 			setVloga(2);
-			setMsg(res.data);
+			setSporocilo(odziv.data);
 		};
 
 		posodobiVlogo();
@@ -1189,9 +1234,9 @@ const Profile = () => {
 		return (
 			<>
 				<div>Napaka pri prijavi (napačna vloga uporabnika)</div>
-				<div>{msg}</div>
+				<div>{sporocilo}</div>
 				<button
-					className='backBtn'
+					className='gumbZaNazaj'
 					onClick={(e) => {
 						e.preventDefault();
 						setStanjeAdmin(0);
@@ -1205,4 +1250,4 @@ const Profile = () => {
 	}
 };
 
-export default Profile;
+export default Profil;

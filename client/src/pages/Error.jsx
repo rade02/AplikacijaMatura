@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Error = () => {
 	return (
-		<div className='errorDiv'>
+		<div className='error'>
 			<div className='napaka'>
 				<Warning size={30} style={{ marginRight: '10px' }} />
 				Napaka, stran ni bila najdena

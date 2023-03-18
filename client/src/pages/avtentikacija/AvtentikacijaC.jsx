@@ -1,5 +1,5 @@
 import './Avtentikacija.css';
-import Error from '../errorPage/Error';
+import Error from '../Error';
 import { useContext } from 'react';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import { useLocation } from 'react-router-dom';

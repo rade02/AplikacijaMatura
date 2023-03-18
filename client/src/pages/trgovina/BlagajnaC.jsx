@@ -1,8 +1,8 @@
 import { CaretCircleLeft, CaretCircleRight, CreditCard, Money, Package, Truck } from 'phosphor-react';
-import { UporabniskiKontekst } from '../../../contexts/UporabniskiKontekst';
-import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
+import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
+import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useState } from 'react';
-import PostaSlovenije from '../../../assets/PSlogo.png';
+import PostaSlovenije from '../../assets/PSlogotip.png';
 import axios from 'axios';
 
 const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) => {

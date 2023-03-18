@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
-import Shopping from './ShoppingComponent';
-import Cart from './CartComponent';
-import Checkout from './shopping/CheckoutComponent';
-import Error from '../errorPage/Error';
-import ProductInfo from './shopping/ProductInfoComponent';
+import Shopping from './NakupovanjeC';
+import Kosarica from './KosaricaC';
+import Blagajna from './BlagajnaC';
+import Error from '../Error';
+import ProductInfo from './InformacijeOProduktuC';
 import { WarningCircle } from 'phosphor-react';
 
 const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
@@ -108,7 +108,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 		);
 	} else if (prikazi === 'kosarica') {
 		return (
-			<Cart
+			<Kosarica
 				izbranProdukt={izbranProdukt}
 				setIzbranProdukt={setIzbranProdukt}
 				setPrikazi={setPrikazi}
@@ -125,7 +125,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 		);
 	} else if (prikazi === 'blagajna') {
 		return (
-			<Checkout
+			<Blagajna
 				setPrikazi={setPrikazi}
 				removedMsg={removedMsg}
 				setRemovedMsg={setRemovedMsg}

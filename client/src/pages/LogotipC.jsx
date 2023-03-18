@@ -1,4 +1,4 @@
-import logo from '../../assets/Logo.png';
+import logo from '../assets/Logotip.png';
 import { useNavigate } from 'react-router-dom';
 
 const Logo = () => {
@@ -8,7 +8,7 @@ const Logo = () => {
 		<div
 			className='logoDiv'
 			onClick={() => {
-				navigate('/about');
+				navigate('/oNas');
 			}}>
 			<img src={logo} alt='logo'></img>
 			<label>Podjetje d.o.o.</label>

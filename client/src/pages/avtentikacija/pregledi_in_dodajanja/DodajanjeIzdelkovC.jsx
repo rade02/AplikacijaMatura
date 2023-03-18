@@ -3,7 +3,6 @@ import { CaretCircleLeft } from 'phosphor-react';
 import { useState } from 'react';
 
 const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
-	const PORT = 3005; // !!!
 	const [vneseniPodatki, setVneseniPodatki] = useState({
 		ime: null,
 		kategorija: null,

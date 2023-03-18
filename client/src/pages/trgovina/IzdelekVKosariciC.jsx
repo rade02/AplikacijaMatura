@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
+import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 
 const CartProduct = ({ props, refresh, setRefresh }) => {
 	const { kosarica } = useContext(NakupovalniKontekst);

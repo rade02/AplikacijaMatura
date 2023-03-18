@@ -1,6 +1,6 @@
 import { CaretCircleLeft } from 'phosphor-react';
 import { useContext } from 'react';
-import { NakupovalniKontekst } from '../../../contexts/NakupovalniKontekst';
+import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 
 const ProductInfo = ({ prikazi, setPrikazi, izbranProdukt, setIzbranProdukt, izKosarice, setIzKosarice }) => {
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);

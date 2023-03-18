@@ -2,7 +2,7 @@ import axios from 'axios';
 import { CaretCircleLeft, CaretCircleRight } from 'phosphor-react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useRef, useState } from 'react';
-import CartProduct from './shopping/CartProductComponent';
+import CartProduct from './IzdelekVKosariciC';
 
 const Cart = ({
 	setPrikazi,

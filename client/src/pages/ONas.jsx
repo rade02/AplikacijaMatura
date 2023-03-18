@@ -1,6 +1,6 @@
 const ONas = () => {
 	return (
-		<div>
+		<div className='oNas'>
 			<h2>O nas</h2>
 			<p>
 				Podjetje d.o.o. je eno najhitreje razvijajočih se podjetij na našem področju v osrednjeslovenski

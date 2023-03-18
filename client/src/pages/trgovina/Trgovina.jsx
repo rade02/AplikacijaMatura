@@ -1,8 +1,8 @@
-import './ShopPage.css';
+import './Trgovina.css';
 import { useEffect, useState, useRef } from 'react';
 import { NakupovalniKontekstProvider } from '../../contexts/NakupovalniKontekst';
-import ShopContent from './ShopContentComponent';
-import ShopNavbar from './ShopNavbarComponent';
+import ShopContent from './VsebinaTrgovineC';
+import ShopNavbar from './NavigacijaTrgovineC';
 
 const ShopPage = () => {
 	const [position, setPosition] = useState(window.pageYOffset);

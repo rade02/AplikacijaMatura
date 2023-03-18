@@ -50,74 +50,72 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 		);
 	}
 	return (
-		<div className='funkcije'>
-			<h2>
-				Profil: {uporabnik.uporabnisko_ime}{' '}
-				{vloga !== 2
-					? vloga === 0
-						? '(administrator)'
-						: vloga === 1
-						? '(zaposleni)'
-						: vloga === 3
-						? '(računovodja)'
-						: ''
-					: ''}
-			</h2>
-			<div>
-				<div>
+		<div className='urejanjeProfila'>
+			<div className='podatkiOUporabniku'>
+				<div className='urejanje'>
 					{vloga !== 0 ? (
 						<>
 							<button
+								className='gumb2'
 								onClick={(e) => {
 									e.preventDefault();
 									setEdit(!edit);
 								}}>
-								Uredi <Pencil size={22} />
+								Uredi <Pencil size={22} style={{ marginLeft: '4px' }} />
 							</button>
 						</>
 					) : (
 						<></>
 					)}
 					<button
+						className='gumb2'
 						onClick={(e) => {
 							e.preventDefault();
 							setEditPw(!editPw);
 						}}>
 						Spremeni geslo
-						<Key size={22} />
+						<Key size={22} style={{ marginLeft: '4px' }} />
 					</button>
 				</div>
-				<div>
-					<PodatkiUporabnika
-						props={{
-							updatedUser: updatedUser,
-							setUpdatedUser: setUpdatedUser,
-							edit: edit,
-							user: uporabnik,
-						}}
-					/>
+
+				<PodatkiUporabnika
+					props={{
+						updatedUser: updatedUser,
+						setUpdatedUser: setUpdatedUser,
+						edit: edit,
+						user: uporabnik,
+					}}
+				/>
+				<div className='gumbi'>
+					{' '}
 					{vloga !== 0 ? (
 						<>
 							<button
+								className={
+									JSON.stringify(updatedUser) === JSON.stringify(uporabnik) ? 'gumbDisabled' : 'gumb2'
+								}
 								disabled={JSON.stringify(updatedUser) === JSON.stringify(uporabnik) ? 'disabled' : ''}
 								onClick={(e) => {
 									e.preventDefault();
 									setEdit(false);
 									handleClick();
 								}}>
-								Shrani spremembe <FloppyDisk size={22} />
+								Shrani spremembe <FloppyDisk size={22} style={{ marginLeft: '4px' }} />
 							</button>
 							<button
+								className={
+									JSON.stringify(updatedUser) === JSON.stringify(uporabnik) ? 'gumbDisabled' : 'gumb2'
+								}
 								disabled={JSON.stringify(updatedUser) === JSON.stringify(uporabnik) ? 'disabled' : ''}
 								onClick={(e) => {
 									e.preventDefault();
 
-									console.log(uporabnik);
-									console.log(updatedUser);
+									//console.log(uporabnik);
+									//console.log(updatedUser);
 									setUpdatedUser(uporabnik);
 									setEdit(false);
 								}}>
-								Ponastavi <ClockCounterClockwise size={22} />
+								Ponastavi <ClockCounterClockwise size={22} style={{ marginLeft: '4px' }} />
 							</button>
 
 							{error ? <label>Napačen vnos podatkov</label> : null}
@@ -126,30 +124,26 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 						<></>
 					)}
 				</div>
-				<div>
+				<div className='gumbi'>
 					<button
+						className='gumb2'
 						onClick={(e) => {
 							e.preventDefault();
 							setJeAvtenticiran(false);
 						}}>
-						Odjava <SignOut size={22} />
+						Odjava <SignOut size={22} style={{ marginLeft: '4px' }} />
 					</button>
 					{vloga !== 0 ? (
 						<button
+							className='gumb2'
 							onClick={(e) => {
 								e.preventDefault();
 								setDel(true);
 							}}>
-							Izbriši račun <UserMinus size={22} />
+							Izbriši račun <UserMinus size={22} style={{ marginLeft: '4px' }} />
 						</button>
 					) : (
-						<button
-							onClick={(e) => {
-								e.preventDefault();
-								setStanjeAdmin(0);
-							}}>
-							Nazaj
-						</button>
+						<></>
 					)}
 				</div>
 			</div>

@@ -1,9 +1,9 @@
-import '../../App.css';
+import '../App.css';
 import { UserCircle } from 'phosphor-react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
-import Logo from './LogoComponent';
+import { UporabniskiKontekst } from '../contexts/UporabniskiKontekst';
+import Logo from './LogotipC';
 
 const NavigacijskaVrstica = () => {
 	const { uporabnik, jeAvtenticiran, setJeAvtenticiran } = useContext(UporabniskiKontekst);

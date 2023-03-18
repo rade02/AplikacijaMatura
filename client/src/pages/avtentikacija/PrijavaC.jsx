@@ -62,14 +62,14 @@ const Prijava = () => {
 	};
 
 	return (
-		<div className='cards loginForm'>
+		<div className='kartice prijava'>
 			<h2>Prijava</h2>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
 					handleSubmit(typedUsername, typedPassword);
 				}}>
-				<label>Username:</label>
+				<label>Uporabniško ime:</label>
 				<br />
 				<input
 					type='text'
@@ -79,7 +79,7 @@ const Prijava = () => {
 						setMsg('');
 					}}></input>
 				<br />
-				<label>Password:</label>
+				<label>Geslo:</label>
 				<br />
 				<input
 					type='password'
@@ -89,20 +89,24 @@ const Prijava = () => {
 						setMsg('');
 					}}></input>
 				<br />
-				<button type='submit' className='loginBtn'>
-					Prijavi se
+				<button type='submit' className='gumb1'>
+					Prijava
 				</button>
 			</form>
 			<button
-				className='loginBtn'
+				className='gumb1'
 				onClick={(e) => {
-					navigate('/auth', { state: { loggingMode: 'signup' } });
+					navigate('/avtentikacija', { state: { prikazAvtentikacija: 'registracija' } });
 				}}>
-				Registriraj se
+				Registriracija
 			</button>
-			<div>
-				:<i>{msg}</i>:
-			</div>
+			{msg !== null && msg !== '' ? (
+				<div className='sporociloNapake'>
+					<i>{msg}</i>
+				</div>
+			) : (
+				<></>
+			)}
 		</div>
 	);
 };

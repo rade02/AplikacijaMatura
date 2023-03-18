@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
-import ProductsPanel from './shopping/ProductsPanelComponent';
+import ProductsPanel from './PrikazProduktovC';
 
 const Shopping = ({ props }) => {
 	const [kategorijeNaVoljo, setKategorijenaVoljo] = useState([]);
