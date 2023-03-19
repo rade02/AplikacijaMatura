@@ -35,9 +35,12 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 		if (isAuth) {
 			const fetchUserData = async () => {
 				try {
-					const result = await axios.get(`http://localhost:${global.config.port}/api/login/user`, {
-						params: { username: user.uporabnisko_ime },
-					});
+					const result = await axios.get(
+						`http://localhost:${global.config.port}/api/avtentikacija/user`,
+						{
+							params: { username: user.uporabnisko_ime },
+						}
+					);
 					console.log('result.data');
 					console.log(result.data);
 					setUserData(result.data);
@@ -99,15 +102,18 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 			console.log('deliveryCost');
 			console.log(deliveryCost);
 			if (userData !== null && userData.uporabnisko_ime !== 'admin') {
-				let resp = await axios.get(`http://localhost:${global.config.port}/api/admin/idUporabnika`, {
-					params: {
-						uporabnisko_ime: userData.uporabnisko_ime,
-					},
-				});
+				let resp = await axios.get(
+					`http://localhost:${global.config.port}/api/administrator/idUporabnika`,
+					{
+						params: {
+							uporabnisko_ime: userData.uporabnisko_ime,
+						},
+					}
+				);
 				id = resp.data;
 			}
 			const result = await axios.get(
-				`http://localhost:${global.config.port}/api/products/ustvariNarocilo`,
+				`http://localhost:${global.config.port}/api/produkti/ustvariNarocilo`,
 				{
 					params: {
 						ID_stranke: id,
@@ -122,7 +128,7 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 
 			for (let element of kosarica) {
 				const result1 = await axios.post(
-					`http://localhost:${global.config.port}/api/products/dodajIzdelkeNarocilu`,
+					`http://localhost:${global.config.port}/api/produkti/dodajIzdelkeNarocilu`,
 					{
 						ID_narocila: IDnarocila,
 						ID_izdelka: element.ID_izdelka,
@@ -132,7 +138,7 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 				);
 				// zmanjšanje zaloge
 				const result12 = await axios.post(
-					`http://localhost:${global.config.port}/api/products/zmanjsajZalogo`,
+					`http://localhost:${global.config.port}/api/produkti/zmanjsajZalogo`,
 					{
 						kolicina_kupljeno: element.kolicina,
 						ID_izdelka: element.ID_izdelka,

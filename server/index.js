@@ -7,9 +7,9 @@ dotenv.config();
 const router = express.Router();
 
 import pool from './dbConnection.js';
-import productsApiRoutes from './routes/api/productsApi.js';
-import loginApiRoutes from './routes/api/loginApi.js';
-import adminApiRoutes from './routes/api/adminApi.js';
+import produktiApiRoutes from './routes/api/produktiApi.js';
+import avtentikacijaApiRoutes from './routes/api/avtentikacijaApi.js';
+import administratorApiRoutes from './routes/api/administratorApi.js';
 
 const app = express();
 app.listen(process.env.PORT, () => {
@@ -26,6 +26,6 @@ app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));
 
 // products api routes
-app.use('/api/products', productsApiRoutes);
-app.use('/api/login', loginApiRoutes);
-app.use('/api/admin', adminApiRoutes);
+app.use('/api/produkti', produktiApiRoutes);
+app.use('/api/avtentikacija', avtentikacijaApiRoutes);
+app.use('/api/administrator', administratorApiRoutes);

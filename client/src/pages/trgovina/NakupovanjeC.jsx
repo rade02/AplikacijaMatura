@@ -13,7 +13,7 @@ const Shopping = ({ props }) => {
 
 	const pridobiSteviloVsehProduktov = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/products/stVsehProduktov`);
+			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/stVsehProduktov`);
 			setStVsehProduktov(response.data);
 		} catch (error) {
 			console.log(error);
@@ -21,7 +21,7 @@ const Shopping = ({ props }) => {
 	};
 	const pridobiKategorije = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/products/kategorije`);
+			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/kategorije`);
 
 			setKategorijenaVoljo([...response.data]);
 		} catch (error) {
@@ -31,7 +31,7 @@ const Shopping = ({ props }) => {
 	const filtriraj = async (dodatno) => {
 		console.log('filtriraj');
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/products/filtriranje`, {
+			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/filtriranje`, {
 				params: {
 					number: 6,
 					kategorijeF: kategorijeF,
@@ -43,13 +43,16 @@ const Shopping = ({ props }) => {
 			setStVsehProduktov(response.data.stProduktovKiUstrezajoFiltru);
 
 			response.data.produkti.forEach(async (element) => {
-				let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
-					method: 'get',
-					responseType: 'blob',
-					params: {
-						ID_izdelka: element.ID_izdelka,
-					},
-				});
+				let res = await axios.get(
+					`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
+					{
+						method: 'get',
+						responseType: 'blob',
+						params: {
+							ID_izdelka: element.ID_izdelka,
+						},
+					}
+				);
 
 				element.kolicina = 0;
 				if (res.data.size === 0) {

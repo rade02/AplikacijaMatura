@@ -4,6 +4,48 @@
 	--tretja: #0040b8;
 	--cetrta: #001846;
 }
+.gumbNazaj {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	border: 1px solid grey;
+}
+.gumbNazaj:hover {
+	cursor: pointer;
+	border: 1px solid black;
+	border-radius: 8px;
+}
+.naslov {
+	text-decoration: none;
+	margin: 40px 0px 30px 0px;
+	font-size: 25px;
+	font-weight: 700;
+}
+.posiljanje {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	font-size: medium;
+	font-weight: 500;
+	background-color: transparent;
+	color: black;
+	border: 1px solid rgba(128, 128, 128, 0.705);
+	margin: 20px 0px 20px 0px;
+	padding: 5px 14px 5px 14px;
+	width: fit-content;
+	align-self: center;
+}
+.posiljanje:hover {
+	cursor: pointer;
+	background-color: rgba(128, 128, 128, 0.295);
+}
+.oznaka {
+	margin: 4px;
+	padding: 4px;
+}
 /*_____________________ App _____________________*/
 /*hr {
 	border: 0.5px solid rgb(203, 203, 203);

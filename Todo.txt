@@ -19,9 +19,9 @@
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: ali potrebujemo slike uporabnikov?
-// TODO: preimenuj mape (odpri kot admin)
+// TODO: 
 // TODO: profil admin je na zacetku narejen v Uporabnikih in Stranke_in_zaposleni
-// TODO: daj port kot globalno dostopno spremenljivko
+// TODO: 
 // TODO: dodaj datoteko z sql stavki v mapo na github
 // TODO: izbriši neuporabljane module
 

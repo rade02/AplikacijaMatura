@@ -13,7 +13,7 @@ const PregledNarocil = ({ props }) => {
 
 	return (
 		<>
-			<h2>{!props.stranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnisko_ime}</h2>
+			<h2 className='naslov'>{!props.stranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnisko_ime}</h2>
 			<div>
 				{props.tabela === null ? (
 					<Box sx={{ display: 'flex' }} className='nalaganje'>
@@ -23,7 +23,7 @@ const PregledNarocil = ({ props }) => {
 					<>
 						<div>
 							<button
-								className='backBtn'
+								className='gumbNazaj'
 								onClick={(e) => {
 									e.preventDefault();
 									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
@@ -93,7 +93,7 @@ const PregledNarocil = ({ props }) => {
 									try {
 										if (iskalniNiz === null) {
 											let r = await axios.get(
-												`http://localhost:${global.config.port}/api/admin/narocila`,
+												`http://localhost:${global.config.port}/api/administrator/narocila`,
 												{
 													params: {
 														iskalniKriterij: 1,
@@ -106,7 +106,7 @@ const PregledNarocil = ({ props }) => {
 											props.setTabela(r.data);
 										} else {
 											let r = await axios.get(
-												`http://localhost:${global.config.port}/api/admin/narocila`,
+												`http://localhost:${global.config.port}/api/administrator/narocila`,
 												{
 													params: {
 														iskalniKriterij: iskalniKriterij,

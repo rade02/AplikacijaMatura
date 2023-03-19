@@ -25,7 +25,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 		<div>
 			<h2 className='naslov'>{props.naslov}</h2>
 			<button
-				className='backBtn'
+				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
 					props.setStanjeAdmin(0);
@@ -34,6 +34,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 				<div>Nazaj</div>
 			</button>
 			<form
+				className='obrazecZaVnos'
 				action='/dodajIzdelek'
 				method='post'
 				encType='multipart/form-data'
@@ -62,7 +63,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 							let res;
 							try {
 								res = await axios.post(
-									`http://localhost:${global.config.port}/api/admin/dodajIzdelek`,
+									`http://localhost:${global.config.port}/api/administrator/dodajIzdelek`,
 									formData,
 									{
 										headers: { 'Content-Type': 'multipart/form-data' },
@@ -85,8 +86,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 							dbS: 'Neustrezni podatki',
 						});
 					}
-				}}
-				className='obrazecZaVnosUporabnika'>
+				}}>
 				<table>
 					<tbody>
 						<tr>
@@ -305,7 +305,9 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 						</tr>
 					</tbody>
 				</table>
-				<button type='submit'>Vnesi</button>
+				<button type='submit' className='posiljanje'>
+					Vnesi
+				</button>
 				{sporociloONapaki.dbS !== null ? <div>{sporociloONapaki.dbS}</div> : <></>}
 			</form>
 		</div>

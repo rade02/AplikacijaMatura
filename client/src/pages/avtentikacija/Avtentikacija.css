@@ -124,20 +124,6 @@
 	color: black;
 	cursor: pointer;
 }
-.gumbZaNazaj {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	border: 1px solid grey;
-	background-color: transparent;
-	margin: 25px 0px 15px 0px;
-}
-.gumbZaNazaj:hover {
-	background-color: grey;
-	color: white;
-	cursor: pointer;
-}
 /*_____________________ RegistracijaC _____________________*/
 .registracija {
 	display: flex;
@@ -184,8 +170,8 @@
 	margin-top: 30px;
 }
 .vnosnaPolja {
-	margin: 20px;
-	padding: 20px;
+	margin: 5px;
+	padding: 5px;
 	min-width: max-content;
 }
 .vnosnaPolja > div {
@@ -252,40 +238,72 @@
 	align-items: center;
 }
 
-/*_____________________ ostalo ... _____________________*/
-
-.podrobniPodatki {
+/*_____________________ DodajanjeIzdelkovC _____________________*/
+.obrazecZaVnos {
 	display: flex;
-	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	min-width: 500px;
+	width: fit-content;
+	min-width: 550px;
 	margin: 20px;
 	padding: 10px;
-	border: 1px solid transparent;
+	border: 1px solid rgba(128, 128, 128, 0.322);
+	border-radius: 4px;
+}
+.obrazecZaVnos > table {
+	min-width: 400px;
+	border-radius: 5px;
+	border-collapse: collapse;
+	margin: 15px;
+}
+.obrazecZaVnos > table tr {
+	border: none;
+}
+.obrazecZaVnos > table td {
+	border: none;
+}
+.opisPodatka {
+	min-width: max-content;
+	width: 160px;
+	padding: 3px;
+	font-size: 18px;
+}
+.obrazecZaVnos > table .podatek {
+	min-width: max-content;
+	width: 175px;
+	padding: 3px;
+	font-size: 17px;
+}
+.tekstovnoPolje {
+	min-width: 150px;
+	font-size: 18px;
+	background-color: white;
+	border: 1px solid black;
 	border-radius: 8px;
-	background-color: rgba(255, 235, 205, 0.322);
+	padding: 3px 10px 3px 10px;
+}
+.sporociloONapaki {
+	color: red;
+}
+
+/*_____________________ DodajanjeUporabnikovC _____________________*/
+/*_____________________ PodrobnostiC _____________________*/
+.podrobnosti {
+	margin: 25px;
+	padding: 15px;
+}
+.podrobniPodatki {
+	display: flex;
+	flex-direction: column;
+	margin: 20px;
+	padding: 20px;
+	border: 1px solid none;
+	border-radius: 8px;
+	background: linear-gradient(45deg, #e66464a6, rgba(152, 185, 224, 0.548));
 	width: fit-content;
 	max-width: 700px;
-}
-
-.izbirnoPolje {
-	background-color: rgb(255, 255, 255);
-	margin: 10px;
-	padding: 4px;
-	border: 1px solid black;
-	border-radius: 0px;
-	font-size: 14px;
-	font-weight: 500;
-	width: auto;
-	min-width: 140px;
-}
-.izbirnoPolje:hover {
-	border: 1px solid black;
-	cursor: pointer;
-}
-
-.naslov {
-	font-size: 28px;
-	font-weight: 700;
-	margin: 50px 0px 15px 0px;
 }
 .tabela {
 	background-color: white;
@@ -298,12 +316,6 @@ th,
 tr {
 	border: 1px dotted grey;
 	border-collapse: collapse;
-}
-
-.vrstica:hover {
-	background-color: rgba(240, 240, 240, 0.727);
-	border: 1px solid rgb(39, 107, 255);
-	cursor: pointer;
 }
 td,
 th {
@@ -320,6 +332,47 @@ td input {
 td > div {
 	display: flex;
 	flex-direction: row;
+}
+.potrdi {
+	background-color: rgba(197, 197, 197, 0.281);
+	padding: 2px 6px 2px 6px;
+	border: 1px solid grey;
+	border-radius: 4px;
+}
+.potrdi:hover {
+	cursor: pointer;
+	background-color: rgba(128, 128, 128, 0.281);
+}
+
+/*_____________________ PregledC _____________________*/
+.pregled {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	min-width: 630px;
+}
+.filtriIskanja {
+	background-color: rgba(214, 214, 214, 0.568);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 10px 0px 10px 0px;
+	width: 100%;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+.iskanje {
+	margin: 5px 15px 5px 15px;
+	padding: 8px;
+}
+
+/*_____________________ ostalo ... _____________________*/
+.vrstica:hover {
+	background-color: rgba(240, 240, 240, 0.727);
+	border: 1px solid rgb(39, 107, 255);
+	cursor: pointer;
 }
 .admin {
 	background-color: rgba(170, 255, 11, 0.753);
@@ -338,52 +391,8 @@ td > div {
 	color: red;
 }
 
-.obrazecZaVnosUporabnika {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	min-width: 500px;
-	width: fit-content;
-	margin: 20px;
-}
-.obrazecZaVnosUporabnika > table {
-	min-width: 400px;
-	border-radius: 5px;
-	border-collapse: collapse;
-	margin: 15px;
-}
-.obrazecZaVnosUporabnika > table tr {
-	border: none;
-}
-.obrazecZaVnosUporabnika > table td {
-	border: none;
-}
 .nalaganjeDatoteke {
 	width: 180px;
-}
-.obrazecZaVnosUporabnika > table .opisPodatka {
-	min-width: max-content;
-	width: 160px;
-	padding: 3px;
-	font-size: 18px;
-}
-.obrazecZaVnosUporabnika > table .podatek {
-	min-width: max-content;
-	width: 175px;
-	padding: 3px;
-	font-size: 17px;
-}
-.tekstovnoPolje {
-	min-width: 150px;
-	font-size: 18px;
-	background-color: white;
-	border: 1px solid black;
-	border-radius: 13px;
-	padding: 3px 10px 3px 10px;
-}
-.sporociloONapaki {
-	color: red;
 }
 
 .OKQuantity {

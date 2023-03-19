@@ -22,16 +22,16 @@ const PodatkiOOsebi = ({
 	const [opravljeno, setOpravljeno] = useState(false);
 	const [napaka, setNapaka] = useState(null);
 	const [DB, setDB] = useState(null);
-	console.log(oseba);
+	//console.log(oseba);
 	useEffect(() => {
-		console.log(oseba);
+		//console.log(oseba);
 		if (oseba === null) {
 			setDB(null);
 			return (
 				<div>
 					<div>Prišlo je do napake pri prikazu podrobnosti</div>
 					<button
-						className='backBtn'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(prejsnjeStanjeAdmin);
@@ -49,14 +49,14 @@ const PodatkiOOsebi = ({
 			setDB({ DB: 'Narocila', IDtip: 'ID_narocila' });
 		}
 	}, []);
-	console.log(DB);
+	//console.log(DB);
 
 	const izbris = async () => {
 		if (DB !== null) {
 			console.log('brisem...');
 			try {
 				const result = await axios.post(
-					`http://localhost:${global.config.port}/api/admin/izbrisiElement`,
+					`http://localhost:${global.config.port}/api/administrator/izbrisiElement`,
 					{
 						DB: DB.DB,
 						IDtip: DB.IDtip,
@@ -70,24 +70,27 @@ const PodatkiOOsebi = ({
 		}
 	};
 
-	const handleChangePlaca = async () => {
+	const spremeniPlaco = async () => {
 		try {
 			if (placa < 0 || isNaN(parseFloat(placa))) {
 				setNapaka('Vneseni podatki niso skladni z definicijami polj');
 				console.log('Napaka pri vnosu podatkov');
 				console.log(placa);
 			} else {
-				const result = await axios.post(`http://localhost:${global.config.port}/api/admin/urediPlaco`, {
-					novaPlaca: placa,
-					uporabnisko_ime: uporabniskoIme,
-				});
+				const result = await axios.post(
+					`http://localhost:${global.config.port}/api/administrator/urediPlaco`,
+					{
+						novaPlaca: placa,
+						uporabnisko_ime: uporabniskoIme,
+					}
+				);
 				setNapaka('Podatki spremenjeni');
 			}
 		} catch (onRejectedError) {
 			console.log(onRejectedError);
 		}
 	};
-	const handleChangeIzdelek = async () => {
+	const spremeniIzdelek = async () => {
 		try {
 			if (
 				izdelek.ime !== null &&
@@ -103,9 +106,12 @@ const PodatkiOOsebi = ({
 				parseInt(izdelek.popust) <= 100 &&
 				!isNaN(parseInt(izdelek.popust))
 			) {
-				const result = await axios.post(`http://localhost:${global.config.port}/api/admin/urediIzdelek`, {
-					izdelek: izdelek,
-				});
+				const result = await axios.post(
+					`http://localhost:${global.config.port}/api/administrator/urediIzdelek`,
+					{
+						izdelek: izdelek,
+					}
+				);
 				setNapaka('Podatki spremenjeni');
 			} else {
 				setNapaka('Vneseni podatki niso skladni z definicijami polj');
@@ -116,16 +122,22 @@ const PodatkiOOsebi = ({
 			console.log(error);
 		}
 	};
-	const handleChangeNarocilo = async () => {
+	const spremeniNarocilo = async () => {
 		try {
-			const result = await axios.post(`http://localhost:${global.config.port}/api/admin/urediNarocilo`, {
-				ID_narocila: oseba.ID_narocila,
-			});
-			const result2 = await axios.post(`http://localhost:${global.config.port}/api/admin/izdajRacun`, {
-				ID_narocila: oseba.ID_narocila,
-				kupec: oseba.imeStranke + ' ' + oseba.priimekStranke,
-				datumIzdaje: oseba.datum,
-			});
+			const result = await axios.post(
+				`http://localhost:${global.config.port}/api/administrator/urediNarocilo`,
+				{
+					ID_narocila: oseba.ID_narocila,
+				}
+			);
+			const result2 = await axios.post(
+				`http://localhost:${global.config.port}/api/administrator/izdajRacun`,
+				{
+					ID_narocila: oseba.ID_narocila,
+					kupec: oseba.imeStranke + ' ' + oseba.priimekStranke,
+					datumIzdaje: oseba.datum,
+				}
+			);
 			// TODO: ustvari racun
 			setNapaka('Podatki spremenjeni');
 			//}
@@ -135,10 +147,11 @@ const PodatkiOOsebi = ({
 	};
 	//console.log(oseba);
 	//console.log(niIzbrisa);
+
 	return (
-		<div>
+		<div className='podrobnosti'>
 			<button
-				className='backBtn'
+				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
 					setStanjeAdmin(prejsnjeStanjeAdmin);
@@ -147,25 +160,27 @@ const PodatkiOOsebi = ({
 				<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 				<div>Nazaj</div>
 			</button>
-			{(oseba.uporabnisko_ime === null || oseba.uporabnisko_ime === undefined) &&
-			(oseba.ID === null || oseba.ID === undefined) &&
-			niIzbrisa !== null &&
-			!niIzbrisa ? (
-				<button
-					className=''
-					onClick={(e) => {
-						e.preventDefault();
-						izbris();
-						setTabela(null);
-						setStanjeAdmin(prejsnjeStanjeAdmin);
-					}}>
-					<X size={25} style={{ marginRight: '5px' }} />
-					<div>Izbriši iz PB</div>
-				</button>
-			) : (
-				<></>
-			)}
 			<div className='podrobniPodatki'>
+				{(oseba.uporabnisko_ime === null || oseba.uporabnisko_ime === undefined) &&
+				(oseba.ID === null || oseba.ID === undefined) &&
+				niIzbrisa !== null &&
+				!niIzbrisa ? (
+					<button
+						className='posiljanje'
+						style={{ color: 'red', marginTop: '0px', background: 'white' }}
+						onClick={(e) => {
+							e.preventDefault();
+							izbris();
+							setTabela(null);
+							setStanjeAdmin(prejsnjeStanjeAdmin);
+						}}>
+						<X size={25} style={{ marginRight: '5px' }} />
+						<div>Izbriši iz PB</div>
+					</button>
+				) : (
+					<></>
+				)}
+
 				<table className='tabela'>
 					<tbody>
 						{Object.keys(oseba).map((pr) => {
@@ -204,10 +219,11 @@ const PodatkiOOsebi = ({
 													}
 												}}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
 													if (!isNaN(placa)) {
-														handleChangePlaca();
+														spremeniPlaco();
 													}
 												}}>
 												Potrdi
@@ -226,9 +242,10 @@ const PodatkiOOsebi = ({
 												}}
 												maxLength={40}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -246,9 +263,10 @@ const PodatkiOOsebi = ({
 												}}
 												maxLength={20}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -265,9 +283,10 @@ const PodatkiOOsebi = ({
 													setNapaka(null);
 												}}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -284,9 +303,10 @@ const PodatkiOOsebi = ({
 													setNapaka(null);
 												}}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -304,9 +324,10 @@ const PodatkiOOsebi = ({
 												}}
 												maxLength={40}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -323,9 +344,10 @@ const PodatkiOOsebi = ({
 													setNapaka(null);
 												}}></textarea>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -342,9 +364,10 @@ const PodatkiOOsebi = ({
 													setNapaka(null);
 												}}></input>
 											<button
+												className='potrdi'
 												onClick={(e) => {
 													e.preventDefault();
-													handleChangeIzdelek();
+													spremeniIzdelek();
 												}}>
 												Potrdi
 											</button>
@@ -365,6 +388,7 @@ const PodatkiOOsebi = ({
 													}}
 												/>
 												<button
+													className='potrdi'
 													onClick={(e) => {
 														e.preventDefault();
 														try {
@@ -396,6 +420,7 @@ const PodatkiOOsebi = ({
 													}}
 												/>
 												<button
+													className='potrdi'
 													onClick={async (e) => {
 														e.preventDefault();
 														try {
@@ -415,11 +440,12 @@ const PodatkiOOsebi = ({
 												<div>Opravljeno</div>
 											) : (
 												<button
+													className='potrdi'
 													disabled={oseba[pr] === 1 || opravljeno === true ? 'disabled' : ''}
 													onClick={(e) => {
 														e.preventDefault();
 														setOpravljeno(true);
-														handleChangeNarocilo();
+														spremeniNarocilo();
 													}}>
 													Nastavi kot opravljeno
 												</button>
@@ -482,7 +508,7 @@ const PodatkiOOsebi = ({
 			</div>
 			{napaka !== null ? <>{napaka}</> : <></>}
 			<button
-				className='backBtn'
+				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
 					setStanjeAdmin(prejsnjeStanjeAdmin);

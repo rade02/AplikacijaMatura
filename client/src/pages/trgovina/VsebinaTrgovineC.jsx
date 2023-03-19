@@ -21,7 +21,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 
 	const pridobiProdukte = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/products/`, {
+			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/`, {
 				params: {
 					number: 6,
 					noDups: prikazaniProdukti.map((a) => a.ID_izdelka),
@@ -30,13 +30,16 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 			// dodamo vsakemu izdelku kolicino v kosarici in sliko
 			response = response.data;
 			response.forEach(async (element) => {
-				let res = await axios.get(`http://localhost:${global.config.port}/api/admin/pridobiSliko`, {
-					method: 'get',
-					responseType: 'blob',
-					params: {
-						ID_izdelka: element.ID_izdelka,
-					},
-				});
+				let res = await axios.get(
+					`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
+					{
+						method: 'get',
+						responseType: 'blob',
+						params: {
+							ID_izdelka: element.ID_izdelka,
+						},
+					}
+				);
 				element.kolicina = 0;
 				//console.log(res.data);
 				if (res.data.size === 0) {

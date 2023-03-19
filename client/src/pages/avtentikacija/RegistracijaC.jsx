@@ -66,7 +66,7 @@ const Registracija = () => {
 				alert(`Registracija NEuspešna: \n${opozorilo}`);
 			} else {
 				//console.log(vneseniPodatki);
-				let odziv = await axios.post(`http://localhost:${global.config.port}/api/login/newUser`, {
+				let odziv = await axios.post(`http://localhost:${global.config.port}/api/avtentikacija/newUser`, {
 					uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
 					geslo: vneseniPodatki.geslo,
 					elektronski_naslov: vneseniPodatki.elektronski_naslov,
@@ -104,9 +104,12 @@ const Registracija = () => {
 					setOKuporabniskoIme(1);
 					setSporociloNapaka({ ...sporociloNapaka, UIsporocilo: pregledanoUI.sporociloNapaka });
 				} else {
-					const preverjenoUI = await axios.get(`http://localhost:${global.config.port}/api/login/user`, {
-						params: { username: uporabniskoIme },
-					});
+					const preverjenoUI = await axios.get(
+						`http://localhost:${global.config.port}/api/avtentikacija/user`,
+						{
+							params: { username: uporabniskoIme },
+						}
+					);
 					if (preverjenoUI.data !== '') {
 						setOKuporabniskoIme(3);
 					} else {
@@ -200,9 +203,12 @@ const Registracija = () => {
 					setOKeposta(1);
 					setSporociloNapaka({ ...sporociloNapaka, ENsporocilo: pregledanaEP.sporocilo });
 				} else {
-					const preverjenaEP = await axios.get(`http://localhost:${global.config.port}/api/login/email`, {
-						params: { email: eposta },
-					});
+					const preverjenaEP = await axios.get(
+						`http://localhost:${global.config.port}/api/avtentikacija/email`,
+						{
+							params: { email: eposta },
+						}
+					);
 					if (preverjenaEP.data !== '') {
 						setOKeposta(2);
 					} else {

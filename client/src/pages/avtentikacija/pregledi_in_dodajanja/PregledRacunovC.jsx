@@ -15,7 +15,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 	}
 	return (
 		<>
-			<h2>{props.naslov}</h2>
+			<h2 className='naslov'>{props.naslov}</h2>
 			<div>
 				{props.tabela === null ? (
 					<Box sx={{ display: 'flex' }} className='nalaganje'>
@@ -25,7 +25,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 					<>
 						<div>
 							<button
-								className='backBtn'
+								className='gumbNazaj'
 								onClick={(e) => {
 									e.preventDefault();
 									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
@@ -87,7 +87,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 									try {
 										if (iskalniNiz === null) {
 											let r = await axios.get(
-												`http://localhost:${global.config.port}/api/admin/racuni`,
+												`http://localhost:${global.config.port}/api/administrator/racuni`,
 												{
 													params: {
 														iskalniKriterij: 1,
@@ -100,7 +100,7 @@ const PregledRacunov = ({ props, jeStranka }) => {
 											props.setTabela(r.data);
 										} else {
 											let r = await axios.get(
-												`http://localhost:${global.config.port}/api/admin/racuni`,
+												`http://localhost:${global.config.port}/api/administrator/racuni`,
 												{
 													params: {
 														iskalniKriterij: iskalniKriterij,

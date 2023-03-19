@@ -63,9 +63,12 @@ const TabelskaVrstica = ({ props }) => {
 	} else if (props.naslov === 'Pregled naročil') {
 		const pridobiIzdelke = async (IDNarocila) => {
 			try {
-				let r = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelkiPriNarocilu`, {
-					params: { ID_narocila: IDNarocila },
-				});
+				let r = await axios.get(
+					`http://localhost:${global.config.port}/api/administrator/izdelkiPriNarocilu`,
+					{
+						params: { ID_narocila: IDNarocila },
+					}
+				);
 				props.setTabela(r.data);
 			} catch (error) {
 				console.log(`Prišlo je do napake: ${error}`);
@@ -148,7 +151,7 @@ const TabelskaVrstica = ({ props }) => {
 							if (e.target.value !== '' && typeof parseInt(e.target.value) === 'number') {
 								try {
 									let res = await axios.post(
-										`http://localhost:${global.config.port}/api/admin/updtVloga`,
+										`http://localhost:${global.config.port}/api/administrator/updtVloga`,
 										{
 											uporabnisko_ime: props.element.uporabnisko_ime,
 											vloga: e.target.value,
@@ -188,7 +191,7 @@ const TabelskaVrstica = ({ props }) => {
 								e.stopPropagation();
 								try {
 									let res = await axios.post(
-										`http://localhost:${global.config.port}/api/admin/omogoci`,
+										`http://localhost:${global.config.port}/api/administrator/omogoci`,
 										{
 											uporabnisko_ime: props.element.uporabnisko_ime,
 											omogoci: !props.element.omogocen,
@@ -219,7 +222,7 @@ const TabelskaVrstica = ({ props }) => {
 							e.stopPropagation();
 							try {
 								let res = await axios.post(
-									`http://localhost:${global.config.port}/api/admin/omogoci`,
+									`http://localhost:${global.config.port}/api/administrator/omogoci`,
 									{
 										uporabnisko_ime: props.element.uporabnisko_ime,
 										omogoci: !props.element.omogocen,

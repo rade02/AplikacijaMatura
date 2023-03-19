@@ -11,7 +11,7 @@ const PregledPB = ({ props }) => {
 
 	return (
 		<>
-			<h2>{props.naslov}</h2>
+			<h2 className='naslov'>{props.naslov}</h2>
 			<div>
 				{props.tabela === null ? (
 					<Box sx={{ display: 'flex' }} className='nalaganje'>
@@ -21,7 +21,7 @@ const PregledPB = ({ props }) => {
 					<>
 						<div>
 							<button
-								className='backBtn'
+								className='gumbNazaj'
 								onClick={(e) => {
 									e.preventDefault();
 									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
@@ -42,9 +42,12 @@ const PregledPB = ({ props }) => {
 								onClick={async (e) => {
 									e.preventDefault();
 									try {
-										let r = await axios.get(`http://localhost:${global.config.port}/api/admin/PB`, {
-											params: { poizvedba: stavek },
-										});
+										let r = await axios.get(
+											`http://localhost:${global.config.port}/api/administrator/PB`,
+											{
+												params: { poizvedba: stavek },
+											}
+										);
 										props.setTabela(r.data.data);
 										setNaslovnaVrstica(r.data.keys);
 									} catch (error) {

@@ -38,7 +38,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 		<div>
 			<h2 className='naslov'>{props.naslov}</h2>
 			<button
-				className='backBtn'
+				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
 					props.setStanjeAdmin(0);
@@ -47,13 +47,14 @@ const DodajanjeUporabnikov = ({ props }) => {
 				<div>Nazaj</div>
 			</button>
 			<form
+				className='obrazecZaVnos'
 				onSubmit={async (e) => {
 					e.preventDefault();
 					const posodobiVlogo = async () => {
 						let res;
 						try {
 							res = await axios.post(
-								`http://localhost:${global.config.port}/api/admin/dodajUporabnika`,
+								`http://localhost:${global.config.port}/api/administrator/dodajUporabnika`,
 								{
 									uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
 									geslo: vneseniPodatki.geslo,
@@ -120,8 +121,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 						}
 						alert(`Registracija NEuspešna: \n${opozorilo}`);
 					}
-				}}
-				className='obrazecZaVnosUporabnika'>
+				}}>
 				<table>
 					<tbody>
 						<tr>
@@ -150,7 +150,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 														setOKuporabniskoIme(1);
 													} else {
 														const result = await axios.get(
-															`http://localhost:${global.config.port}/api/login/user`,
+															`http://localhost:${global.config.port}/api/avtentikacija/user`,
 															{
 																params: { username: e.target.value },
 															}
@@ -385,7 +385,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 														});
 													} else {
 														const result = await axios.get(
-															`http://localhost:${global.config.port}/api/login/email`,
+															`http://localhost:${global.config.port}/api/avtentikacija/email`,
 															{
 																params: { email: e.target.value },
 															}
@@ -644,7 +644,9 @@ const DodajanjeUporabnikov = ({ props }) => {
 						</tr>
 					</tbody>
 				</table>
-				<button type='submit'>Vnesi</button>
+				<button type='submit' className='posiljanje'>
+					Vnesi
+				</button>
 				{sporociloONapaki.dbS !== null ? <div>{sporociloONapaki.dbS}</div> : <></>}
 				{napakaPriVnosu !== null ? <div>{napakaPriVnosu}</div> : <></>}
 			</form>

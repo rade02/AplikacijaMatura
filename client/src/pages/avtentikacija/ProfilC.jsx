@@ -21,7 +21,7 @@ import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import Obvestilo from './ObvestiloC';
 import UrejanjeProfila from './UrejanjeProfilaC';
 import Pregled from './pregledi_in_dodajanja/PregledC';
-import PodatkiOOsebi from './pregledi_in_dodajanja/PodatkiOOsebiC';
+import PodatkiOOsebi from './pregledi_in_dodajanja/PodrobnostiC';
 import DodajanjeUporabnikov from './pregledi_in_dodajanja/DodajanjeUporabnikovC';
 import PregledRacunov from './pregledi_in_dodajanja/PregledRacunovC';
 import PregledIzdelkov from './pregledi_in_dodajanja/PregledIzdelkovC';
@@ -49,7 +49,7 @@ const Profil = () => {
 		podatki.append('ID_izdelka', oseba.ID_izdelka);
 
 		try {
-			await axios.post(`http://localhost:${global.config.port}/api/admin/naloziSliko`, podatki, {
+			await axios.post(`http://localhost:${global.config.port}/api/administrator/naloziSliko`, podatki, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -62,7 +62,7 @@ const Profil = () => {
 	useEffect(() => {
 		const pridobiVlogo = async () => {
 			try {
-				let odziv = await axios.get(`http://localhost:${global.config.port}/api/login/vloga`, {
+				let odziv = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/vloga`, {
 					params: {
 						uporabnisko_ime: uporabnik.uporabnisko_ime,
 					},
@@ -188,7 +188,9 @@ const Profil = () => {
 			// pregled uporabnikov
 			const pridobiInfoOUporabnikih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/uporabniki`);
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/uporabniki`
+					);
 					setTabela(odziv.data);
 				} catch (error) {
 					console.log('Prišlo je do napake');
@@ -223,7 +225,7 @@ const Profil = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
@@ -259,7 +261,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -282,7 +284,7 @@ const Profil = () => {
 						setFile={setDatoteka}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -296,12 +298,15 @@ const Profil = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/izdelki`,
+						{
+							params: { iskalniKriterij: 1, iskalniNiz: 1 },
+						}
+					);
 					odziv.data.forEach(async (element) => {
 						let odziv1 = await axios.get(
-							`http://localhost:${global.config.port}/api/admin/pridobiSliko`,
+							`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
 							{
 								method: 'get',
 								responseType: 'blob',
@@ -343,7 +348,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -358,7 +363,7 @@ const Profil = () => {
 			// PREGLED RAČUNOV
 			const pridobiInfoORacunih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
@@ -384,7 +389,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -399,9 +404,12 @@ const Profil = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/narocila`,
+						{
+							params: { iskalniKriterij: 1, iskalniNiz: 1 },
+						}
+					);
 					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -434,7 +442,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -448,7 +456,9 @@ const Profil = () => {
 		} else if (parseInt(stanjeAdmin) === 8) {
 			const pridobiInfoOPB = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/PBzacetna`);
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/PBzacetna`
+					);
 					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -470,7 +480,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -552,17 +562,23 @@ const Profil = () => {
 			// PREGLED NAROČIL STRANKE
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/idUporabnika`, {
-						params: {
-							uporabnisko_ime: uporabnik.uporabnisko_ime,
-						},
-					});
-					let odziv1 = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
-						params: {
-							iskalniKriterij: 'ID_stranke',
-							iskalniNiz: odziv.data,
-						},
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/idUporabnika`,
+						{
+							params: {
+								uporabnisko_ime: uporabnik.uporabnisko_ime,
+							},
+						}
+					);
+					let odziv1 = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/narocila`,
+						{
+							params: {
+								iskalniKriterij: 'ID_stranke',
+								iskalniNiz: odziv.data,
+							},
+						}
+					);
 					setTabela(odziv1.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -597,7 +613,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -613,7 +629,7 @@ const Profil = () => {
 			const pridobiRacuneUporabnika = async () => {
 				try {
 					let odziv = await axios.get(
-						`http://localhost:${global.config.port}/api/admin/racuniUporabnika`,
+						`http://localhost:${global.config.port}/api/administrator/racuniUporabnika`,
 						{
 							params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
 						}
@@ -641,7 +657,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -745,7 +761,7 @@ const Profil = () => {
 						setFile={setDatoteka}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -759,12 +775,15 @@ const Profil = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/izdelki`,
+						{
+							params: { iskalniKriterij: 1, iskalniNiz: 1 },
+						}
+					);
 					odziv.data.forEach(async (element) => {
 						let odziv1 = await axios.get(
-							`http://localhost:${global.config.port}/api/admin/pridobiSliko`,
+							`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
 							{
 								method: 'get',
 								responseType: 'blob',
@@ -802,7 +821,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -817,9 +836,12 @@ const Profil = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/narocila`,
+						{
+							params: { iskalniKriterij: 1, iskalniNiz: 1 },
+						}
+					);
 					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -852,7 +874,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -867,7 +889,7 @@ const Profil = () => {
 			// PREGLED RAČUNOV ZAPOSLENEGA
 			const pridobiInfoORacunih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
@@ -893,7 +915,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1006,7 +1028,7 @@ const Profil = () => {
 						setFile={setDatoteka}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1020,12 +1042,15 @@ const Profil = () => {
 			// PREGLED IZDELKOV
 			const pridobiInfoOIzdelkih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/izdelki`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/izdelki`,
+						{
+							params: { iskalniKriterij: 1, iskalniNiz: 1 },
+						}
+					);
 					odziv.data.forEach(async (element) => {
 						let odziv1 = await axios.get(
-							`http://localhost:${global.config.port}/api/admin/pridobiSliko`,
+							`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
 							{
 								method: 'get',
 								responseType: 'blob',
@@ -1063,7 +1088,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1078,7 +1103,7 @@ const Profil = () => {
 			// PREGLED RAČUNOV
 			const pridobiInfoORacunih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/racuni`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/racuni`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
@@ -1104,7 +1129,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1119,9 +1144,12 @@ const Profil = () => {
 			// PREGLED NAROČIL
 			const pridobiInfoONarocilih = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/narocila`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/narocila`,
+						{
+							params: { iskalniKriterij: 1, iskalniNiz: 1 },
+						}
+					);
 					setTabela(odziv.data);
 				} catch (error) {
 					console.log(`Prišlo je do napake: ${error}`);
@@ -1154,7 +1182,7 @@ const Profil = () => {
 						}}
 					/>
 					<button
-						className='gumbZaNazaj'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setStanjeAdmin(0);
@@ -1169,7 +1197,7 @@ const Profil = () => {
 			// pregled oseb
 			const pridobiInfoOOsebah = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/admin/osebe`, {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
@@ -1219,7 +1247,7 @@ const Profil = () => {
 		const posodobiVlogo = async () => {
 			let odziv;
 			try {
-				odziv = await axios.post(`http://localhost:${global.config.port}/api/login/vloga`, {
+				odziv = await axios.post(`http://localhost:${global.config.port}/api/avtentikacija/vloga`, {
 					uporabnisko_ime: uporabnik.uporabnisko_ime,
 				});
 			} catch (error) {
@@ -1236,7 +1264,7 @@ const Profil = () => {
 				<div>Napaka pri prijavi (napačna vloga uporabnika)</div>
 				<div>{sporocilo}</div>
 				<button
-					className='gumbZaNazaj'
+					className='gumbNazaj'
 					onClick={(e) => {
 						e.preventDefault();
 						setStanjeAdmin(0);

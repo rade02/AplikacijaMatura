@@ -83,12 +83,6 @@ header {
 	padding: 25px 15px 25px 15px;
 	border: 1px solid black;
 }
-.naslov {
-	font-size: 18px;
-	font-weight: 500;
-	text-decoration: underline;
-	margin: 10px 0px 10px 0px;
-}
 .filter {
 	width: 100%;
 	border: 1px solid transparent;
@@ -173,7 +167,6 @@ header {
 	align-items: center;
 	box-shadow: 1px 5px 9px rgb(235, 233, 233);
 }
-
 
 .productInfo {
 	display: flex;

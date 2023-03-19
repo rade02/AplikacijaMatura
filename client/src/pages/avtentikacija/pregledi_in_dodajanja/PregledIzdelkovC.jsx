@@ -13,7 +13,7 @@ const PregledIzdelkov = ({ props }) => {
 
 	return (
 		<>
-			<h2>{props.naslov}</h2>
+			<h2 className='naslov'>{props.naslov}</h2>
 			<div>
 				{props.tabela === null ? (
 					<Box sx={{ display: 'flex' }} className='nalaganje'>
@@ -23,7 +23,7 @@ const PregledIzdelkov = ({ props }) => {
 					<>
 						<div>
 							<button
-								className='backBtn'
+								className='gumbNazaj'
 								onClick={(e) => {
 									e.preventDefault();
 									props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
@@ -67,7 +67,7 @@ const PregledIzdelkov = ({ props }) => {
 									//console.log(iskalniNiz);
 									try {
 										let r = await axios.get(
-											`http://localhost:${global.config.port}/api/admin/izdelki`,
+											`http://localhost:${global.config.port}/api/administrator/izdelki`,
 											{
 												params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
 											}

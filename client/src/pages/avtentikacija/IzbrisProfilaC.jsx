@@ -15,7 +15,7 @@ const IzbrisProfila = ({ props }) => {
 
 	const handleClickCheckExisting = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/login/`, {
+			let response = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/`, {
 				params: {
 					username: uporabnik.uporabnisko_ime,
 					password: geslo,
@@ -36,7 +36,7 @@ const IzbrisProfila = ({ props }) => {
 
 	const izbrisi = async () => {
 		try {
-			let response = await axios.delete(`http://localhost:${global.config.port}/api/login/del`, {
+			let response = await axios.delete(`http://localhost:${global.config.port}/api/avtentikacija/del`, {
 				params: {
 					username: uporabnik.uporabnisko_ime,
 				},

@@ -16,7 +16,10 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 
 	const handleClick = async () => {
 		try {
-			const result = await axios.post(`http://localhost:${global.config.port}/api/login/updt`, updatedUser);
+			const result = await axios.post(
+				`http://localhost:${global.config.port}/api/avtentikacija/updt`,
+				updatedUser
+			);
 			setUporabnik(updatedUser);
 			setEdit(false);
 			//console.log(result.data);

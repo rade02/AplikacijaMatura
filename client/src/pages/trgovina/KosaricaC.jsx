@@ -36,7 +36,7 @@ const Cart = ({
 		const f = async (product) => {
 			try {
 				let response = await axios.get(
-					`http://localhost:${global.config.port}/api/products/availability`,
+					`http://localhost:${global.config.port}/api/produkti/availability`,
 					{
 						params: {
 							ID_izdelka: product.ID_izdelka,

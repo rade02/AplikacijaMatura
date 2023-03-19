@@ -59,10 +59,13 @@ const SpreminjanjeGesla = ({ props }) => {
 	const handleSubmitNewPw = async () => {
 		if (OKpassword === 2) {
 			try {
-				let response = await axios.post(`http://localhost:${global.config.port}/api/login/pwdUpdt`, {
-					username: uporabnik.uporabnisko_ime,
-					password: password,
-				});
+				let response = await axios.post(
+					`http://localhost:${global.config.port}/api/avtentikacija/pwdUpdt`,
+					{
+						username: uporabnik.uporabnisko_ime,
+						password: password,
+					}
+				);
 				//console.log(response.data);
 				setUporabnik({ ...uporabnik, geslo: password });
 				props.setUpdatedUser({ ...props.updatedUser, geslo: password });
