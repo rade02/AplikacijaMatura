@@ -4,116 +4,112 @@ import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
 const SpreminjanjeGesla = ({ props }) => {
 	const { uporabnik, setUporabnik } = useContext(UporabniskiKontekst);
-	const [password, setPassword] = useState('');
-	const [isCorrect, setIsCorrect] = useState(null);
+	const [geslo, setGeslo] = useState('');
+	const [jePravilno, setJePravilno] = useState(null);
 
-	const [OKpassword, setOKpassword] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
-	const [OKrepeat, setOKrepeat] = useState(4); // 0 - ni se vnosa, 1 - se ne ujema z geslom, 2 - veljavno
-	const [msg, setMsg] = useState('');
+	const [OKgeslo, setOKgeslo] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
+	const [OKponovljeno, setOKponovljeno] = useState(4); // 0 - ni se vnosa, 1 - se ne ujema z geslom, 2 - veljavno
+	const [sporocilo, setSporocilo] = useState('');
 
-	const handleSubmitOldPw = () => {
-		if (uporabnik.geslo === password) {
-			setIsCorrect(true);
-			setPassword('');
+	const posljiStaroGeslo = () => {
+		if (uporabnik.geslo === geslo) {
+			setJePravilno(true);
+			setGeslo('');
 		} else {
-			setIsCorrect(false);
+			setJePravilno(false);
 		}
 	};
 
-	const checkPasswordValidity = (password) => {
-		let m = '';
-		if (password === '') {
-			setOKpassword(0);
-			m = '';
+	const preveriUstreznostGesla = (geslo) => {
+		let sporocilo = '';
+		if (geslo === '') {
+			setOKgeslo(0);
+			sporocilo = '';
 		} else {
-			let illegalChars = ['%', '"', "'"];
-			let valid = true;
+			let nedovoljeniZnaki = ['%', '"', "'"];
+			let ustrezno = true;
 
-			for (let i = 0; i < illegalChars.length; i++) {
-				if (password.includes(illegalChars[i])) {
-					valid = false;
-					m = 'Uporabljeni so bili nedovoljeni znaki (%, ", \')';
+			for (let i = 0; i < nedovoljeniZnaki.length; i++) {
+				if (geslo.includes(nedovoljeniZnaki[i])) {
+					ustrezno = false;
+					sporocilo = 'Uporabljeni so bili nedovoljeni znaki (%, ", \')';
 				}
 			}
-			if (password.length < 6 || password.length > 50) {
-				valid = false;
-				m =
-					password.length < 6
+			if (geslo.length < 6 || geslo.length > 50) {
+				ustrezno = false;
+				sporocilo =
+					geslo.length < 6
 						? 'Geslo je prekratko, vsebovati mora najmanj 6 znakov'
 						: 'Geslo je predolgo, vsebuje lahko največ 50 znakov';
-				setOKpassword(1);
-			} else if (!/\d/.test(password)) {
-				valid = false;
-				m = 'Geslo mora vsebovati vsaj eno števko';
-				setOKpassword(1);
-			} else if (valid) {
-				setOKpassword(2);
-				setPassword(password);
+				setOKgeslo(1);
+			} else if (!/\d/.test(geslo)) {
+				ustrezno = false;
+				sporocilo = 'Geslo mora vsebovati vsaj eno števko';
+				setOKgeslo(1);
+			} else if (ustrezno) {
+				setOKgeslo(2);
+				setGeslo(geslo);
 			} else {
-				setOKpassword(1);
+				setOKgeslo(1);
 			}
 		}
-		setMsg(m);
+		setSporocilo(sporocilo);
 	};
 
-	const handleSubmitNewPw = async () => {
-		if (OKpassword === 2) {
+	const posljiNovoGeslo = async () => {
+		if (OKgeslo === 2) {
 			try {
-				let response = await axios.post(
-					`http://localhost:${global.config.port}/api/avtentikacija/pwdUpdt`,
-					{
-						username: uporabnik.uporabnisko_ime,
-						password: password,
-					}
-				);
-				//console.log(response.data);
-				setUporabnik({ ...uporabnik, geslo: password });
-				props.setUpdatedUser({ ...props.updatedUser, geslo: password });
-				props.setEditPw(false);
-			} catch (onRejectedError) {
-				console.log(onRejectedError);
+				await axios.post(`http://localhost:${global.config.port}/api/avtentikacija/posodobitevGesla`, {
+					uporabnisko_ime: uporabnik.uporabnisko_ime,
+					geslo: geslo,
+				});
+				setUporabnik({ ...uporabnik, geslo: geslo });
+				props.setPosodobljenUporabnik({ ...props.posodobljenUporabnik, geslo: geslo });
+				props.setUrediGeslo(false);
+			} catch (napaka) {
+				console.log(napaka);
 			}
 		} else {
-			setOKpassword(1);
+			setOKgeslo(1);
 		}
 	};
 
-	if (isCorrect) {
+	if (jePravilno) {
 		return (
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
-					handleSubmitNewPw();
+					posljiNovoGeslo();
 				}}>
 				<label>Vnesite novo geslo: </label>
 				<input
-					type='password'
+					type='geslo'
 					key='b'
 					defaultValue=''
 					onChange={(e) => {
 						e.preventDefault();
-						checkPasswordValidity(e.target.value);
+						preveriUstreznostGesla(e.target.value);
 					}}></input>
 				<br />
 				<label>Ponovno vnesite novo geslo: </label>
 				<input
-					type='password'
+					type='geslo'
 					key='c'
 					onChange={(e) => {
 						e.preventDefault();
-						if (e.target.value === password) setOKrepeat(2);
-						else setOKrepeat(1);
+						if (e.target.value === geslo) setOKponovljeno(2);
+						else setOKponovljeno(1);
 					}}></input>
-				{OKrepeat === 2 ? <>Gesli se ujemata</> : <>Gesli se ne ujemata</>}
+				{OKponovljeno === 2 ? <>Gesli se ujemata</> : <>Gesli se ne ujemata</>}
 				<br />
-				<button type='submit' disabled={OKrepeat !== 2 || OKpassword !== 2}>
+				<button type='submit' disabled={OKponovljeno !== 2 || OKgeslo !== 2}>
 					Potrdi
 				</button>
 				<br />{' '}
 				<button
 					onClick={(e) => {
 						e.preventDefault();
-						props.setEditPw(false);
+						props.setUrediGeslo(false);
 					}}>
 					Nazaj na profil
 				</button>
@@ -124,28 +120,28 @@ const SpreminjanjeGesla = ({ props }) => {
 		<form
 			onSubmit={(e) => {
 				e.preventDefault();
-				handleSubmitOldPw();
+				posljiStaroGeslo();
 			}}>
 			<label>Vnesite staro geslo: </label>
 			<input
-				type='password'
+				type='geslo'
 				key='a'
 				defaultValue=''
 				onChange={(e) => {
 					e.preventDefault();
-					setPassword(e.target.value);
+					setGeslo(e.target.value);
 				}}></input>
 			<button type='submit'>Potrdi</button>
 			<br />
 			<button
 				onClick={(e) => {
 					e.preventDefault();
-					props.setEditPw(false);
+					props.setUrediGeslo(false);
 				}}>
 				Nazaj na profil
 			</button>
 			<br />
-			<label>{isCorrect === null ? '' : isCorrect ? '' : 'Geslo ni pravilno'}</label>
+			<label>{jePravilno === null ? '' : jePravilno ? '' : 'Geslo ni pravilno'}</label>
 		</form>
 	);
 };

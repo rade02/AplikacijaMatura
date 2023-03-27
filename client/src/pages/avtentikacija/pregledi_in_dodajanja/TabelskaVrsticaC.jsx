@@ -10,7 +10,7 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={(e) => {
 					e.preventDefault();
-					props.setOseba(props.element);
+					props.setPredmet(props.element);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
 				}}>
@@ -28,7 +28,7 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={(e) => {
 					e.preventDefault();
-					props.setOseba(props.element);
+					props.setPredmet(props.element);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
 				}}>
@@ -46,9 +46,7 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={(e) => {
 					e.preventDefault();
-					console.log('props.elementTTT');
-					console.log(props.element);
-					props.setOseba(props.element);
+					props.setPredmet(props.element);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
 				}}>
@@ -63,15 +61,15 @@ const TabelskaVrstica = ({ props }) => {
 	} else if (props.naslov === 'Pregled naročil') {
 		const pridobiIzdelke = async (IDNarocila) => {
 			try {
-				let r = await axios.get(
+				let rezultat = await axios.get(
 					`http://localhost:${global.config.port}/api/administrator/izdelkiPriNarocilu`,
 					{
 						params: { ID_narocila: IDNarocila },
 					}
 				);
-				props.setTabela(r.data);
-			} catch (error) {
-				console.log(`Prišlo je do napake: ${error}`);
+				props.setTabela(rezultat.data);
+			} catch (napaka) {
+				console.log(`Prišlo je do napake: ${napaka}`);
 			}
 		};
 
@@ -81,7 +79,7 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={async (e) => {
 					e.preventDefault();
-					props.setOseba(props.element);
+					props.setPredmet(props.element);
 					await pridobiIzdelke(props.element.ID_narocila);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
@@ -102,7 +100,7 @@ const TabelskaVrstica = ({ props }) => {
 				className='vrstica'
 				onClick={(e) => {
 					e.preventDefault();
-					props.setOseba(props.element);
+					props.setPredmet(props.element);
 					props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 					props.setStanjeAdmin(9);
 				}}>
@@ -121,8 +119,7 @@ const TabelskaVrstica = ({ props }) => {
 			className='vrstica'
 			onClick={(e) => {
 				e.preventDefault();
-
-				props.setOseba(props.element);
+				props.setPredmet(props.element);
 				props.setPrejsnjeStanjeAdmin(props.stanjeAdmin);
 				props.setStanjeAdmin(9);
 			}}>
@@ -150,16 +147,16 @@ const TabelskaVrstica = ({ props }) => {
 							e.stopPropagation();
 							if (e.target.value !== '' && typeof parseInt(e.target.value) === 'number') {
 								try {
-									let res = await axios.post(
+									let odziv = await axios.post(
 										`http://localhost:${global.config.port}/api/administrator/updtVloga`,
 										{
 											uporabnisko_ime: props.element.uporabnisko_ime,
 											vloga: e.target.value,
 										}
 									);
-									if (res.data === 'success') props.setTabela(null);
-								} catch (error) {
-									console.log(error);
+									if (odziv.data === 'success') props.setTabela(null);
+								} catch (napaka) {
+									console.log(napaka);
 								}
 							}
 						}}
@@ -190,16 +187,16 @@ const TabelskaVrstica = ({ props }) => {
 								e.preventDefault();
 								e.stopPropagation();
 								try {
-									let res = await axios.post(
+									let rezultat = await axios.post(
 										`http://localhost:${global.config.port}/api/administrator/omogoci`,
 										{
 											uporabnisko_ime: props.element.uporabnisko_ime,
 											omogoci: !props.element.omogocen,
 										}
 									);
-									if (res.data === 'success') props.setTabela(null);
-								} catch (error) {
-									console.log(error);
+									if (rezultat.data === 'success') props.setTabela(null);
+								} catch (napaka) {
+									console.log(napaka);
 								}
 							}}>
 							<UserCircleMinus size={22} />
@@ -221,16 +218,16 @@ const TabelskaVrstica = ({ props }) => {
 							e.preventDefault();
 							e.stopPropagation();
 							try {
-								let res = await axios.post(
+								let odziv = await axios.post(
 									`http://localhost:${global.config.port}/api/administrator/omogoci`,
 									{
 										uporabnisko_ime: props.element.uporabnisko_ime,
 										omogoci: !props.element.omogocen,
 									}
 								);
-								if (res.data === 'success') props.setTabela(null);
-							} catch (error) {
-								console.log(error);
+								if (odziv.data === 'success') props.setTabela(null);
+							} catch (napaka) {
+								console.log(napaka);
 							}
 						}}>
 						<UserCirclePlus size={22} />

@@ -1,4 +1,5 @@
 import './App.css';
+import { useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // elements:
@@ -39,19 +40,20 @@ function App() {
 	// routes uporabljamo za vsako pot (route)
 	// v <Routes> damo spreminjajoče komponente pri preklapljanju strani
 	// ostalo pa so stalne komponente
+	const zgoraj = useRef('zgoraj');
 
 	// TA; KJER SO ROUTE TAM SO PAGES, na pages so komponente
 	return (
 		<Router>
 			<UporabniskiKontekstProvider>
-				<div className='vsebina'>
+				<div className='vsebina' ref={zgoraj}>
 					<NavigacijskaVrstica />
 					<div>
 						<Routes>
 							<Route path='/' element={<Domov />} />
 							<Route path='/oNas' element={<ONas />} />
 							<Route path='/avtentikacija' element={<Avtentikacija />} />
-							<Route path='/trgovina' element={<Trgovina />} />
+							<Route path='/trgovina' element={<Trgovina Ref={zgoraj} />} />
 							<Route path='*' element={<Error />} />
 						</Routes>
 					</div>

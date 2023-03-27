@@ -3,104 +3,96 @@ const router = express.Router();
 import pool from '../../dbConnection.js';
 
 router.get('/', async (req, res) => {
-	const un = req.query.username;
-	const pw = req.query.password;
+	const uporabnisko_ime = req.query.uporabnisko_ime;
+	const geslo = req.query.geslo;
 
 	try {
-		let response = await pool.query(
-			`select geslo, omogocen from Uporabniki where binary uporabnisko_ime = ?`,
-			[
-				// binary omogoči case sensitive query ker primerja po bajtih
-				un,
-			]
-		);
+		let odziv = await pool.query(`select geslo, omogocen from Uporabniki where binary uporabnisko_ime = ?`, [
+			// binary omogoči case sensitive query ker primerja po bajtih
+			uporabnisko_ime,
+		]);
 
-		if (response[0].length > 0 && pw === response[0][0].geslo) {
-			res.status(200).send(response[0][0]);
+		if (odziv[0].length > 0 && geslo === odziv[0][0].geslo) {
+			res.status(200).send(odziv[0][0]);
 		} else {
 			res.status(200).send(false);
 		}
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
-// TODO: if error then do not insert
-
-router.get('/user', async (req, res) => {
-	const un = req.query.username;
+router.get('/uporabnik', async (req, res) => {
+	const uporabnisko_ime = req.query.uporabnisko_ime;
 
 	try {
-		let userDataArray = await pool.query(
+		let tabelaPodatkovUporabnika = await pool.query(
 			`select uporabnisko_ime, elektronski_naslov, ime, priimek, ulica_in_hisna_stevilka, kraj, postna_stevilka, podjetje from Stranke_in_zaposleni where uporabnisko_ime = ?`,
-			[un]
+			[uporabnisko_ime]
 		);
-		userDataArray = userDataArray[0][0];
-		res.status(200).send(userDataArray);
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		tabelaPodatkovUporabnika = tabelaPodatkovUporabnika[0][0];
+		res.status(200).send(tabelaPodatkovUporabnika);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
-router.get('/email', async (req, res) => {
-	const em = req.query.email;
+router.get('/elektronski_naslov', async (req, res) => {
+	const elektronski_naslov = req.query.elektronski_naslov;
 
 	try {
-		let userDataArray = await pool.query(
+		let tabelaPodatkovUporabnika = await pool.query(
 			`select ID from Stranke_in_zaposleni where elektronski_naslov = ?`,
-			[em]
+			[elektronski_naslov]
 		);
-		userDataArray = userDataArray[0][0];
-		res.status(200).send(userDataArray);
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		tabelaPodatkovUporabnika = tabelaPodatkovUporabnika[0][0];
+		res.status(200).send(tabelaPodatkovUporabnika);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
-router.post('/updt', async (req, res) => {
-	const updatedUser = req.body;
+router.post('/posodobitev', async (req, res) => {
+	const posodobljenUporabnik = req.body;
 	try {
-		let response = await pool.query(
+		await pool.query(
 			`update Stranke_in_zaposleni set ime = ?, priimek = ?, ulica_in_hisna_stevilka = ?, kraj = ?, postna_stevilka = ?, telefonska_stevilka = ?, podjetje = ?
 			 where uporabnisko_ime = ?;`,
 			[
-				updatedUser.ime,
-				updatedUser.priimek,
-				updatedUser.ulica_in_hisna_stevilka,
-				updatedUser.kraj,
-				updatedUser.postna_stevilka,
-				updatedUser.telefonska_stevilka,
-				updatedUser.podjetje,
-				updatedUser.uporabnisko_ime,
+				posodobljenUporabnik.ime,
+				posodobljenUporabnik.priimek,
+				posodobljenUporabnik.ulica_in_hisna_stevilka,
+				posodobljenUporabnik.kraj,
+				posodobljenUporabnik.postna_stevilka,
+				posodobljenUporabnik.telefonska_stevilka,
+				posodobljenUporabnik.podjetje,
+				posodobljenUporabnik.uporabnisko_ime,
 			]
 		);
-		res.status(200).send('update successful');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		res.status(200).send('operacija uspešna');
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
-router.post('/pwdUpdt', async (req, res) => {
-	const username = req.body.username;
-	const password = req.body.password;
+router.post('/posodobitevGesla', async (req, res) => {
+	const uporabnisko_ime = req.body.uporabnisko_ime;
+	const geslo = req.body.geslo;
+
 	try {
-		let response = await pool.query(`update Uporabniki set geslo = ? where uporabnisko_ime = ?`, [
-			password,
-			username,
-		]);
-		res.status(200).send('update successful');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		await pool.query(`update Uporabniki set geslo = ? where uporabnisko_ime = ?`, [geslo, uporabnisko_ime]);
+		res.status(200).send('operacija uspešna');
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
-router.post('/newUser', async (req, res) => {
-	console.log(process.env.DB_name);
+router.post('/novUporabnik', async (req, res) => {
 	const uporabnisko_ime = req.body.uporabnisko_ime;
 	const geslo = req.body.geslo;
 	const elektronski_naslov = req.body.elektronski_naslov;
@@ -112,11 +104,11 @@ router.post('/newUser', async (req, res) => {
 	const telefonska_stevilka = req.body.telefonska_stevilka;
 	const podjetje = req.body.podjetje;
 	try {
-		let response = await pool.query(`insert into Uporabniki (uporabnisko_ime, geslo) values (?, ?)`, [
+		await pool.query(`insert into Uporabniki (uporabnisko_ime, geslo) values (?, ?)`, [
 			uporabnisko_ime,
 			geslo,
 		]);
-		let response2 = await pool.query(
+		await pool.query(
 			`insert into Stranke_in_zaposleni (uporabnisko_ime, elektronski_naslov, ime, priimek, ulica_in_hisna_stevilka, kraj, postna_stevilka, telefonska_stevilka, podjetje) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			[
 				uporabnisko_ime,
@@ -130,45 +122,38 @@ router.post('/newUser', async (req, res) => {
 				podjetje,
 			]
 		);
-		res.status(200).send('insertion successful');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		res.status(200).send('operacija uspešna');
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
-router.delete('/del', async (req, res) => {
-	const username = req.query.username;
-	try {
-		let response = await pool.query(`delete from Uporabniki where uporabnisko_ime = ?`, [username]);
+router.delete('/izbrisi', async (req, res) => {
+	const uporabnisko_ime = req.query.uporabnisko_ime;
 
-		res.status(200).send('deletion successful');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+	try {
+		await pool.query(`delete from Uporabniki where uporabnisko_ime = ?`, [uporabnisko_ime]);
+
+		res.status(200).send('operacija uspešna');
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
 router.get('/vloga', async (req, res) => {
-	const username = req.query.uporabnisko_ime;
-	try {
-		let response = await pool.query(`select vloga from Uporabniki where uporabnisko_ime = ?`, [username]);
+	const uporabnisko_ime = req.query.uporabnisko_ime;
 
-		res.status(200).send(response[0][0].vloga.toString());
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+	try {
+		let odziv = await pool.query(`select vloga from Uporabniki where uporabnisko_ime = ?`, [
+			uporabnisko_ime,
+		]);
+
+		res.status(200).send(odziv[0][0].vloga.toString());
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
-	}
-});
-router.post('/vloga', async (req, res) => {
-	const username = req.body.uporabnisko_ime;
-	try {
-		let response = await pool.query(`update Uporabniki set vloga = 2 where uporabnisko_ime = ?`, [username]);
-
-		res.status(200).send('Ponovno poskusite s prijavo');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
-		res.status(400).send(`server error`);
 	}
 });
 

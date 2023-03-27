@@ -3,14 +3,14 @@ const router = express.Router();
 import pool from '../../dbConnection.js';
 
 router.get('/', async (req, res) => {
-	let fetchNumber = parseInt(req.query.number);
-	let noDuplicates = req.query.noDups;
+	let steviloIzdelkov = parseInt(req.query.steviloIzdelkov);
+	let brezPodvajanja = req.query.brezPodvajanja;
 
-	if (noDuplicates !== null && noDuplicates !== undefined) {
+	if (brezPodvajanja !== null && brezPodvajanja !== undefined) {
 		try {
 			let newProducts = await pool.query(
 				`select * from Izdelki where ID_izdelka not in ? and Izdelki.kosov_na_voljo > 0 order by rand() limit ?`,
-				[[noDuplicates], fetchNumber]
+				[[brezPodvajanja], steviloIzdelkov]
 			);
 			res.status(200).send(newProducts[0]);
 		} catch (onRejectedError) {
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 		try {
 			let newProducts = await pool.query(
 				`select * from Izdelki where Izdelki.kosov_na_voljo > 0 order by rand() limit ?`,
-				[fetchNumber]
+				[steviloIzdelkov]
 			);
 			res.status(200).send(newProducts[0]);
 		} catch (onRejectedError) {
@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.get('/availability', async (req, res) => {
+router.get('/naVoljo', async (req, res) => {
 	let id = req.query.ID_izdelka;
 
 	try {
@@ -56,11 +56,11 @@ router.get('/kategorije', async (req, res) => {
 });
 
 router.get('/filtriranje', async (req, res) => {
-	let fetchNumber = parseInt(req.query.number);
+	let steviloIzdelkov = parseInt(req.query.steviloIzdelkov);
 	let kategorijeF = req.query.kategorijeF;
 	let cenaF = req.query.cenaF;
 	let popustF = req.query.popustF;
-	let noDuplicates = req.query.noDups;
+	let brezPodvajanj = req.query.brezPodvajanj;
 	let sqlQ = '';
 	//'select * from Izdelki where (';
 	//let sqlCount = 'select count(*) from Izdelki where ('
@@ -86,15 +86,15 @@ router.get('/filtriranje', async (req, res) => {
 		sqlQ = sqlQ.concat(' (1 = 1) ');
 	}
 	sqlQ = sqlQ.concat(
-		`and Izdelki.popust >= ${popustF} and Izdelki.kosov_na_voljo > 0) order by rand() limit ${fetchNumber};`
+		`and Izdelki.popust >= ${popustF} and Izdelki.kosov_na_voljo > 0) order by rand() limit ${steviloIzdelkov};`
 	);
 
 	//console.log(sqlQ);
 	try {
 		let newProducts;
-		if (noDuplicates !== null && noDuplicates !== undefined) {
+		if (brezPodvajanj !== null && brezPodvajanj !== undefined) {
 			newProducts = await pool.query(`select * from Izdelki where (ID_izdelka not in ? and ${sqlQ}`, [
-				[noDuplicates],
+				[brezPodvajanj],
 			]);
 		} else {
 			newProducts = await pool.query(`select * from Izdelki where (${sqlQ}`);

@@ -5,59 +5,55 @@ import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
 const Prijava = () => {
 	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
-	const [typedUsername, setTypedUsername] = useState('');
-	const [typedPassword, setTypedPassword] = useState('');
-	const [msg, setMsg] = useState('');
-	const un = useRef(null);
-	const pwd = useRef(null);
+	const [vnesenoUporabniskoIme, setVnesenoUporabniskoIme] = useState('');
+	const [vnesenoGeslo, setVnesenoGeslo] = useState('');
+	const [sporocilo, setSporocilo] = useState('');
+	const ui = useRef(null);
+	const geslo = useRef(null);
 
 	const navigate = useNavigate();
 
-	// TODO: check password validity when changing in component
-	// TODO: ce nima naslova, ne prikazemo naslova pri podatkih nakupa
-	// TODO: zakrij geslo
-
-	const handleSubmit = async (typedUsername, typedPassword) => {
-		console.log('handle submit');
+	const oddaja = async (vnesenoUporabniskoIme, vnesenoGeslo) => {
 		try {
-			if (typedUsername !== '' && typedPassword !== '') {
-				// check un-pwd pair in the DB:
-				let response = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/`, {
+			if (vnesenoUporabniskoIme !== '' && vnesenoGeslo !== '') {
+				let odziv = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/`, {
 					params: {
-						username: typedUsername,
-						password: typedPassword,
+						uporabnisko_ime: vnesenoUporabniskoIme,
+						geslo: vnesenoGeslo,
 					},
 				});
-				if (typeof response.data !== 'boolean') {
-					if (response.data.omogocen === 0) {
-						setTypedUsername('');
-						setTypedPassword('');
-						un.current = '';
-						pwd.current = '';
-						setMsg('Vaš profil je bil onemogočen');
+				if (typeof odziv.data !== 'boolean') {
+					if (odziv.data.omogocen === 0) {
+						setVnesenoUporabniskoIme('');
+						setVnesenoGeslo('');
+						ui.current = '';
+						geslo.current = '';
+						setSporocilo('Vaš profil je bil onemogočen');
 					} else {
-						// get all user's data from DB using request:
-						var data = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/user`, {
-							params: { username: typedUsername },
-						});
-						let userData = { ...data.data, geslo: typedPassword };
-						// into context:
-						setUporabnik({ ...userData, uporabnisko_ime: typedUsername });
+						var podatki = await axios.get(
+							`http://localhost:${global.config.port}/api/avtentikacija/uporabnik`,
+							{
+								params: { uporabnisko_ime: vnesenoUporabniskoIme },
+							}
+						);
+						let uporabniskiPodatki = { ...podatki.data, geslo: vnesenoGeslo };
+
+						setUporabnik({ ...uporabniskiPodatki, uporabnisko_ime: vnesenoUporabniskoIme });
 						setJeAvtenticiran(true);
 					}
 				} else {
-					setTypedUsername('');
-					setTypedPassword('');
-					un.current = '';
-					pwd.current = '';
-					setMsg('Napačni podatki');
+					setVnesenoUporabniskoIme('');
+					setVnesenoGeslo('');
+					ui.current = '';
+					geslo.current = '';
+					setSporocilo('Napačni podatki');
 				}
 			} else {
-				setMsg('Vnesite uporabniško ime in geslo');
+				setSporocilo('Vnesite uporabniško ime in geslo');
 			}
-		} catch (error) {
-			setMsg(error.code + ' (' + error.response.status + ')');
-			console.log(error);
+		} catch (napaka) {
+			setSporocilo(napaka.code + ' (' + napaka.response.status + ')');
+			console.log(napaka);
 		}
 	};
 
@@ -67,26 +63,26 @@ const Prijava = () => {
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
-					handleSubmit(typedUsername, typedPassword);
+					oddaja(vnesenoUporabniskoIme, vnesenoGeslo);
 				}}>
 				<label>Uporabniško ime:</label>
 				<br />
 				<input
 					type='text'
-					value={typedUsername}
+					value={vnesenoUporabniskoIme}
 					onChange={(e) => {
-						setTypedUsername(e.target.value);
-						setMsg('');
+						setVnesenoUporabniskoIme(e.target.value);
+						setSporocilo('');
 					}}></input>
 				<br />
 				<label>Geslo:</label>
 				<br />
 				<input
 					type='password'
-					value={typedPassword}
+					value={vnesenoGeslo}
 					onChange={(e) => {
-						setTypedPassword(e.target.value);
-						setMsg('');
+						setVnesenoGeslo(e.target.value);
+						setSporocilo('');
 					}}></input>
 				<br />
 				<button type='submit' className='gumb1'>
@@ -100,9 +96,9 @@ const Prijava = () => {
 				}}>
 				Registriracija
 			</button>
-			{msg !== null && msg !== '' ? (
+			{sporocilo !== null && sporocilo !== '' ? (
 				<div className='sporociloNapake'>
-					<i>{msg}</i>
+					<i>{sporocilo}</i>
 				</div>
 			) : (
 				<></>

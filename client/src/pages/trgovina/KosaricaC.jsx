@@ -1,88 +1,81 @@
 import axios from 'axios';
-import { CaretCircleLeft, CaretCircleRight } from 'phosphor-react';
+import { CaretCircleLeft, CaretCircleRight, PaperPlaneRight } from 'phosphor-react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useRef, useState } from 'react';
-import CartProduct from './IzdelekVKosariciC';
+import IzdelekVKosarici from './IzdelekVKosariciC';
 
-const Cart = ({
+const Kosarica = ({
 	setPrikazi,
 	izbranProdukt,
 	setIzbranProdukt,
 	izKosarice,
 	setIzKosarice,
 	setCenaKosarice,
-	pridobiProdukte,
 	prikazaniProdukti,
 	setPrikazaniProdukti,
-	removedMsg,
-	setRemovedMsg,
+	sporociloOdstranjevanje,
+	setSporociloOdstranjevanje,
 	setNiProduktov,
 }) => {
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
-	const [refresh, setRefresh] = useState(false);
-
-	let counter = useRef(0);
 
 	useEffect(() => {
 		setIzbranProdukt(null);
-		counter.current = 0;
 		preveriZalogoIzdelkov();
+		setSporociloOdstranjevanje('');
 	}, []);
-	console.log(kosarica);
 
 	const preveriZalogoIzdelkov = async () => {
 		let vsota = 0;
 
-		const f = async (product) => {
+		const preveriCeJeNaVoljo = async (produkt) => {
 			try {
-				let response = await axios.get(
-					`http://localhost:${global.config.port}/api/produkti/availability`,
-					{
-						params: {
-							ID_izdelka: product.ID_izdelka,
-						},
-					}
-				);
+				let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/naVoljo`, {
+					params: {
+						ID_izdelka: produkt.ID_izdelka,
+					},
+				});
 				// za odstranjevanje z "-" in preverjanje ce je produkt ze nekdo kupil in ga ni več
-				if (product.kolicina <= 0) {
-					setRemovedMsg('Izdelek ' + product.ime + ' je bil odstranjen.');
+				if (produkt.kolicina <= 0) {
+					setSporociloOdstranjevanje('Izdelek ' + produkt.ime + ' je bil odstranjen.');
 					return false;
 				}
-				if (response.data[0].kosov_na_voljo <= 0) {
-					setRemovedMsg('Izdelek ' + product.ime + ' je bil odstranjen, ker ga nimamo več na zalogi.');
+				if (odziv.data[0].kosov_na_voljo <= 0) {
+					setSporociloOdstranjevanje(
+						'Izdelek ' + produkt.ime + ' je bil odstranjen, ker ga nimamo več na zalogi.'
+					);
 					return false;
 				} else {
 					return true;
 				}
-			} catch (error) {
-				console.log(error);
+			} catch (napaka) {
+				console.log(napaka);
 			}
 		};
-		for (let product of kosarica) {
-			counter.current = 0;
+		for (let produkt of kosarica) {
 			vsota +=
-				product.cena_za_kos *
-				product.kolicina *
-				-product.cena_za_kos *
-				product.kolicina *
-				(product.popust / 100.0);
+				produkt.cena_za_kos *
+				produkt.kolicina *
+				-produkt.cena_za_kos *
+				produkt.kolicina *
+				(produkt.popust / 100.0);
 
-			if (!(await f(product))) {
-				setKosarica(kosarica.filter((p) => p.ID_izdelka !== product.ID_izdelka));
-				setPrikazaniProdukti(prikazaniProdukti.filter((p) => p.ID_izdelka !== product.ID_izdelka));
+			if (!(await preveriCeJeNaVoljo(produkt))) {
+				setKosarica(kosarica.filter((p) => p.ID_izdelka !== produkt.ID_izdelka));
+				setPrikazaniProdukti(prikazaniProdukti.filter((p) => p.ID_izdelka !== produkt.ID_izdelka));
 			}
 			setCenaKosarice(vsota);
 		}
 	};
 
 	return (
-		<div>
-			<div>
+		<div className='kosarica'>
+			<div className='vsebinaKosarice'>
 				{kosarica.length > 0 ? (
-					kosarica.map((product) => {
+					kosarica.map((produkt) => {
 						return (
-							<CartProduct
-								key={product.ID_izdelka}
+							<IzdelekVKosarici
+								key={produkt.ID_izdelka}
 								props={{
 									preveriZalogoIzdelkov: preveriZalogoIzdelkov,
 									izKosarice: izKosarice,
@@ -90,12 +83,9 @@ const Cart = ({
 									izbranProdukt: izbranProdukt,
 									setIzbranProdukt: setIzbranProdukt,
 									setPrikazi: setPrikazi,
-									product: product,
-									counter: counter,
-									setRemovedMsg: setRemovedMsg,
+									product: produkt,
+									setSporociloOdstranjevanje: setSporociloOdstranjevanje,
 								}}
-								refresh={refresh}
-								setRefresh={setRefresh}
 							/>
 						);
 					})
@@ -104,45 +94,39 @@ const Cart = ({
 				)}
 			</div>
 			<div>
-				<div className='buttonsDiv'>
+				<div className='nazajNaprej'>
 					<button
-						className='backButton'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setPrikazi('nakupovanje');
 							setNiProduktov(true);
-							//setPrikazaniProdukti(null);
-							//pridobiProdukte();
 							setIzKosarice(false);
 						}}>
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 						<div>Nazaj</div>
 					</button>
 					<button
-						className={kosarica.length <= 0 ? 'disabledBtn' : 'fwdButton'}
+						className={kosarica.length <= 0 ? 'onemogocenGumb' : 'gumbNaprej'}
 						disabled={kosarica.length <= 0 ? 'disabled' : ''}
 						onClick={(e) => {
 							e.preventDefault();
 							preveriZalogoIzdelkov();
 							if (kosarica.length > 0) {
 								setPrikazi('blagajna');
-								setRemovedMsg('');
+								setSporociloOdstranjevanje('');
 							} else {
-								setRemovedMsg('Vaša košarica je prazna.');
-								/*setRemovedMsg(
-									'Izdelek je bil odstranjen iz vaše košarice, ker ga nimamo več na zalogi.'
-								);*/
+								setSporociloOdstranjevanje('Vaša košarica je prazna.');
 							}
-							//setState({ ...state, props: {}, active: 'checkout', fromCart: true });
 						}}>
 						<div>Na plačilo</div>
-						<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
+						<PaperPlaneRight size={22} style={{ marginLeft: '5px' }} />
 					</button>
 				</div>
-				<div>{removedMsg === '' ? 'no removedMsg' : removedMsg}</div>
+				<div>{sporociloOdstranjevanje === '' ? '' : sporociloOdstranjevanje}</div>
 			</div>
 		</div>
 	);
 };
 
-export default Cart;
+export default Kosarica;

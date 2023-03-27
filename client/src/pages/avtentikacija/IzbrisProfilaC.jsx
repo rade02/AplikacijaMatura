@@ -8,43 +8,43 @@ const IzbrisProfila = ({ props }) => {
 	const [geslo, setGeslo] = useState('');
 	const [potrditev, setPotrditev] = useState(null);
 	const [sporocilo, setSporocilo] = useState({ sporociloGeslo: '' });
-	const [error, setError] = useState(false);
+	const [napaka, setNapaka] = useState(false);
 
 	const { uporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
 
-	const handleClickCheckExisting = async () => {
+	const preveriObstojece = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/`, {
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/avtentikacija/`, {
 				params: {
-					username: uporabnik.uporabnisko_ime,
-					password: geslo,
+					uporabnisko_ime: uporabnik.uporabnisko_ime,
+					geslo: geslo,
 				},
 			});
-			if (response.data) {
+			if (odziv.data) {
 				setPonovljenoGeslo(false);
 				setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 			} else {
 				setSporocilo({ ...sporocilo, sporociloGeslo: `Nepravilno geslo` });
 			}
-		} catch (error) {
-			console.log(error);
-			setSporocilo({ ...sporocilo, sporociloNapaka: `${error.message} (${error.name})` });
-			setError(true);
+		} catch (napaka) {
+			console.log(napaka);
+			setSporocilo({ ...sporocilo, sporociloNapaka: `${napaka.message} (${napaka.name})` });
+			setNapaka(true);
 		}
 	};
 
 	const izbrisi = async () => {
 		try {
-			let response = await axios.delete(`http://localhost:${global.config.port}/api/avtentikacija/del`, {
+			await axios.delete(`http://localhost:${global.config.port}/api/avtentikacija/izbrisi`, {
 				params: {
-					username: uporabnik.uporabnisko_ime,
+					uporabnisko_ime: uporabnik.uporabnisko_ime,
 				},
 			});
-		} catch (error) {
-			console.log(error);
-			setSporocilo({ ...sporocilo, sporociloNapaka: `${error.message} (${error.name})` });
-			setError(true);
+		} catch (napaka) {
+			console.log(napaka);
+			setSporocilo({ ...sporocilo, sporociloNapaka: `${napaka.message} (${napaka.name})` });
+			setNapaka(true);
 		}
 	};
 
@@ -60,7 +60,7 @@ const IzbrisProfila = ({ props }) => {
 						onChange={(e) => {
 							e.preventDefault();
 							setGeslo(e.target.value);
-							setError(false);
+							setNapaka(false);
 							setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 						}}></input>
 				</div>
@@ -68,19 +68,19 @@ const IzbrisProfila = ({ props }) => {
 				<button
 					onClick={(e) => {
 						e.preventDefault();
-						props.setDel(false);
+						props.setIzbrisi(false);
 					}}>
 					Nazaj na profil
 				</button>
 				<button
 					onClick={(e) => {
 						e.preventDefault();
-						handleClickCheckExisting(e.target.value);
+						preveriObstojece(e.target.value);
 					}}>
 					Potrdi
 				</button>
 
-				{error ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
+				{napaka ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
 			</div>
 		);
 	}
@@ -95,7 +95,7 @@ const IzbrisProfila = ({ props }) => {
 					onChange={(e) => {
 						e.preventDefault();
 						setPotrditev(e.target.value);
-						setError(false);
+						setNapaka(false);
 						setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 					}}></input>
 			</div>
@@ -104,7 +104,7 @@ const IzbrisProfila = ({ props }) => {
 					e.preventDefault();
 					if (potrditev === `briši račun ${uporabnik.uporabnisko_ime}`) {
 						izbrisi();
-						if (!error) {
+						if (!napaka) {
 							setJeAvtenticiran(false);
 							navigate('/', { state: { sporocilo: `račun ${uporabnik.uporabnisko_ime} izbrisan` } });
 						} else {
@@ -122,11 +122,11 @@ const IzbrisProfila = ({ props }) => {
 			<button
 				onClick={(e) => {
 					e.preventDefault();
-					props.setDel(false);
+					props.setIzbrisi(false);
 				}}>
 				Nazaj na profil
 			</button>
-			{error ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
+			{napaka ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
 		</div>
 	);
 };

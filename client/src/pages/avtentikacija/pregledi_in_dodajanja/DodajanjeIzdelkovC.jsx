@@ -2,7 +2,7 @@ import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
 import { useState } from 'react';
 
-const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
+const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 	const [vneseniPodatki, setVneseniPodatki] = useState({
 		ime: null,
 		kategorija: null,
@@ -50,7 +50,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 						sporociloONapaki.dbS === ''
 					) {
 						const formData = new FormData();
-						formData.append('slika', file);
+						formData.append('slika', datoteka);
 						formData.append('ime', vneseniPodatki.ime);
 						formData.append('kategorija', vneseniPodatki.kategorija);
 						formData.append('cena_za_kos', vneseniPodatki.cena_za_kos);
@@ -60,21 +60,20 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 						formData.append('popust', vneseniPodatki.popust);
 
 						const posodobiVlogo = async () => {
-							let res;
 							try {
-								res = await axios.post(
+								await axios.post(
 									`http://localhost:${global.config.port}/api/administrator/dodajIzdelek`,
 									formData,
 									{
 										headers: { 'Content-Type': 'multipart/form-data' },
 									}
 								);
-							} catch (error) {
+							} catch (napaka) {
 								setSporociloONapaki({
 									...sporociloONapaki,
 									dbS: 'Napaka pri vnosu v bazo podatkov',
 								});
-								console.log('Prišlo je do napake: ' + error.toString());
+								console.log('Prišlo je do napake: ' + napaka.toString());
 							}
 						};
 
@@ -98,7 +97,7 @@ const DodajanjeIzdelkov = ({ props, file, setFile, uploadFile }) => {
 								name='image'
 								accept='image/gif, image/jpeg, image/png'
 								onChange={(e) => {
-									setFile(e.target.files[0]);
+									setDatoteka(e.target.files[0]);
 								}}
 							/>
 						</tr>

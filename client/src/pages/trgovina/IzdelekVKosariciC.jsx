@@ -1,13 +1,12 @@
 import { useContext } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 
-const CartProduct = ({ props, refresh, setRefresh }) => {
+const IzdelekVKosarici = ({ props }) => {
 	const { kosarica } = useContext(NakupovalniKontekst);
-	// TODO: SPREMENI, DA BO NAMESTO += 0.5 : += 1
-	//console.log(props.product);
+
 	return (
-		<div className='cartProduct'>
-			<div className='productPicture'>
+		<div className='produktVKosarici'>
+			<div className='slikaIzdelkaVKosarici'>
 				<img
 					src={props.product.slika}
 					className='majhnaSlika'
@@ -15,9 +14,9 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 				/>
 			</div>
 
-			<div className='productLaneInfo'>
+			<div className='vrsticneInformacije'>
 				<div
-					className='productText'
+					className='produktBesedilo'
 					onClick={(e) => {
 						e.preventDefault();
 						//setState({ props: props.product, active: 'product', fromCart: true });
@@ -28,18 +27,19 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 					[{props.product.ID_izdelka}] {props.product.ime}{' '}
 					{props.product.kratek_opis !== null ? ` ${props.product.kratek_opis}` : ''}
 				</div>
-				<div className='productLaneDetailInfo'>
+				<div className='produktCenaInKosi'>
 					<div>
 						{parseFloat(props.product.cena_za_kos * (1 - props.product.popust / 100.0)).toFixed(2)} €
 					</div>
 
 					<div>
 						<button
+							className='plusMinusGumb'
 							title='odstrani kos'
 							onClick={(e) => {
 								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina--;
 
-								props.setRemovedMsg(
+								props.setSporociloOdstranjevanje(
 									// nujno za rerendering cart componenta !!
 									`Odstranjen izdelek: ${props.product.ime} ${
 										props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
@@ -47,12 +47,12 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 								);
 								Math.random().toFixed(3);
 								props.preveriZalogoIzdelkov();
-								setRefresh(!refresh);
 							}}>
 							-
 						</button>{' '}
 						kos: {props.product.kolicina}{' '}
 						<button
+							className='plusMinusGumb'
 							title='dodaj kos'
 							disabled={
 								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 >
@@ -61,48 +61,36 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 									: ''
 							}
 							onClick={(e) => {
-								console.log('click');
 								if (
 									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 <=
 									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
 								) {
 									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
-									props.setRemovedMsg(
+									props.setSporociloOdstranjevanje(
 										`Dodan izdelek: ${props.product.ime} ${
 											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
 										} `
 									);
 								} else {
-									props.setRemovedMsg(
+									props.setSporociloOdstranjevanje(
 										`Izdelka: ${props.product.ime} ${
 											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
 										} ni več na zalogi `
 									);
 								}
 								Math.random().toFixed(3);
-								setRefresh(!refresh);
-
-								//console.log(props.product);
 							}}>
 							+
 						</button>
 					</div>
 					<div>
 						<button
+							className='gumbNazaj'
 							title='preglej izdelek'
 							onClick={(e) => {
 								e.preventDefault();
-								//console.log(props.product);
 								props.setIzbranProdukt(props.product);
 								props.setIzKosarice(true);
-								/*setState({
-									props: {
-										...props.product,
-										productInfos: props.productInfos,
-										setProductInfos: props.setProductInfos,
-									},
-									fromCart: true,
-								});*/
 								props.setPrikazi('produkt');
 							}}>
 							Pregled izdelka
@@ -114,4 +102,4 @@ const CartProduct = ({ props, refresh, setRefresh }) => {
 	);
 };
 
-export default CartProduct;
+export default IzdelekVKosarici;

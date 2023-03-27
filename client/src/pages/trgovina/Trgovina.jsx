@@ -1,61 +1,78 @@
 import './Trgovina.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { NakupovalniKontekstProvider } from '../../contexts/NakupovalniKontekst';
-import ShopContent from './VsebinaTrgovineC';
-import ShopNavbar from './NavigacijaTrgovineC';
+import VsebinaTrgovine from './VsebinaTrgovineC';
+import NavigacijaTrgovine from './NavigacijaTrgovineC';
+import { ArrowCircleUp } from 'phosphor-react';
 
-const ShopPage = () => {
-	const [position, setPosition] = useState(window.pageYOffset);
-	const [visible, setVisible] = useState(0); // 0 - top, 1 - invisible, 2 - visible
+const Trgovina = ({ Ref }) => {
+	const [vidno, setVidno] = useState(0); // 0 - zgoraj, 2 - vidno
 	const [prikazi, setPrikazi] = useState('nakupovanje');
 	const [cenaKosarice, setCenaKosarice] = useState(0);
-	const zgoraj = useRef('zgoraj');
+	const [naVrh, setNaVrh] = useState(false);
+	const prejsnjiOdmik = useRef(0);
 
 	useEffect(() => {
 		if (prikazi === 'nakupovanje') {
-			const handleScroll = () => {
-				let moving = window.pageYOffset; // koliko dol smo zdaj
-				if (position < 250) {
-					setVisible(0);
-				} else {
-					//console.log('position & moving');
-					//console.log(position);
-					//console.log(moving);
-					setVisible(position > moving + 2 ? 1 : 2);
+			const pomikanje = () => {
+				if (naVrh) {
+					setNaVrh(false);
 				}
-				setPosition(moving);
+				let odmikOdVrha = window.pageYOffset;
+
+				if (odmikOdVrha < 250) {
+					setVidno(0);
+				} else if (naVrh) {
+					setVidno(0);
+				} else {
+					if (prejsnjiOdmik.current < odmikOdVrha && (vidno === 2 || vidno === 0)) {
+						setVidno(2);
+					} else {
+						setVidno(0);
+					}
+				}
+
+				prejsnjiOdmik.current = odmikOdVrha;
 			};
-			window.addEventListener('scroll', handleScroll);
+			window.addEventListener('scroll', pomikanje);
 			return () => {
-				window.removeEventListener('scroll', handleScroll);
+				window.removeEventListener('scroll', pomikanje);
 			};
 		}
 	});
 
+	useMemo(() => {
+		if (naVrh) {
+			Ref.current.scrollIntoView({ behaviour: 'smooth' });
+		}
+	}, [naVrh, Ref]);
+
 	return (
 		<NakupovalniKontekstProvider>
-			<div className='shop' ref={zgoraj}>
-				<ShopNavbar
-					visible={visible}
-					setVisible={setVisible}
+			<div className='trgovina'>
+				<NavigacijaTrgovine
+					vidno={vidno}
+					setVidno={setVidno}
 					prikazi={prikazi}
 					setPrikazi={setPrikazi}
 					cenaKosarice={cenaKosarice}
 				/>
-				<ShopContent
+				<VsebinaTrgovine
+					setVidno={setVidno}
 					prikazi={prikazi}
 					setPrikazi={setPrikazi}
 					cenaKosarice={cenaKosarice}
 					setCenaKosarice={setCenaKosarice}
 				/>
-				{prikazi === 'nakupovanje' ? (
+				{prikazi === 'nakupovanje' && (prejsnjiOdmik.current > 450 || vidno === 2) ? (
 					<div
 						className='naVrh'
-						onClick={(e) => {
-							zgoraj.current.scrollIntoView({ behaviour: 'smooth' });
-							setVisible(2);
-						}}
-					/>
+						onClick={() => {
+							setVidno(0);
+							setNaVrh(true);
+						}}>
+						<ArrowCircleUp size={35} />
+					</div>
 				) : (
 					<></>
 				)}
@@ -64,4 +81,4 @@ const ShopPage = () => {
 	);
 };
 
-export default ShopPage;
+export default Trgovina;

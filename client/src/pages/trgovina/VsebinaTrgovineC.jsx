@@ -1,36 +1,35 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
-import Shopping from './NakupovanjeC';
+import Nakupovanje from './NakupovanjeC';
 import Kosarica from './KosaricaC';
 import Blagajna from './BlagajnaC';
 import Error from '../Error';
-import ProductInfo from './InformacijeOProduktuC';
+import InformacijeOProduktu from './InformacijeOProduktuC';
 import { WarningCircle } from 'phosphor-react';
 
-const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
+const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => {
 	const { kosarica } = useContext(NakupovalniKontekst);
 
 	const [prikazaniProdukti, setPrikazaniProdukti] = useState([]);
 	const [niProduktov, setNiProduktov] = useState(true);
 	const [napaka, setNapaka] = useState(false);
 	const [izbranProdukt, setIzbranProdukt] = useState({}); // za prikaz na product info page ce pridemo iz product component
-	//const [fetchNumber] = useState(6); mogoče potem opcija za koliko jih prikaze na stran
 	const [izKosarice, setIzKosarice] = useState(null);
-	const [removedMsg, setRemovedMsg] = useState('');
+	const [sporociloOdstranjevanje, setSporociloOdstranjevanje] = useState('');
 
 	const pridobiProdukte = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/`, {
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/`, {
 				params: {
-					number: 6,
-					noDups: prikazaniProdukti.map((a) => a.ID_izdelka),
+					steviloIzdelkov: 6,
+					brezPodvajanja: prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
 			// dodamo vsakemu izdelku kolicino v kosarici in sliko
-			response = response.data;
-			response.forEach(async (element) => {
-				let res = await axios.get(
+			odziv = odziv.data;
+			odziv.forEach(async (element) => {
+				let rezultat = await axios.get(
 					`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
 					{
 						method: 'get',
@@ -41,19 +40,16 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 					}
 				);
 				element.kolicina = 0;
-				//console.log(res.data);
-				if (res.data.size === 0) {
+				if (rezultat.data.size === 0) {
 					element.slika = null;
 				} else {
-					element.slika = URL.createObjectURL(res.data);
+					element.slika = URL.createObjectURL(rezultat.data);
 				}
-				//console.log('element.slika');
-				//console.log(element.slika);
 			});
-			setPrikazaniProdukti([...prikazaniProdukti, ...response]);
+			setPrikazaniProdukti([...prikazaniProdukti, ...odziv]);
 			setNiProduktov(false);
-		} catch (error) {
-			console.log(error);
+		} catch (napaka) {
+			console.log(napaka);
 			setNapaka(true);
 		}
 	};
@@ -94,7 +90,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	}
 	if (prikazi === 'nakupovanje') {
 		return (
-			<Shopping
+			<Nakupovanje
 				props={{
 					izKosarice: izKosarice,
 					setIzKosarice: setIzKosarice,
@@ -106,6 +102,7 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 					pridobiProdukte: pridobiProdukte,
 					izbranProdukt: izbranProdukt,
 					setIzbranProdukt: setIzbranProdukt,
+					setVidno: setVidno,
 				}}
 			/>
 		);
@@ -121,8 +118,8 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 				pridobiProdukte={pridobiProdukte}
 				prikazaniProdukti={prikazaniProdukti}
 				setPrikazaniProdukti={setPrikazaniProdukti}
-				removedMsg={removedMsg}
-				setRemovedMsg={setRemovedMsg}
+				sporociloOdstranjevanje={sporociloOdstranjevanje}
+				setSporociloOdstranjevanje={setSporociloOdstranjevanje}
 				setNiProduktov={setNiProduktov}
 			/>
 		);
@@ -130,14 +127,14 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 		return (
 			<Blagajna
 				setPrikazi={setPrikazi}
-				removedMsg={removedMsg}
-				setRemovedMsg={setRemovedMsg}
+				sporociloOdstranjevanje={sporociloOdstranjevanje}
+				setSporociloOdstranjevanje={setSporociloOdstranjevanje}
 				pridobiProdukte={pridobiProdukte}
 			/>
 		);
 	} else if (prikazi === 'produkt') {
 		return (
-			<ProductInfo
+			<InformacijeOProduktu
 				izKosarice={izKosarice}
 				setIzKosarice={setIzKosarice}
 				izbranProdukt={izbranProdukt}
@@ -150,4 +147,4 @@ const ShopContent = ({ prikazi, setPrikazi, setCenaKosarice }) => {
 	}
 };
 
-export default ShopContent;
+export default VsebinaTrgovine;

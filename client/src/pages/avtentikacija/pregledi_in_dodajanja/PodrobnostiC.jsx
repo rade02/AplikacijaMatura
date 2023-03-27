@@ -2,30 +2,27 @@ import axios from 'axios';
 import { CaretCircleLeft, X } from 'phosphor-react';
 import { useRef, useState, useEffect } from 'react';
 
-const PodatkiOOsebi = ({
+const Podrobnosti = ({
 	niIzbrisa,
-	file,
-	setFile,
-	uploadFile,
+	setDatoteka,
+	naloziDatoteko,
 	stranka,
-	oseba,
-	setOseba,
+	predmet,
 	prejsnjeStanjeAdmin,
 	setStanjeAdmin,
 	tabela,
 	setTabela,
 }) => {
-	const [placa, setPlaca] = useState(oseba.placa);
+	const [placa, setPlaca] = useState(predmet.placa);
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
 	const poljePlaca = useRef(null);
-	const [izdelek, setIzdelek] = useState(oseba);
+	const [izdelek, setIzdelek] = useState(predmet);
 	const [opravljeno, setOpravljeno] = useState(false);
 	const [napaka, setNapaka] = useState(null);
 	const [DB, setDB] = useState(null);
-	//console.log(oseba);
+
 	useEffect(() => {
-		//console.log(oseba);
-		if (oseba === null) {
+		if (predmet === null) {
 			setDB(null);
 			return (
 				<div>
@@ -41,31 +38,26 @@ const PodatkiOOsebi = ({
 					</button>
 				</div>
 			);
-		} else if (oseba.ID_izdelka !== null && oseba.ID_izdelka !== undefined) {
+		} else if (predmet.ID_izdelka !== null && predmet.ID_izdelka !== undefined) {
 			setDB({ DB: 'Izdelki', IDtip: 'ID_izdelka' });
-		} else if (oseba.ID_racuna !== null && oseba.ID_racuna !== undefined) {
+		} else if (predmet.ID_racuna !== null && predmet.ID_racuna !== undefined) {
 			setDB({ DB: 'Racuni', IDtip: 'ID_racuna' });
-		} else if (oseba.ID_narocila !== null && oseba.ID_narocila !== undefined) {
+		} else if (predmet.ID_narocila !== null && predmet.ID_narocila !== undefined) {
 			setDB({ DB: 'Narocila', IDtip: 'ID_narocila' });
 		}
 	}, []);
-	//console.log(DB);
 
 	const izbris = async () => {
 		if (DB !== null) {
-			console.log('brisem...');
 			try {
-				const result = await axios.post(
-					`http://localhost:${global.config.port}/api/administrator/izbrisiElement`,
-					{
-						DB: DB.DB,
-						IDtip: DB.IDtip,
-						ID: oseba[DB.IDtip],
-					}
-				);
+				await axios.post(`http://localhost:${global.config.port}/api/administrator/izbrisiElement`, {
+					DB: DB.DB,
+					IDtip: DB.IDtip,
+					ID: predmet[DB.IDtip],
+				});
 				setTabela(null);
-			} catch (error) {
-				console.log(error);
+			} catch (napaka) {
+				console.log(napaka);
 			}
 		}
 	};
@@ -77,17 +69,14 @@ const PodatkiOOsebi = ({
 				console.log('Napaka pri vnosu podatkov');
 				console.log(placa);
 			} else {
-				const result = await axios.post(
-					`http://localhost:${global.config.port}/api/administrator/urediPlaco`,
-					{
-						novaPlaca: placa,
-						uporabnisko_ime: uporabniskoIme,
-					}
-				);
+				await axios.post(`http://localhost:${global.config.port}/api/administrator/urediPlaco`, {
+					novaPlaca: placa,
+					uporabnisko_ime: uporabniskoIme,
+				});
 				setNapaka('Podatki spremenjeni');
 			}
-		} catch (onRejectedError) {
-			console.log(onRejectedError);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
 	const spremeniIzdelek = async () => {
@@ -106,47 +95,34 @@ const PodatkiOOsebi = ({
 				parseInt(izdelek.popust) <= 100 &&
 				!isNaN(parseInt(izdelek.popust))
 			) {
-				const result = await axios.post(
-					`http://localhost:${global.config.port}/api/administrator/urediIzdelek`,
-					{
-						izdelek: izdelek,
-					}
-				);
+				await axios.post(`http://localhost:${global.config.port}/api/administrator/urediIzdelek`, {
+					izdelek: izdelek,
+				});
 				setNapaka('Podatki spremenjeni');
 			} else {
 				setNapaka('Vneseni podatki niso skladni z definicijami polj');
 				console.log('Napaka pri vnosu podatkov');
 				console.log(izdelek);
 			}
-		} catch (error) {
-			console.log(error);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
 	const spremeniNarocilo = async () => {
 		try {
-			const result = await axios.post(
-				`http://localhost:${global.config.port}/api/administrator/urediNarocilo`,
-				{
-					ID_narocila: oseba.ID_narocila,
-				}
-			);
-			const result2 = await axios.post(
-				`http://localhost:${global.config.port}/api/administrator/izdajRacun`,
-				{
-					ID_narocila: oseba.ID_narocila,
-					kupec: oseba.imeStranke + ' ' + oseba.priimekStranke,
-					datumIzdaje: oseba.datum,
-				}
-			);
-			// TODO: ustvari racun
+			await axios.post(`http://localhost:${global.config.port}/api/administrator/urediNarocilo`, {
+				ID_narocila: predmet.ID_narocila,
+			});
+			await axios.post(`http://localhost:${global.config.port}/api/administrator/izdajRacun`, {
+				ID_narocila: predmet.ID_narocila,
+				kupec: predmet.imeStranke + ' ' + predmet.priimekStranke,
+				datumIzdaje: predmet.datum,
+			});
 			setNapaka('Podatki spremenjeni');
-			//}
-		} catch (onRejectedError) {
-			console.log(onRejectedError);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
-	//console.log(oseba);
-	//console.log(niIzbrisa);
 
 	return (
 		<div className='podrobnosti'>
@@ -161,8 +137,8 @@ const PodatkiOOsebi = ({
 				<div>Nazaj</div>
 			</button>
 			<div className='podrobniPodatki'>
-				{(oseba.uporabnisko_ime === null || oseba.uporabnisko_ime === undefined) &&
-				(oseba.ID === null || oseba.ID === undefined) &&
+				{(predmet.uporabnisko_ime === null || predmet.uporabnisko_ime === undefined) &&
+				(predmet.ID === null || predmet.ID === undefined) &&
 				niIzbrisa !== null &&
 				!niIzbrisa ? (
 					<button
@@ -183,38 +159,38 @@ const PodatkiOOsebi = ({
 
 				<table className='tabela'>
 					<tbody>
-						{Object.keys(oseba).map((pr) => {
+						{Object.keys(predmet).map((element) => {
 							return (
-								<tr key={pr}>
-									<td>{pr}:</td>
-									{pr === 'vloga' ? (
+								<tr key={element}>
+									<td>{element}:</td>
+									{element === 'vloga' ? (
 										<td>
-											{oseba[pr] === 0
+											{predmet[element] === 0
 												? 'administrator'
-												: oseba[pr] === 1
+												: predmet[element] === 1
 												? 'zaposleni'
-												: oseba[pr] === 2
+												: predmet[element] === 2
 												? 'stranka'
-												: oseba[pr] === 3
+												: predmet[element] === 3
 												? 'računovodja'
 												: 'nedoločeno'}
 										</td>
-									) : pr === 'omogocen' ? (
-										<td>{oseba[pr] === 1 ? 'omogočen' : 'onemogočen'}</td>
-									) : pr === 'geslo' ? (
-										<td>{oseba[pr]}</td>
-									) : pr === 'placa' ? (
+									) : element === 'omogocen' ? (
+										<td>{predmet[element] === 1 ? 'omogočen' : 'onemogočen'}</td>
+									) : element === 'geslo' ? (
+										<td>{predmet[element]}</td>
+									) : element === 'placa' ? (
 										<td>
 											<input
 												ref={poljePlaca}
 												type='text'
-												defaultValue={oseba[pr] + ' €'}
+												defaultValue={predmet[element] + ' €'}
 												style={{ minWidth: '60px' }}
 												onChange={(e) => {
 													e.preventDefault();
 													if (!isNaN(parseFloat(poljePlaca.current.value))) {
 														setPlaca(parseFloat(poljePlaca.current.value));
-														setUporabniskoIme(oseba.uporabnisko_ime);
+														setUporabniskoIme(predmet.uporabnisko_ime);
 														setNapaka(null);
 													}
 												}}></input>
@@ -229,11 +205,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'ime' ? (
+									) : element === 'ime' ? (
 										<td>
 											<input
 												type='text'
-												defaultValue={oseba[pr]}
+												defaultValue={predmet[element]}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -250,11 +226,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'kategorija' ? (
+									) : element === 'kategorija' ? (
 										<td>
 											<input
 												type='text'
-												defaultValue={oseba[pr]}
+												defaultValue={predmet[element]}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -271,11 +247,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'cena_za_kos' ? (
+									) : element === 'cena_za_kos' ? (
 										<td>
 											<input
 												type='text'
-												defaultValue={oseba[pr] + ' €'}
+												defaultValue={predmet[element] + ' €'}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -291,11 +267,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'kosov_na_voljo' ? (
+									) : element === 'kosov_na_voljo' ? (
 										<td>
 											<input
 												type='text'
-												defaultValue={oseba[pr]}
+												defaultValue={predmet[element]}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -311,11 +287,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'kratek_opis' ? (
+									) : element === 'kratek_opis' ? (
 										<td>
 											<input
 												type='text'
-												defaultValue={oseba[pr]}
+												defaultValue={predmet[element]}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -332,11 +308,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'informacije' ? (
+									) : element === 'informacije' ? (
 										<td>
 											<textarea
 												type='text'
-												defaultValue={oseba[pr]}
+												defaultValue={predmet[element]}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -352,11 +328,11 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'popust' ? (
+									) : element === 'popust' ? (
 										<td>
 											<input
 												type='text'
-												defaultValue={oseba[pr] + ' %'}
+												defaultValue={predmet[element] + ' %'}
 												style={{ minWidth: '200px' }}
 												onChange={(e) => {
 													e.preventDefault();
@@ -372,8 +348,8 @@ const PodatkiOOsebi = ({
 												Potrdi
 											</button>
 										</td>
-									) : pr === 'slika' ? (
-										oseba.slika === null ? (
+									) : element === 'slika' ? (
+										predmet.slika === null ? (
 											<td style={{ minWidth: '200px' }}>
 												<label>V bazi ni naložene slike</label>
 												<br />
@@ -384,7 +360,7 @@ const PodatkiOOsebi = ({
 													name='image'
 													accept='image/gif, image/jpeg, image/png'
 													onChange={(e) => {
-														setFile(e.target.files[0]);
+														setDatoteka(e.target.files[0]);
 													}}
 												/>
 												<button
@@ -392,10 +368,10 @@ const PodatkiOOsebi = ({
 													onClick={(e) => {
 														e.preventDefault();
 														try {
-															uploadFile();
+															naloziDatoteko();
 															setNapaka('Podatki spremenjeni');
-														} catch (error) {
-															setNapaka(error);
+														} catch (napaka) {
+															setNapaka(napaka);
 														}
 													}}>
 													Naloži sliko
@@ -404,9 +380,9 @@ const PodatkiOOsebi = ({
 										) : (
 											<td style={{ minWidth: '200px' }}>
 												<img
-													src={oseba.slika}
+													src={predmet.slika}
 													className='velikaSlika'
-													alt={`${oseba.slika !== null ? 'Nalaganje...' : ''}`}
+													alt={`${predmet.slika !== null ? 'Nalaganje...' : ''}`}
 												/>
 												<br />
 												<input
@@ -416,7 +392,7 @@ const PodatkiOOsebi = ({
 													name='image'
 													accept='image/gif, image/jpeg, image/png'
 													onChange={(e) => {
-														setFile(e.target.files[0]);
+														setDatoteka(e.target.files[0]);
 													}}
 												/>
 												<button
@@ -424,24 +400,26 @@ const PodatkiOOsebi = ({
 													onClick={async (e) => {
 														e.preventDefault();
 														try {
-															uploadFile();
+															naloziDatoteko();
 															setNapaka('Podatki spremenjeni');
-														} catch (error) {
-															setNapaka(error);
+														} catch (napaka) {
+															setNapaka(napaka);
 														}
 													}}>
 													Naloži novo sliko
 												</button>
 											</td>
 										)
-									) : pr === 'opravljeno' && !stranka ? (
+									) : element === 'opravljeno' && !stranka ? (
 										<td>
-											{oseba[pr] === 1 || opravljeno === true ? (
+											{predmet[element] === 1 || opravljeno === true ? (
 												<div>Opravljeno</div>
 											) : (
 												<button
 													className='potrdi'
-													disabled={oseba[pr] === 1 || opravljeno === true ? 'disabled' : ''}
+													disabled={
+														predmet[element] === 1 || opravljeno === true ? 'disabled' : ''
+													}
 													onClick={(e) => {
 														e.preventDefault();
 														setOpravljeno(true);
@@ -451,10 +429,10 @@ const PodatkiOOsebi = ({
 												</button>
 											)}
 										</td>
-									) : pr === 'postnina' || pr === 'za_placilo' ? (
-										<td>{oseba[pr].toFixed(2)} €</td>
+									) : element === 'postnina' || element === 'za_placilo' ? (
+										<td>{predmet[element].toFixed(2)} €</td>
 									) : (
-										<td>{oseba[pr]}</td>
+										<td>{predmet[element]}</td>
 									)}
 								</tr>
 							);
@@ -520,29 +498,5 @@ const PodatkiOOsebi = ({
 		</div>
 	);
 };
-/*
-{tabela !== undefined || null ? (
-							tabela[0].podatkiOIzdelkih.map((izdelek) => {
-								return (
-									<tr key={izdelek.ID_izdelka + '' + izdelek.ID_izdelka}>
-										{Object.keys(izdelek).map((key) => {
-											console.log('izdelek[key]');
-											console.log(izdelek[key]);
-											if (key === 'ID_izdelka') {
-												let imeIzdelka = tabela.imenaIzdelkov.filter(
-													(ime) => ime.ID_izdelka === izdelek[key]
-												);
-												console.log('ime izdelka');
-												console.log(imeIzdelka);
-												return <td key={key + '' + izdelek[key]}>{imeIzdelka.ime}</td>;
-											} else return <td key={key + '' + izdelek[key]}>{izdelek[key]}</td>;
-										})}
-									</tr>
-								);
-							})
-						) : (
-							<></>
-						)}
-*/
 
-export default PodatkiOOsebi;
+export default Podrobnosti;

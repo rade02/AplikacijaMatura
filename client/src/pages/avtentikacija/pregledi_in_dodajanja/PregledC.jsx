@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import TabelskaVrstica from './TabelskaVrsticaC';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 const Pregled = ({ props }) => {
 	const [iskalniKriterij, setIskalniKriterij] = useState('ID');
 	const [iskalniNiz, setIskalniNiz] = useState(0);
-	console.log(props.naslov);
+
 	return (
 		<>
 			<h2 className='naslov'>{props.naslov}</h2>
@@ -42,7 +42,7 @@ const Pregled = ({ props }) => {
 											setIskalniKriterij(e.target.value);
 										}}>
 										<option value='ID'>ID-ju</option>
-										<option value='uporabnisko_ime'>Upor. imenu</option>
+										<option value='uporabnisko_ime'>upor. imenu</option>
 										<option value='ime'>imenu</option>
 										<option value='priimek'>priimku</option>
 										<option value='elektronski_naslov'>e-pošti</option>
@@ -68,27 +68,23 @@ const Pregled = ({ props }) => {
 										className='potrdi'
 										onClick={async (e) => {
 											e.preventDefault();
-											//console.log('iskalniKriterij');
-											//console.log(iskalniKriterij);
-											//console.log('iskalniNiz');
-											//console.log(iskalniNiz);
 											try {
-												let r = await axios.get(
+												let rezultat = await axios.get(
 													`http://localhost:${global.config.port}/api/administrator/osebe`,
 													{
 														params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
 													}
 												);
-												props.setTabela(r.data);
-											} catch (error) {
-												console.log(`Prišlo je do napake: ${error}`);
+												props.setTabela(rezultat.data);
+											} catch (napaka) {
+												console.log(`Prišlo je do napake: ${napaka}`);
 											}
 										}}>
 										Išči
 									</button>
 								</div>
 							</div>
-						) : (
+						) : props.naslov === 'Pregled uporabnikov' ? (
 							// za pregled uporabnikov
 							<>
 								<select
@@ -106,23 +102,74 @@ const Pregled = ({ props }) => {
 									)
 								</select>
 							</>
+						) : (
+							// pregled izdelkov
+							<div className='filtriIskanja'>
+								<div className='iskanje'>
+									<label className='oznaka'>Iskanje po: </label>
+									<select
+										onClick={(e) => {
+											e.preventDefault();
+											setIskalniKriterij(e.target.value);
+										}}>
+										<option value='ID_izdelka'>ID-ju izdelka</option>
+										<option value='ime'>imenu</option>
+										<option value='kategorija'>kategoriji</option>
+										<option value='popust'>popustu</option>
+									</select>
+								</div>
+								<div className='iskanje'>
+									<input
+										className='tekstovnoPolje'
+										style={{ width: '100px', height: '15px', fontSize: '13px' }}
+										type='text'
+										onChange={(e) => {
+											e.preventDefault();
+
+											if (e.target.value === '') {
+												setIskalniNiz(1);
+												setIskalniKriterij(1);
+											} else {
+												setIskalniNiz(e.target.value);
+											}
+										}}
+										placeholder='Vnesite iskalni niz'></input>
+									<button
+										onClick={async (e) => {
+											e.preventDefault();
+											try {
+												let r = await axios.get(
+													`http://localhost:${global.config.port}/api/administrator/izdelki`,
+													{
+														params: { iskalniKriterij: iskalniKriterij, iskalniNiz: iskalniNiz },
+													}
+												);
+												props.setTabela(r.data);
+											} catch (error) {
+												console.log(`Prišlo je do napake: ${error}`);
+											}
+										}}>
+										Išči
+									</button>
+								</div>
+							</div>
 						)}
 						<table className='tabela' style={{ alignSelf: 'center' }}>
 							<tbody>
 								<tr style={{ backgroundColor: 'rgba(240, 240, 240, 0.727)' }}>
-									{props.naslovnaVrstica.map((he) => {
-										return <th key={he}>{he}</th>;
+									{props.naslovnaVrstica.map((element) => {
+										return <th key={element}>{element}</th>;
 									})}
 								</tr>
-								{props.tabela.map((el) => {
+								{props.tabela.map((element) => {
 									if (props.filter === -1) {
 										// prikazi vse
 										return (
 											<TabelskaVrstica
 												props={{
 													naslov: props.naslov,
-													element: el,
-													setOseba: props.setOseba,
+													element: element,
+													setPredmet: props.setPredmet,
 													setPrejsnjeStanjeAdmin: props.setPrejsnjeStanjeAdmin,
 													stanjeAdmin: props.stanjeAdmin,
 													setStanjeAdmin: props.setStanjeAdmin,
@@ -135,7 +182,7 @@ const Pregled = ({ props }) => {
 										if (props.naslov === 'Pregled oseb') {
 											return (
 												<tr>
-													{Object.keys(el).map((key) => {
+													{Object.keys(element).map((key) => {
 														// pri pregledu oseb
 														if (
 															key === 'ID' ||
@@ -144,18 +191,18 @@ const Pregled = ({ props }) => {
 															key === 'ime' ||
 															key === 'priimek'
 														)
-															return <td>{el[key]}</td>;
+															return <td>{element[key]}</td>;
 														return null;
 													})}
 												</tr>
 											);
 										} else {
-											if (el.vloga === props.filter)
+											if (element.vloga === props.filter)
 												return (
 													<TabelskaVrstica
 														props={{
-															element: el,
-															setOseba: props.setOseba,
+															element: element,
+															setPredmet: props.setPredmet,
 															setPrejsnjeStanjeAdmin: props.setPrejsnjeStanjeAdmin,
 															stanjeAdmin: props.stanjeAdmin,
 															setStanjeAdmin: props.setStanjeAdmin,

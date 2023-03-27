@@ -51,9 +51,8 @@ const DodajanjeUporabnikov = ({ props }) => {
 				onSubmit={async (e) => {
 					e.preventDefault();
 					const posodobiVlogo = async () => {
-						let res;
 						try {
-							res = await axios.post(
+							await axios.post(
 								`http://localhost:${global.config.port}/api/administrator/dodajUporabnika`,
 								{
 									uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
@@ -72,12 +71,12 @@ const DodajanjeUporabnikov = ({ props }) => {
 									placa: vneseniPodatki.placa,
 								}
 							);
-						} catch (error) {
+						} catch (napaka) {
 							setSporociloONapaki({
 								...sporociloONapaki,
 								dbS: 'Napaka pri vnosu v bazo podatkov',
 							});
-							console.log('Prišlo je do napake: ' + error.toString());
+							console.log('Prišlo je do napake: ' + napaka.toString());
 						}
 					};
 
@@ -141,21 +140,21 @@ const DodajanjeUporabnikov = ({ props }) => {
 													});
 													setOKuporabniskoIme(0);
 												} else {
-													let checkUn = preveriUstreznostUporabniskegaImena(e.target.value);
-													if (!checkUn.isValid) {
+													let preveriUI = preveriUstreznostUporabniskegaImena(e.target.value);
+													if (!preveriUI.ustrezno) {
 														setSporociloONapaki({
 															...sporociloONapaki,
-															uimeS: checkUn.msg,
+															uimeS: preveriUI.sporocilo,
 														});
 														setOKuporabniskoIme(1);
 													} else {
-														const result = await axios.get(
-															`http://localhost:${global.config.port}/api/avtentikacija/user`,
+														const rezultat = await axios.get(
+															`http://localhost:${global.config.port}/api/avtentikacija/uporabnik`,
 															{
-																params: { username: e.target.value },
+																params: { uporabnisko_ime: e.target.value },
 															}
 														);
-														if (result.data === '') {
+														if (rezultat.data === '') {
 															setSporociloONapaki({
 																...sporociloONapaki,
 																uimeS: '',
@@ -170,30 +169,30 @@ const DodajanjeUporabnikov = ({ props }) => {
 														}
 													}
 												}
-											} catch (error) {
+											} catch (napaka) {
 												setNapakaPriVnosu('Napaka pri vnosu podatkov v podatkovno bazo');
-												console.log(error);
+												console.log(napaka);
 											}
 										};
 										const preveriUstreznostUporabniskegaImena = (uime) => {
-											let illegalChars = ['%', '"', "'"];
-											let valid = true;
-											let msg = '';
+											let nedovoljeniZnaki = ['%', '"', "'"];
+											let ustrezno = true;
+											let sporocilo = '';
 
-											for (let i = 0; i < illegalChars.length; i++) {
-												if (uime.includes(illegalChars[i])) {
-													valid = false;
-													msg = 'Uporabljeni so bili nedovoljeni znaki (%, ", \')';
+											for (let i = 0; i < nedovoljeniZnaki.length; i++) {
+												if (uime.includes(nedovoljeniZnaki[i])) {
+													ustrezno = false;
+													sporocilo = 'Uporabljeni so bili nedovoljeni znaki (%, ", \')';
 												}
 											}
 											if (uime.length < 4 || uime.length > 50) {
-												valid = false;
-												msg =
+												ustrezno = false;
+												sporocilo =
 													uime.length < 4
 														? 'Uporabniško ime je prekratko, vsebovati mora najmanj 4 znake'
 														: 'Uporabniško ime je predolgo, vsebuje lahko največ 50 znakov';
 											}
-											return { isValid: valid, msg: msg };
+											return { ustrezno: ustrezno, sporocilo: sporocilo };
 										};
 										preveriMoznostUporabniskegaImena();
 										setVneseniPodatki({ ...vneseniPodatki, uporabnisko_ime: e.target.value });
@@ -222,42 +221,42 @@ const DodajanjeUporabnikov = ({ props }) => {
 													gesloS: 'Vnesite ustrezno geslo',
 												});
 											} else {
-												let illegalChars = ['%', '"', "'"];
-												let valid = true;
-												let m = '';
+												let nedovoljeniZnaki = ['%', '"', "'"];
+												let ustrezno = true;
+												let sporocilo = '';
 
-												for (let i = 0; i < illegalChars.length; i++) {
-													if (geslo.includes(illegalChars[i])) {
-														valid = false;
-														m = 'Uporabljeni so bili nedovoljeni znaki (%, ", \')';
+												for (let i = 0; i < nedovoljeniZnaki.length; i++) {
+													if (geslo.includes(nedovoljeniZnaki[i])) {
+														ustrezno = false;
+														sporocilo = 'Uporabljeni so bili nedovoljeni znaki (%, ", \')';
 														setSporociloONapaki({
 															...sporociloONapaki,
-															gesloS: m,
+															gesloS: sporocilo,
 														});
 														setOKgeslo(1);
 													}
 												}
 
 												if (geslo.length < 6 || geslo.length > 50) {
-													valid = false;
-													m =
+													ustrezno = false;
+													sporocilo =
 														geslo.length < 6
 															? 'Geslo je prekratko, vsebovati mora najmanj 6 znakov'
 															: 'Geslo je predolgo, vsebuje lahko največ 50 znakov';
 													setOKgeslo(1);
 													setSporociloONapaki({
 														...sporociloONapaki,
-														gesloS: m,
+														gesloS: sporocilo,
 													});
 												} else if (!/\d/.test(geslo)) {
-													valid = false;
-													m = 'Geslo mora vsebovati vsaj eno števko';
+													ustrezno = false;
+													sporocilo = 'Geslo mora vsebovati vsaj eno števko';
 													setOKgeslo(1);
 													setSporociloONapaki({
 														...sporociloONapaki,
-														gesloS: m,
+														gesloS: sporocilo,
 													});
-												} else if (valid) {
+												} else if (ustrezno) {
 													setOKgeslo(2);
 													setSporociloONapaki({
 														...sporociloONapaki,
@@ -376,21 +375,21 @@ const DodajanjeUporabnikov = ({ props }) => {
 														enaslovS: 'Vnesite veljaven elektronski naslov',
 													});
 												} else {
-													let checkEm = preveriUstreznostEnaslova(e.target.value);
-													if (!checkEm.isValid) {
+													let preveriEN = preveriUstreznostEnaslova(e.target.value);
+													if (!preveriEN.ustrezno) {
 														setOKenaslov(1);
 														setSporociloONapaki({
 															...sporociloONapaki,
 															enaslovS: 'Vnesite veljaven elektronski naslov',
 														});
 													} else {
-														const result = await axios.get(
-															`http://localhost:${global.config.port}/api/avtentikacija/email`,
+														const rezultat = await axios.get(
+															`http://localhost:${global.config.port}/api/avtentikacija/elektronski_naslov`,
 															{
-																params: { email: e.target.value },
+																params: { elektronski_naslov: e.target.value },
 															}
 														);
-														if (result.data === '') {
+														if (rezultat.data === '') {
 															setOKenaslov(3);
 															setSporociloONapaki({
 																...sporociloONapaki,
@@ -405,27 +404,26 @@ const DodajanjeUporabnikov = ({ props }) => {
 														}
 													}
 												}
-											} catch (error) {
+											} catch (napaka) {
 												setNapakaPriVnosu('Napaka pri vnosu podatkov v podatkovno bazo');
-												//setVneseniPodatki({ ...vneseniPodatki, elektronski_naslov: null });
-												console.log(error);
+												console.log(napaka);
 											}
 										};
 										const preveriUstreznostEnaslova = (enaslov) => {
-											let valid = true;
-											let msg = '';
+											let ustrezno = true;
+											let sporocilo = '';
 											if (!enaslov.includes('@')) {
-												valid = false;
+												ustrezno = false;
 
-												msg = "E-naslov mora vsebovati znak '@'";
+												sporocilo = "E-naslov mora vsebovati znak '@'";
 											} else {
 												let index = enaslov.indexOf('@');
 												if (enaslov[++index] === undefined || enaslov[++index] === '') {
-													valid = false;
-													msg = 'Vnesite veljaven e-naslov';
+													ustrezno = false;
+													sporocilo = 'Vnesite veljaven e-naslov';
 												}
 											}
-											return { isValid: valid, msg: msg };
+											return { ustrezno: ustrezno, sporocilo: sporocilo };
 										};
 										preveriMoznostEnaslova();
 										setVneseniPodatki({ ...vneseniPodatki, elektronski_naslov: e.target.value });
@@ -652,30 +650,6 @@ const DodajanjeUporabnikov = ({ props }) => {
 			</form>
 		</div>
 	);
-	/*
-		<div>
-			:
-			{Object.keys(vneseniPodatki).map((key) => {
-				return <div>{vneseniPodatki[key]}</div>;
-			})}
-			:
-		</div>
-	*/
-	/*
-<table style={{ border: '1px solid black' }}>
-						<tbody style={{ border: '1px solid black' }}>
-							<tr>
-								<td>a</td>
-								<td>b</td>
-							</tr>
-							<tr>
-								<td>rieuwofdshouwqjbsafuewbsduihfbsdvbzauichsdi</td>
-							</tr>
-						</tbody>
-					</table>
-
-		
-	*/
 };
 
 export default DodajanjeUporabnikov;

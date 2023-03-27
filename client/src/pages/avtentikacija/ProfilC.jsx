@@ -11,7 +11,7 @@ import {
 	AddressBook,
 	ArchiveBox,
 	ChalkboardTeacher,
-	FileText,
+	datotekaText,
 	UserPlus,
 	ListBullets,
 	ListDashes,
@@ -21,10 +21,9 @@ import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import Obvestilo from './ObvestiloC';
 import UrejanjeProfila from './UrejanjeProfilaC';
 import Pregled from './pregledi_in_dodajanja/PregledC';
-import PodatkiOOsebi from './pregledi_in_dodajanja/PodrobnostiC';
+import Podrobnosti from './pregledi_in_dodajanja/PodrobnostiC';
 import DodajanjeUporabnikov from './pregledi_in_dodajanja/DodajanjeUporabnikovC';
 import PregledRacunov from './pregledi_in_dodajanja/PregledRacunovC';
-import PregledIzdelkov from './pregledi_in_dodajanja/PregledIzdelkovC';
 import PregledNarocil from './pregledi_in_dodajanja/PregledNarocilC';
 import PregledPB from './pregledi_in_dodajanja/PregledPBC';
 import DodajanjeIzdelkov from './pregledi_in_dodajanja/DodajanjeIzdelkovC';
@@ -40,13 +39,13 @@ const Profil = () => {
 	const [prejsnjeStanjeAdmin, setPrejsnjeStanjeAdmin] = useState(0);
 	const [tabela, setTabela] = useState(null);
 	const [filterUporabniki, setFilterUporabniki] = useState(-1);
-	const [oseba, setOseba] = useState(null); // podatki o osebi
-	const [datoteka, setDatoteka] = useState(null); // za dodajanjeIzdelkov in FileUpload
+	const [predmet, setPredmet] = useState(null); // podatki o osebi
+	const [datoteka, setDatoteka] = useState(null); // za dodajanjeIzdelkov in datotekaUpload
 
 	const naloziDatoteko = async (e, ID_izdelka) => {
 		const podatki = new FormData();
 		podatki.append('slika', datoteka);
-		podatki.append('ID_izdelka', oseba.ID_izdelka);
+		podatki.append('ID_izdelka', predmet.ID_izdelka);
 
 		try {
 			await axios.post(`http://localhost:${global.config.port}/api/administrator/naloziSliko`, podatki, {
@@ -92,7 +91,7 @@ const Profil = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<Obvestilo />
+					<Obvestilo besedilo={'Pozdravljeni admin'} />
 					<h2>
 						Profil: {uporabnik.uporabnisko_ime}{' '}
 						{vloga !== 2
@@ -167,7 +166,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(6);
 								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
+								<datotekaText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 							<button
@@ -217,13 +216,13 @@ const Profil = () => {
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
 						setStanjeAdmin: setStanjeAdmin,
-						setOseba: setOseba,
+						setPredmet: setPredmet,
 					}}
 				/>
 			);
 		} else if (parseInt(stanjeAdmin) === 2) {
 			// pregled oseb
-			const pridobiInfoOOsebah = async () => {
+			const pridobiInfoOpredmeth = async () => {
 				try {
 					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
@@ -233,7 +232,7 @@ const Profil = () => {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
 			};
-			if (tabela === null) pridobiInfoOOsebah();
+			if (tabela === null) pridobiInfoOpredmeth();
 			return (
 				<Pregled
 					props={{
@@ -247,7 +246,7 @@ const Profil = () => {
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
 						setStanjeAdmin: setStanjeAdmin,
-						setOseba: setOseba,
+						setPredmet: setPredmet,
 					}}
 				/>
 			);
@@ -280,8 +279,8 @@ const Profil = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
-						file={datoteka}
-						setFile={setDatoteka}
+						datoteka={datoteka}
+						setDatoteka={setDatoteka}
 					/>
 					<button
 						className='gumbNazaj'
@@ -333,7 +332,7 @@ const Profil = () => {
 
 			return (
 				<>
-					<PregledIzdelkov
+					<Pregled
 						props={{
 							naslov: 'Pregled izdelkov',
 							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
@@ -344,19 +343,9 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
-					<button
-						className='gumbNazaj'
-						onClick={(e) => {
-							e.preventDefault();
-							setStanjeAdmin(0);
-							setTabela(null);
-						}}>
-						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
-						<div>Nazaj</div>
-					</button>
 				</>
 			);
 		} else if (parseInt(stanjeAdmin) === 6) {
@@ -385,7 +374,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -437,7 +426,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 							stranka: false,
 						}}
 					/>
@@ -476,7 +465,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -498,14 +487,14 @@ const Profil = () => {
 				niIzbrisa = true;
 			}
 			return (
-				<PodatkiOOsebi
+				<Podrobnosti
 					niIzbrisa={niIzbrisa}
-					file={datoteka}
-					setFile={setDatoteka}
+					datoteka={datoteka}
+					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					stranka={false}
-					oseba={oseba}
-					setOseba={setOseba}
+					predmet={predmet}
+					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -520,7 +509,7 @@ const Profil = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<Obvestilo />
+					<Obvestilo besedilo={'Pozdravljena stranka'} />
 					<h2>
 						Profil: {uporabnik.uporabnisko_ime}{' '}
 						{vloga !== 2
@@ -550,7 +539,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
+								<datotekaText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 						</div>
@@ -607,7 +596,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 							stranka: true,
 							uporabnisko_ime: uporabnik.uporabnisko_ime,
 						}}
@@ -653,7 +642,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -671,13 +660,13 @@ const Profil = () => {
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
-				<PodatkiOOsebi
-					file={datoteka}
-					setFile={setDatoteka}
+				<Podrobnosti
+					datoteka={datoteka}
+					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					stranka={true}
-					oseba={oseba}
-					setOseba={setOseba}
+					predmet={predmet}
+					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -692,7 +681,7 @@ const Profil = () => {
 		if (parseInt(stanjeAdmin) === 0) {
 			return (
 				<>
-					<Obvestilo />
+					<Obvestilo besedilo={'Pozdravljen zaposleni'} />
 					<h2>
 						Profil: {uporabnik.uporabnisko_ime}{' '}
 						{vloga !== 2
@@ -740,7 +729,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(6);
 								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
+								<datotekaText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 						</div>
@@ -757,8 +746,8 @@ const Profil = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
-						file={datoteka}
-						setFile={setDatoteka}
+						datoteka={datoteka}
+						setDatoteka={setDatoteka}
 					/>
 					<button
 						className='gumbNazaj'
@@ -806,7 +795,7 @@ const Profil = () => {
 			if (tabela === null) pridobiInfoOIzdelkih();
 			return (
 				<>
-					<PregledIzdelkov
+					<Pregled
 						props={{
 							naslov: 'Pregled izdelkov',
 							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
@@ -817,7 +806,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -869,7 +858,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 							stranka: false,
 						}}
 					/>
@@ -911,7 +900,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -929,13 +918,13 @@ const Profil = () => {
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
-				<PodatkiOOsebi
-					file={datoteka}
-					setFile={setDatoteka}
+				<Podrobnosti
+					datoteka={datoteka}
+					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					stranka={false}
-					oseba={oseba}
-					setOseba={setOseba}
+					predmet={predmet}
+					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -998,7 +987,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
+								<datotekaText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 							<button
@@ -1024,8 +1013,8 @@ const Profil = () => {
 							naslov: 'Dodajanje izdelkov',
 							setStanjeAdmin: setStanjeAdmin,
 						}}
-						file={datoteka}
-						setFile={setDatoteka}
+						datoteka={datoteka}
+						setDatoteka={setDatoteka}
 					/>
 					<button
 						className='gumbNazaj'
@@ -1073,7 +1062,7 @@ const Profil = () => {
 			if (tabela === null) pridobiInfoOIzdelkih();
 			return (
 				<>
-					<PregledIzdelkov
+					<Pregled
 						props={{
 							naslov: 'Pregled izdelkov',
 							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
@@ -1084,7 +1073,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -1125,7 +1114,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 						}}
 					/>
 					<button
@@ -1177,7 +1166,7 @@ const Profil = () => {
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
-							setOseba: setOseba,
+							setPredmet: setPredmet,
 							stranka: false,
 						}}
 					/>
@@ -1195,7 +1184,7 @@ const Profil = () => {
 			);
 		} else if (parseInt(stanjeAdmin) === 5) {
 			// pregled oseb
-			const pridobiInfoOOsebah = async () => {
+			const pridobiInfoOpredmeth = async () => {
 				try {
 					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
@@ -1205,7 +1194,7 @@ const Profil = () => {
 					console.log(`Prišlo je do napake: ${error}`);
 				}
 			};
-			if (tabela === null) pridobiInfoOOsebah();
+			if (tabela === null) pridobiInfoOpredmeth();
 			return (
 				<Pregled
 					props={{
@@ -1219,20 +1208,19 @@ const Profil = () => {
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
 						setStanjeAdmin: setStanjeAdmin,
-						setOseba: setOseba,
+						setPredmet: setPredmet,
 					}}
 				/>
 			);
 		} else if (parseInt(stanjeAdmin) === 9) {
 			// prikazi osebo
 			return (
-				<PodatkiOOsebi
-					file={datoteka}
-					setFile={setDatoteka}
+				<Podrobnosti
+					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					stranka={true}
-					oseba={oseba}
-					setOseba={setOseba}
+					predmet={predmet}
+					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}

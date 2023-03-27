@@ -1,8 +1,10 @@
 const PodatkiUporabnika = ({ props }) => {
+	//console.log(props.posodobljenUporabnik);
+
 	return (
 		<table className='tabelaPodatkovUporabnika'>
 			<tbody>
-				{Object.keys(props.updatedUser).map((key) => {
+				{Object.keys(props.posodobljenUporabnik).map((key) => {
 					if (key === 'geslo') {
 						return (
 							<tr key={key}>
@@ -12,10 +14,13 @@ const PodatkiUporabnika = ({ props }) => {
 										className='vnosnoPolje'
 										type='password'
 										disabled='disabled'
-										value={props.edit ? null : props.updatedUser[key]}
-										defaultValue={props.updatedUser[key]}
+										value={props.uredi ? null : props.posodobljenUporabnik[key]}
+										defaultValue={props.posodobljenUporabnik[key]}
 										onChange={(e) => {
-											props.setUpdatedUser({ ...props.updatedUser, geslo: e.target.value });
+											props.setPosodobljenUporabnik({
+												...props.posodobljenUporabnik,
+												geslo: e.target.value,
+											});
 										}}></input>
 								</td>
 							</tr>
@@ -34,8 +39,8 @@ const PodatkiUporabnika = ({ props }) => {
 										className='vnosnoPolje'
 										type='text'
 										disabled='disabled'
-										value={props.edit ? null : props.updatedUser[key]}
-										defaultValue={props.updatedUser[key]}></input>
+										value={props.uredi ? null : props.posodobljenUporabnik[key]}
+										defaultValue={props.posodobljenUporabnik[key]}></input>
 								</td>
 							</tr>
 						);
@@ -47,11 +52,14 @@ const PodatkiUporabnika = ({ props }) => {
 									<input
 										className='vnosnoPolje'
 										type='text'
-										disabled={!props.edit}
-										value={props.edit ? null : props.updatedUser[key]}
-										defaultValue={props.updatedUser[key]}
+										disabled={!props.uredi}
+										value={props.uredi ? null : props.posodobljenUporabnik[key]}
+										defaultValue={props.posodobljenUporabnik[key]}
 										onChange={(e) => {
-											props.setUpdatedUser({ ...props.updatedUser, [key]: e.target.value });
+											props.setPosodobljenUporabnik({
+												...props.posodobljenUporabnik,
+												[key]: e.target.value,
+											});
 										}}></input>
 								</td>
 							</tr>

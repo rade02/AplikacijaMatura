@@ -220,7 +220,7 @@
 	border: 1px solid black;
 	border-radius: 10px;
 }
-.gumbDisabled {
+.gumbOnemogocen {
 	background-color: transparent;
 	color: grey;
 	padding: 4px;
@@ -278,7 +278,7 @@
 }
 .tekstovnoPolje {
 	min-width: 150px;
-	font-size: 18px;
+	font-size: 13px;
 	background-color: white;
 	border: 1px solid black;
 	border-radius: 8px;
@@ -334,8 +334,9 @@ td > div {
 	flex-direction: row;
 }
 .potrdi {
-	background-color: rgba(197, 197, 197, 0.281);
-	padding: 2px 6px 2px 6px;
+	background-color: rgb(248, 244, 244);
+	padding: 2px 10px 2px 10px;
+	margin-left: 5px;
 	border: 1px solid grey;
 	border-radius: 4px;
 }
@@ -368,7 +369,10 @@ td > div {
 	padding: 8px;
 }
 
-/*_____________________ ostalo ... _____________________*/
+/*_____________________ PregledNarocilC _____________________*/
+/*_____________________ PregledPBC _____________________*/
+/*_____________________ PregledRacunovC _____________________*/
+/*_____________________ TabelskaVrsticaC _____________________*/
 .vrstica:hover {
 	background-color: rgba(240, 240, 240, 0.727);
 	border: 1px solid rgb(39, 107, 255);
@@ -389,13 +393,4 @@ td > div {
 .omogocanje:hover {
 	text-decoration: underline;
 	color: red;
-}
-
-.nalaganjeDatoteke {
-	width: 180px;
-}
-
-.OKQuantity {
-	user-select: none;
-	visibility: hidden;
 }

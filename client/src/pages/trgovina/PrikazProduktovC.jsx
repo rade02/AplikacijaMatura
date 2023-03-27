@@ -1,37 +1,27 @@
-import Product from './ProduktC';
-import { useEffect, useState } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import Produkt from './ProduktC';
+import KroznoNalaganje from '@mui/material/CircularProgress';
+import Skatla from '@mui/material/Box';
 
-const ProductsPanel = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, popustF }) => {
-	const [nalaganje, setNalaganje] = useState(false);
-
-	useEffect(() => {
-		if (props.niProduktov) {
-			setNalaganje(true);
-		} else {
-			setNalaganje(false);
-		}
-	}, [props.niProduktov]);
-
+const PrikazProduktov = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, popustF }) => {
 	if (props.napaka) {
 		<div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
 	} else if (props.niProduktov) {
 		return (
 			<div className='nalaganje'>
 				<h2>Nalaganje izdelkov</h2>
-				<Box sx={{ display: 'flex' }}>
-					<CircularProgress color='inherit' />
-				</Box>
+				<Skatla sx={{ display: 'flex' }}>
+					<KroznoNalaganje color='inherit' />
+				</Skatla>
 			</div>
 		);
 	} else {
 		return (
-			<div className='products'>
-				<div className='productPanel'>
+			<div className='produkti'>
+				<div className='prostorZaProdukte'>
 					{props.prikazaniProdukti.map((produkt) => {
 						return (
-							<Product
+							<Produkt
+								setVidno={props.setVidno}
 								prikazi={props.prikazi}
 								setPrikazi={props.setPrikazi}
 								key={produkt.ID_izdelka}
@@ -42,7 +32,7 @@ const ProductsPanel = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, 
 						);
 					})}
 				</div>
-				<div className='moreProducts'>
+				<div className='vecProduktov'>
 					<label>
 						Prikazanih {props.prikazaniProdukti.length} od {stVsehProduktov} izdelkov{' '}
 					</label>
@@ -50,10 +40,9 @@ const ProductsPanel = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, 
 						<></>
 					) : (
 						<button
+							className='prikaziVec'
 							onClick={(e) => {
 								e.preventDefault();
-								//props.pridobiProdukte();
-								//props.prikazaniProdukti = [];
 								filtriraj(true);
 							}}>
 							Prikaži več
@@ -64,4 +53,4 @@ const ProductsPanel = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, 
 		);
 	}
 };
-export default ProductsPanel;
+export default PrikazProduktov;

@@ -1,17 +1,20 @@
 // TODO: ne nalozijo se vse slike (rabi da scrollamo in potem malo pocakamo)
 // TODO: pri poskusi ponovno ciklanje v loopu pri nalaganju izdelkov
-// TODO: 
-// TODO: shop navbar napaka ce odpremo product info po dodajanju in ko smo spodaj
-// TODO: 
+// TODO: na PregledRacunov in PregledNarocil onemogoci pregled vseh stranki in tistim brez pooblastil
+// TODO: shop navbar popravi css + napaka ce odpremo product info po dodajanju in ko smo spodaj
+// TODO: v kosarici ne delujejo gumbi za kolicino
 // TODO: 3, 4 izdelek v kosrici ni posodobil skupne cene - napacen pristop k spreminjanju kolicin v cartu
-// TODO: 
-// TODO: 
-// TODO: 
-// TODO: 
+// TODO: dodaj state da se same prikazejo slike
+// TODO: select * from Izdelki where (Izdelki.kategorija in ('tablični računalniki','pametne ure','prenosniki','slušalke') and (1 = 1) and Izdelki.popust >= 0 and Izdelki.kosov_na_voljo > 0) order by rand() limit NaN; pri filtriranju po kategorijah
+// TODO: iskanje izdelkov (searchbar) in razvrscanje izdelkov
+// TODO: ProduktiApi
+// TODO: DodajanjeUporabnikov css
+// TODO: HASH gesla
+// TODO: TypeError: setIzKosarice is not a function @ProduktC:33
 // TODO: pregled racunov stranke ...
 // TODO: pri spreminjanju gesla damo stran funkcije profila (const [editPw, setEditPw] = useState(false); premakni na profilC)
 // TODO: prevedi API in medsebojna podajanja propsov
-// TODO: 
+// TODO: napaka ce izklopimo server in poskusimo naloziti izdelke
 // TODO: vnose števila preverjaj z metodo isNaN(št)
 // TODO: preveri moznosti izboljsanih queryjev sql
 // TODO: pri profile componentu spremeni setOseba v setPodrobnosti
@@ -19,9 +22,9 @@
 // TODO: dodaj pri try catch error message in jih prikazi
 // TODO: dodaj try catch po zgledu na AuthPage komponenti
 // TODO: ali potrebujemo slike uporabnikov?
-// TODO: 
+// TODO: dodaj skrito kocko
 // TODO: profil admin je na zacetku narejen v Uporabnikih in Stranke_in_zaposleni
-// TODO: 
+// TODO: naredi gif za nalaganje in ga daj na izdelke ko še ni slike
 // TODO: dodaj datoteko z sql stavki v mapo na github
 // TODO: izbriši neuporabljane module
 

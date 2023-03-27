@@ -1,118 +1,125 @@
-import { CaretCircleLeft, CaretCircleRight, CreditCard, Money, Package, Truck } from 'phosphor-react';
+import {
+	CaretCircleLeft,
+	CaretCircleRight,
+	CreditCard,
+	Money,
+	Package,
+	PaperPlaneRight,
+	Truck,
+} from 'phosphor-react';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useState } from 'react';
 import PostaSlovenije from '../../assets/PSlogotip.png';
 import axios from 'axios';
 
-const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) => {
-	const { user, isAuth } = useContext(UporabniskiKontekst);
+const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjevanje }) => {
+	const { uporabnik, jeAvtenticiran } = useContext(UporabniskiKontekst);
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
-	const [userData, setUserData] = useState(null);
-	const [totalPrice, setTotalPrice] = useState(0);
-	const [deliveryCost, setDeliveryCost] = useState(0);
-	const [sameBuyerAndReceiver, setSameBuyerAndReceiver] = useState(true);
+	const [uporabniskiPodatki, setUporabniskiPodatki] = useState(null);
+	const [skupajCena, setSkupajCena] = useState(0);
+	const [cenaDostave, setCenaDostave] = useState(0);
+	const [istiKupecInPrejemnik, setIstiKupecInPrejemnik] = useState(true);
 	const [oddano, setOddano] = useState(false);
 
 	const [kupec, setKupec] = useState(null);
 	const [prejemnik, setPrejemnik] = useState(null);
 	const [naslovDostava, setNaslovDostava] = useState(null);
 
+	console.log('uporabniskiPodatki');
+	console.log(uporabniskiPodatki);
 	useEffect(() => {
-		const cartTotalPrice = () => {
-			let total = 0;
+		const cenaKosarice = () => {
+			let skupaj = 0;
 
 			for (let i = 0; i < kosarica.length; i++) {
-				total +=
+				skupaj +=
 					kosarica[i].cena_za_kos * kosarica[i].kolicina -
 					kosarica[i].cena_za_kos * kosarica[i].kolicina * (kosarica[i].popust / 100.0);
 			}
-			if (deliveryCost > 0) {
-				total += deliveryCost;
+			if (cenaDostave > 0) {
+				skupaj += cenaDostave;
 			}
-			return total;
+			return skupaj;
 		};
-		if (isAuth) {
-			const fetchUserData = async () => {
+		if (jeAvtenticiran) {
+			const pridobiPodatkeUporabnika = async () => {
 				try {
-					const result = await axios.get(
+					const rezultat = await axios.get(
 						`http://localhost:${global.config.port}/api/avtentikacija/user`,
 						{
-							params: { username: user.uporabnisko_ime },
+							params: { username: uporabnik.uporabnisko_ime },
 						}
 					);
-					console.log('result.data');
-					console.log(result.data);
-					setUserData(result.data);
+
+					setUporabniskiPodatki(rezultat.data);
 
 					if (kupec === null) {
 						setKupec({
 							...kupec,
-							ime: result.data.ime,
-							priimek: result.data.priimek,
+							ime: rezultat.data.ime,
+							priimek: rezultat.data.priimek,
 							naslov:
-								result.data.ulica_in_hisna_stevilka +
+								rezultat.data.ulica_in_hisna_stevilka +
 								' ' +
-								result.data.postna_stevilka +
+								rezultat.data.postna_stevilka +
 								' ' +
-								result.data.kraj,
+								rezultat.data.kraj,
 						});
 					}
 					if (prejemnik === null) {
 						setPrejemnik({
 							...prejemnik,
-							ime: result.data.ime,
-							priimek: result.data.priimek,
+							ime: rezultat.data.ime,
+							priimek: rezultat.data.priimek,
 							naslov:
-								result.data.ulica_in_hisna_stevilka +
+								rezultat.data.ulica_in_hisna_stevilka +
 								' ' +
-								result.data.postna_stevilka +
+								rezultat.data.postna_stevilka +
 								' ' +
-								result.data.kraj,
+								rezultat.data.kraj,
 						});
 					}
-					console.log(naslovDostava);
+
 					if (naslovDostava === null) {
 						let n =
-							result.data.ulica_in_hisna_stevilka === null
+							rezultat.data.ulica_in_hisna_stevilka === null
 								? ''
-								: result.data.ulica_in_hisna_stevilka + ' ';
-						n += result.data.postna_stevilka === null ? '' : result.data.postna_stevilka + ' ';
-						n += result.data.kraj === null ? '' : result.data.kraj;
-						console.log(n);
+								: rezultat.data.ulica_in_hisna_stevilka + ' ';
+						n += rezultat.data.postna_stevilka === null ? '' : rezultat.data.postna_stevilka + ' ';
+						n += rezultat.data.kraj === null ? '' : rezultat.data.kraj;
+
 						if (n !== null && n.length > 0) {
 							setNaslovDostava(n);
 						}
 					}
-				} catch (error) {
-					console.log(error);
+				} catch (napaka) {
+					console.log(napaka);
 				}
 			};
 
-			fetchUserData();
+			pridobiPodatkeUporabnika();
 		}
-		setTotalPrice(cartTotalPrice());
-	}, [isAuth, kosarica, deliveryCost]);
+		setSkupajCena(cenaKosarice());
+	}, [jeAvtenticiran, kosarica, cenaDostave]);
 
-	const handleSubmit = async (e) => {
+	const oddajaNarocila = async (e) => {
 		let IDnarocila = null;
 		try {
 			let id = null;
-			console.log(userData);
-			console.log('deliveryCost');
-			console.log(deliveryCost);
-			if (userData !== null && userData.uporabnisko_ime !== 'admin') {
-				let resp = await axios.get(
+
+			if (uporabniskiPodatki !== null && uporabniskiPodatki.uporabnisko_ime !== 'admin') {
+				let odziv = await axios.get(
 					`http://localhost:${global.config.port}/api/administrator/idUporabnika`,
 					{
 						params: {
-							uporabnisko_ime: userData.uporabnisko_ime,
+							uporabnisko_ime: uporabniskiPodatki.uporabnisko_ime,
 						},
 					}
 				);
-				id = resp.data;
+				id = odziv.data;
 			}
-			const result = await axios.get(
+			const rezultat = await axios.get(
 				`http://localhost:${global.config.port}/api/produkti/ustvariNarocilo`,
 				{
 					params: {
@@ -120,35 +127,29 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 						imeStranke: kupec.ime,
 						priimekStranke: kupec.priimek,
 						naslovDostave: naslovDostava,
-						postnina: deliveryCost,
+						postnina: cenaDostave,
 					},
 				}
 			);
-			IDnarocila = result.data;
+			IDnarocila = rezultat.data;
 
 			for (let element of kosarica) {
-				const result1 = await axios.post(
-					`http://localhost:${global.config.port}/api/produkti/dodajIzdelkeNarocilu`,
-					{
-						ID_narocila: IDnarocila,
-						ID_izdelka: element.ID_izdelka,
-						kolicina: element.kolicina,
-						cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
-					}
-				);
+				await axios.post(`http://localhost:${global.config.port}/api/produkti/dodajIzdelkeNarocilu`, {
+					ID_narocila: IDnarocila,
+					ID_izdelka: element.ID_izdelka,
+					kolicina: element.kolicina,
+					cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
+				});
 				// zmanjšanje zaloge
-				const result12 = await axios.post(
-					`http://localhost:${global.config.port}/api/produkti/zmanjsajZalogo`,
-					{
-						kolicina_kupljeno: element.kolicina,
-						ID_izdelka: element.ID_izdelka,
-					}
-				);
+				await axios.post(`http://localhost:${global.config.port}/api/produkti/zmanjsajZalogo`, {
+					kolicina_kupljeno: element.kolicina,
+					ID_izdelka: element.ID_izdelka,
+				});
 			}
-		} catch (onRejectedError) {
+		} catch (napaka) {
 			setOddano(false);
-			setRemovedMsg('Potrditev naročila neuspešna (prišlo je do napake)');
-			console.log(onRejectedError);
+			setSporociloOdstranjevanje('Potrditev naročila neuspešna (prišlo je do napake)');
+			console.log(napaka);
 		}
 		kosarica.forEach((element) => {
 			element.kolicina = 0;
@@ -166,13 +167,13 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 	};
 
 	if (oddano) {
-		if (userData === null) {
+		if (uporabniskiPodatki === null) {
 			return (
-				<>
-					<div>Naročilo je bilo oddano</div>
+				<div className='narocilo'>
+					<div className='oddanoNarocilo'>Naročilo je bilo oddano</div>
 					<div>
 						<button
-							className='backButton'
+							className='gumbNazaj'
 							onClick={(e) => {
 								e.preventDefault();
 								setPrikazi('kosarica');
@@ -181,15 +182,17 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 							<div>V redu</div>
 						</button>
 					</div>
-				</>
+				</div>
 			);
 		}
 		return (
-			<>
-				<div>Naročilo je bilo oddano, račun bo na voljo na vašem profilu po odpošiljanju</div>
+			<div className='narocilo'>
+				<div className='oddanoNarocilo'>
+					Naročilo je bilo oddano, račun bo na voljo na vašem profilu po odpošiljanju
+				</div>
 				<div>
 					<button
-						className='backButton'
+						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
 							setPrikazi('kosarica');
@@ -198,329 +201,267 @@ const Checkout = ({ setPrikazi, removedMsg, setRemovedMsg, pridobiProdukte }) =>
 						<div>V redu</div>
 					</button>
 				</div>
-			</>
+			</div>
 		);
 	}
 	return (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-				handleSubmit(e);
-				console.log(kupec);
-				//console.log('cart');
-				//console.log(cart);
-				setOddano(true);
-
-				setKosarica([]);
-				/*console.log('kupec');
-				console.log(kupec);
-				console.log('prejemnik');
-				console.log(prejemnik);*/
-			}}>
-			<div>
-				<div>{removedMsg === '' ? 'no removedMsg' : removedMsg}</div>
-				<div className='divTitles'>Podatki o kupcu:</div>
-				<br />
-				{userData === null ? (
-					<div>
-						<label>Ime: </label>
-						<input
-							type='text'
-							required
-							onChange={(e) => {
-								e.preventDefault();
-								setKupec({ ...kupec, ime: e.target.value });
-							}}></input>
-						<br />
-						<label>Priimek: </label>
-						<input
-							type='text'
-							required
-							onChange={(e) => {
-								e.preventDefault();
-								setKupec({ ...kupec, priimek: e.target.value });
-							}}></input>
-						<br />
-						<label>Naslov: </label>
-						<input
-							type='text'
-							required
-							onChange={(e) => {
-								e.preventDefault();
-								setKupec({ ...kupec, naslov: e.target.value });
-							}}></input>
-						<br />
-					</div>
-				) : (
-					<>
+		<div className='narocilo'>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+					oddajaNarocila(e);
+					setOddano(true);
+					setKosarica([]);
+				}}>
+				<div className='podatkiOKupcu'>
+					<div>{sporociloOdstranjevanje === '' ? '' : sporociloOdstranjevanje}</div>
+					<div className='divNaslovi'>Podatki o kupcu:</div>
+					<div className='podatki'>
 						<div>
-							<label>Ime: </label>
+							<div>Ime: </div>
 							<input
 								type='text'
 								required
-								defaultValue={userData.ime}
+								defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.ime : ''}
 								onChange={(e) => {
 									e.preventDefault();
 									setKupec({ ...kupec, ime: e.target.value });
 								}}></input>
-							<br />
 						</div>
 						<div>
-							<label>Priimek: </label>
+							<div>Priimek: </div>
 							<input
 								type='text'
 								required
-								defaultValue={userData.priimek}
+								defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.priimek : ''}
 								onChange={(e) => {
 									e.preventDefault();
 									setKupec({ ...kupec, priimek: e.target.value });
 								}}></input>
-							<br />
 						</div>
 						<div>
-							<label>Naslov: </label>
+							<div>Naslov: </div>
 							<input
 								type='text'
 								required
-								defaultValue={naslovDostava}
+								defaultValue={uporabniskiPodatki !== null ? naslovDostava : ''}
 								onChange={(e) => {
 									e.preventDefault();
 									setKupec({ ...kupec, naslov: e.target.value });
 								}}></input>
-							<br />
 						</div>
-					</>
-				)}
-			</div>
-			<button
-				type='submit'
-				onClick={(e) => {
-					e.preventDefault();
-					if (!sameBuyerAndReceiver) {
-						setPrejemnik(kupec);
-					}
-					setSameBuyerAndReceiver(!sameBuyerAndReceiver);
-				}}>
-				{sameBuyerAndReceiver ? 'Dodaj' : 'Odstrani'} drugega prejemnika
-			</button>
-			<br />
-			{sameBuyerAndReceiver ? (
-				<></>
-			) : (
-				<div>
-					<div className='divTitles'>Podatki o prejemniku:</div>
-					<br />
-					{userData === null ? (
-						<div>
-							<label>Ime: </label>
-							<input
-								type='text'
-								required
-								onChange={(e) => {
-									e.preventDefault();
-									setPrejemnik({ ...prejemnik, ime: e.target.value });
-								}}></input>
-							<br />
-							<label>Priimek: </label>
-							<input
-								type='text'
-								required
-								onChange={(e) => {
-									e.preventDefault();
-									setPrejemnik({ ...prejemnik, priimek: e.target.value });
-								}}></input>
-							<br />
-							<label>Naslov: </label>
-							<input
-								type='text'
-								required
-								onChange={(e) => {
-									e.preventDefault();
-									setPrejemnik({ ...prejemnik, naslov: e.target.value });
-								}}></input>
-							<br />
-						</div>
-					) : (
-						<>
+					</div>
+					<button
+						className='dodajPrejemnika'
+						onClick={(e) => {
+							e.preventDefault();
+							if (!istiKupecInPrejemnik) {
+								setPrejemnik(kupec);
+							}
+							setIstiKupecInPrejemnik(!istiKupecInPrejemnik);
+						}}>
+						{istiKupecInPrejemnik ? 'Dodaj' : 'Odstrani'} drugega prejemnika
+					</button>
+				</div>
+				<br />
+				{istiKupecInPrejemnik ? (
+					<></>
+				) : (
+					<div className='podatkiOKupcu'>
+						<div className='divNaslovi'>Podatki o prejemniku:</div>
+						<div className='podatki'>
 							<div>
-								<label>Ime: </label>
+								<div>Ime: </div>
 								<input
 									type='text'
 									required
-									defaultValue={userData.ime}
+									defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.ime : ''}
 									onChange={(e) => {
 										e.preventDefault();
 										setPrejemnik({ ...prejemnik, ime: e.target.value });
 									}}></input>
-								<br />
 							</div>
 							<div>
-								<label>Priimek: </label>
+								<div>Priimek: </div>
 								<input
 									type='text'
 									required
-									defaultValue={userData.priimek}
+									defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.priimek : ''}
 									onChange={(e) => {
 										e.preventDefault();
 										setPrejemnik({ ...prejemnik, priimek: e.target.value });
 									}}></input>
-								<br />
 							</div>
 							<div>
-								<label>Naslov: </label>
+								<div>Naslov: </div>
 								<input
 									type='text'
 									required
-									defaultValue={naslovDostava}
+									defaultValue={uporabniskiPodatki !== null ? naslovDostava : ''}
 									onChange={(e) => {
 										e.preventDefault();
 										setPrejemnik({ ...prejemnik, naslov: e.target.value });
 									}}></input>
-								<br />
 							</div>
-						</>
-					)}
-				</div>
-			)}
-			<div>
-				<div className='paymentMethod'>
-					<div className='divTitles'>Naslov za dostavo:</div>
-					<br />
-					<label>Naslov za dostavo:</label>
-					<br />
-					{userData === null ? (
-						<input
-							type='text'
-							required
-							defaultValue={naslovDostava}
-							onChange={(e) => {
-								e.preventDefault();
-								setNaslovDostava(e.target.value);
-							}}></input>
-					) : (
-						<input
-							type='text'
-							required
-							defaultValue={userData.naslov}
-							onChange={(e) => {
-								e.preventDefault();
-								setNaslovDostava(e.target.value);
-							}}></input>
-					)}
-
-					<div className='divTitles'>Način dostave:</div>
-					<br />
-					<input
-						type='radio'
-						id='PS'
-						onClick={(e) => {
-							e.preventDefault();
-							setDeliveryCost(0);
-						}}
-						required
-						checked={deliveryCost === 0}
-						name='deliveryOption'
-						value='PS'></input>
-					<label>Pošta Slovenije</label>
-					<img src={PostaSlovenije} alt='' style={{ marginRight: '5px', marginLeft: '5px' }}></img>
-					<label>+ 0.00 €</label>
-					<br />
-					<input
-						type='radio'
-						id='HP'
-						onClick={(e) => {
-							e.preventDefault();
-							setDeliveryCost(3);
-						}}
-						checked={deliveryCost === 3}
-						required
-						name='deliveryOption'
-						value='Hitra posta'></input>
-					<label>Hitra pošta</label>
-					<Truck size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
-					<label>+ 3.00 €</label>
-				</div>
-			</div>
-			<br />
-			<div className='cartOverview'>
-				<div className='divTitles'>Pregled košarice</div>
-				<br />
-
-				<div className='smallProductDesc'>
-					<table>
-						<tbody>
-							{kosarica.map((product) => {
-								return (
-									<tr>
-										<td>
-											{product.kratek_opis !== '' && product.kratek_opis !== null
-												? `${product.ime}, ${product.kratek_opis}`
-												: product.ime}
-										</td>
-										<td>kol: {product.kolicina}</td>{' '}
-										<td>
-											cena/kos:{' '}
-											{(
-												product.cena_za_kos -
-												product.cena_za_kos * (product.popust / 100.0)
-											).toFixed(2)}{' '}
-											€
-										</td>
-									</tr>
-								);
-							})}
-						</tbody>
-					</table>
-				</div>
-				<div className='priceTotal'>
-					<div>Stroški dostave: {deliveryCost > 0 ? deliveryCost.toFixed(2) : 0.0} €</div>
-					<div>
-						Za plačilo:{' '}
-						<big>
-							<b>{totalPrice.toFixed(2)} €</b>
-						</big>
+						</div>
+					</div>
+				)}
+				<div>
+					<div className='metodaPlacila'>
+						<div className='divNaslovi'>Naslov za dostavo:</div>
+						<div className='podatki'>
+							<div>
+								<div style={{ width: '150px' }}>Naslov za dostavo:</div>
+								{uporabniskiPodatki === null ? (
+									<input
+										type='text'
+										required
+										defaultValue={naslovDostava}
+										onChange={(e) => {
+											e.preventDefault();
+											setNaslovDostava(e.target.value);
+										}}></input>
+								) : (
+									<input
+										type='text'
+										required
+										defaultValue={uporabniskiPodatki.naslov}
+										onChange={(e) => {
+											e.preventDefault();
+											setNaslovDostava(e.target.value);
+										}}></input>
+								)}
+							</div>
+						</div>
+						<div className='nacinDostave'>
+							<div>Način dostave:</div>
+							<div>
+								<div>
+									<input
+										type='radio'
+										id='PS'
+										onClick={(e) => {
+											e.preventDefault();
+											setCenaDostave(0);
+										}}
+										required
+										checked={cenaDostave === 0}
+										name='deliveryOption'
+										value='PS'></input>
+									<label>Pošta Slovenije</label>
+									<img
+										src={PostaSlovenije}
+										alt=''
+										style={{ marginRight: '5px', marginLeft: '5px' }}></img>
+									<label>+ 0.00 €</label>
+								</div>
+								<div>
+									<input
+										type='radio'
+										id='HP'
+										onClick={(e) => {
+											e.preventDefault();
+											setCenaDostave(3);
+										}}
+										checked={cenaDostave === 3}
+										required
+										name='deliveryOption'
+										value='Hitra posta'></input>
+									<label>Hitra pošta</label>
+									<Truck size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+									<label>+ 3.00 €</label>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<br />
-			<div>
-				<div className='paymentMethod'>
-					<div className='divTitles'>Način plačila:</div>
-					<br />
-					{userData === null ? (
-						<></>
-					) : (
-						<>
-							<input type='radio' required name='paymentMethod' value='Z debetno kartico'></input>
-							<label>Z debetno kartico</label>
-							<CreditCard size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
-							<br />
-						</>
-					)}
-					<input type='radio' required name='paymentMethod' value='Po prevzemu'></input>
-					<label>Po prevzemu</label>
-					<Money size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
-				</div>
-			</div>
-			<br />
+				<div className='pregledKosarice'>
+					<div className='divNaslovi'>Pregled košarice</div>
 
-			<div className='buttonsDiv'>
-				<button
-					className='backButton'
-					onClick={(e) => {
-						e.preventDefault();
-						setPrikazi('kosarica');
-					}}>
-					<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
-					<div>Nazaj</div>
-				</button>
-				<button className='fwdButton' type='submit' disabled={kosarica.length === 0 ? 'disabled' : ''}>
-					<div>Oddaj naročilo</div>
-					<CaretCircleRight size={25} style={{ marginLeft: '5px' }} />
-				</button>
-			</div>
-		</form>
+					<div className='kratekOpisProdukta'>
+						<table>
+							<tbody>
+								<tr className='glavaTabele'>
+									<td>Produkt</td>
+									<td>Količina</td>
+									<td>Cena/kos</td>
+								</tr>
+								{kosarica.map((produkt) => {
+									return (
+										<tr className='vsebinaTabele'>
+											{' '}
+											<td>
+												{produkt.kratek_opis !== '' && produkt.kratek_opis !== null
+													? `${produkt.ime}, ${produkt.kratek_opis}`
+													: produkt.ime}
+											</td>
+											<td>{produkt.kolicina}</td>{' '}
+											<td>
+												{(
+													produkt.cena_za_kos -
+													produkt.cena_za_kos * (produkt.popust / 100.0)
+												).toFixed(2)}{' '}
+												€
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+					<div className='cenaSkupaj'>
+						<div>Stroški dostave: {cenaDostave > 0 ? cenaDostave.toFixed(2) : 0.0} €</div>
+						<div>
+							Za plačilo:{' '}
+							<big>
+								<b>{skupajCena.toFixed(2)} €</b>
+							</big>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div>
+					<div className='metodaPlacila'>
+						<div className='divNaslovi'>Način plačila:</div>
+						{uporabniskiPodatki === null ? (
+							<></>
+						) : (
+							<div className='naciniPlacila'>
+								<input type='radio' required name='metodaPlacila' value='Z debetno kartico'></input>
+								Z debetno kartico
+								<CreditCard size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+							</div>
+						)}
+						<div className='naciniPlacila'>
+							<input type='radio' required name='metodaPlacila' value='Po prevzemu'></input>
+							Po prevzemu
+							<Money size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+						</div>
+					</div>
+				</div>
+				<br />
+
+				<div className='nazajNaprej'>
+					<button
+						className='gumbNazaj'
+						onClick={(e) => {
+							e.preventDefault();
+							setPrikazi('kosarica');
+						}}>
+						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+						<div>Nazaj</div>
+					</button>
+					<button
+						className={kosarica.length === 0 ? 'onemogocenGumb' : 'gumbNaprej'}
+						type='submit'
+						disabled={kosarica.length === 0 ? 'disabled' : ''}>
+						<div>Oddaj naročilo</div>
+						<PaperPlaneRight size={25} style={{ marginLeft: '5px' }} />
+					</button>
+				</div>
+			</form>
+		</div>
 	);
 };
 
-export default Checkout;
+export default Blagajna;

@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { Funnel } from 'phosphor-react';
 import { useState, useEffect, useRef } from 'react';
 import ProductsPanel from './PrikazProduktovC';
 
-const Shopping = ({ props }) => {
+const Nakupovanje = ({ props }) => {
 	const [kategorijeNaVoljo, setKategorijenaVoljo] = useState([]);
 	const [kategorijeF, setKategorijeF] = useState([]);
 	const [cenaF, setCenaF] = useState({ od: undefined, do: undefined });
@@ -13,37 +14,36 @@ const Shopping = ({ props }) => {
 
 	const pridobiSteviloVsehProduktov = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/stVsehProduktov`);
-			setStVsehProduktov(response.data);
-		} catch (error) {
-			console.log(error);
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/stVsehProduktov`);
+			setStVsehProduktov(odziv.data);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
 	const pridobiKategorije = async () => {
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/kategorije`);
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/kategorije`);
 
-			setKategorijenaVoljo([...response.data]);
-		} catch (error) {
-			console.log(error);
+			setKategorijenaVoljo([...odziv.data]);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
 	const filtriraj = async (dodatno) => {
-		console.log('filtriraj');
 		try {
-			let response = await axios.get(`http://localhost:${global.config.port}/api/produkti/filtriranje`, {
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/filtriranje`, {
 				params: {
-					number: 6,
+					steviloIzdelkov: 6,
 					kategorijeF: kategorijeF,
 					cenaF: cenaF,
 					popustF: popustF,
-					noDups: props.prikazaniProdukti.map((a) => a.ID_izdelka),
+					brezPodvajanj: props.prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
-			setStVsehProduktov(response.data.stProduktovKiUstrezajoFiltru);
+			setStVsehProduktov(odziv.data.stProduktovKiUstrezajoFiltru);
 
-			response.data.produkti.forEach(async (element) => {
-				let res = await axios.get(
+			odziv.data.produkti.forEach(async (element) => {
+				let rezultat = await axios.get(
 					`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
 					{
 						method: 'get',
@@ -55,21 +55,20 @@ const Shopping = ({ props }) => {
 				);
 
 				element.kolicina = 0;
-				if (res.data.size === 0) {
+				if (rezultat.data.size === 0) {
 					element.slika = null;
 				} else {
-					element.slika = URL.createObjectURL(res.data);
+					element.slika = URL.createObjectURL(rezultat.data);
 				}
-				//console.log(element.slika);
 			});
 
 			if (dodatno) {
-				props.setPrikazaniProdukti([...props.prikazaniProdukti, ...response.data.produkti]);
+				props.setPrikazaniProdukti([...props.prikazaniProdukti, ...odziv.data.produkti]);
 			} else {
-				props.setPrikazaniProdukti([...response.data.produkti]);
+				props.setPrikazaniProdukti([...odziv.data.produkti]);
 			}
-		} catch (error) {
-			console.log(error);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
 
@@ -79,13 +78,12 @@ const Shopping = ({ props }) => {
 	}, []);
 
 	return (
-		<div className='shoppingPanel'>
-			<div className='filters'>
-				<label style={{ fontSize: '21px', fontWeight: '550px' }}>Filtriranje izdelkov</label>
+		<div className='filtriInIzdelki'>
+			<div className='filtri'>
+				<div style={{ fontSize: '24px', fontWeight: '650', maxWidth: '200px' }}>Filtriranje izdelkov</div>
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						// setting input fields
 						if (cenaF.od !== undefined) {
 							od.current.value = cenaF.od;
 						} else {
@@ -97,11 +95,11 @@ const Shopping = ({ props }) => {
 							Do.current.value = '';
 						}
 
-						console.log(parseFloat(cenaF.od));
+						//console.log(parseFloat(cenaF.od));
 						if (isNaN(parseFloat(cenaF.od)) || parseFloat(cenaF.od) < 0) {
 							cenaF.od = undefined;
 						}
-						console.log(parseFloat(cenaF.do));
+						//console.log(parseFloat(cenaF.do));
 						if (isNaN(parseFloat(cenaF.do)) || parseFloat(cenaF.do) < 0) {
 							cenaF.do = undefined;
 						}
@@ -116,11 +114,12 @@ const Shopping = ({ props }) => {
 						}
 					}}>
 					<div className='filter'>
-						<div className='naslov'>Po kategoriji izdelka</div>
+						<div className='nasloviFiltrov'>Po kategoriji izdelka</div>
 						{kategorijeNaVoljo.map((kategorija) => {
 							return (
-								<div className='checkbox' key={kategorija.kategorija}>
+								<div className='potrditvenoPolje' key={kategorija.kategorija}>
 									<input
+										className='kvadrat'
 										id={kategorija.kategorija}
 										type='checkbox'
 										value={kategorija.kategorija}
@@ -128,9 +127,9 @@ const Shopping = ({ props }) => {
 											if (e.target.checked && !kategorijeF.includes(kategorija.kategorija)) {
 												setKategorijeF([...kategorijeF, e.target.value]);
 											} else {
-												let index = kategorijeF.indexOf(kategorija.kategorija);
-												if (index > -1) {
-													kategorijeF.splice(index, 1);
+												let indeks = kategorijeF.indexOf(kategorija.kategorija);
+												if (indeks > -1) {
+													kategorijeF.splice(indeks, 1);
 												}
 											}
 										}}
@@ -141,8 +140,8 @@ const Shopping = ({ props }) => {
 						})}
 					</div>
 					<div className='filter'>
-						<div className='naslov'>Po ceni</div>
-						<div className='checkbox' style={{ flexDirection: 'column' }}>
+						<div className='nasloviFiltrov'>Po ceni</div>
+						<div className='potrditvenoPolje' style={{ flexDirection: 'column' }}>
 							<div className='filtriranjePoCeni'>
 								Od
 								<input
@@ -152,23 +151,20 @@ const Shopping = ({ props }) => {
 									placeholder={cenaF.od === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
-										console.log((!isNaN(parseInt(e.target.value))).toString());
-										console.log((parseInt(e.target.value) > 0).toString());
-										console.log(
-											(
-												cenaF.do === undefined || parseInt(e.target.value) < parseInt(cenaF.do)
-											).toString()
-										);
+										//console.log((!isNaN(parseInt(e.target.value))).toString());
+										//console.log((parseInt(e.target.value) > 0).toString());
+										//console.log(
+										//	(
+										//		cenaF.do === undefined || parseInt(e.target.value) < parseInt(cenaF.do)
+										//	).toString()
+										//);
 										if (
 											!isNaN(parseInt(e.target.value)) &&
 											parseInt(e.target.value) > 0 &&
 											(cenaF.do === undefined || parseInt(e.target.value) < parseInt(cenaF.do))
 										) {
-											console.log('setting cenaf');
 											setCenaF({ ...cenaF, od: e.target.value });
 										} else {
-											console.log('setting cenaf UNDEFINED');
-
 											setCenaF({ ...cenaF, od: undefined });
 										}
 									}}></input>
@@ -183,22 +179,20 @@ const Shopping = ({ props }) => {
 									placeholder={cenaF.do === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
-										console.log((!isNaN(parseInt(e.target.value))).toString());
+										/*console.log((!isNaN(parseInt(e.target.value))).toString());
 										console.log((parseInt(e.target.value) > 0).toString());
 										console.log(
 											(
 												cenaF.od === undefined || parseInt(e.target.value) > parseInt(cenaF.od)
 											).toString()
-										);
+										);*/
 										if (
 											!isNaN(parseInt(e.target.value)) &&
 											parseInt(e.target.value) > 0 &&
 											(cenaF.od === undefined || parseInt(e.target.value) > parseInt(cenaF.od))
 										) {
-											console.log('setting cenaf');
 											setCenaF({ ...cenaF, do: e.target.value });
 										} else {
-											console.log('setting cenaf UNDEFINED');
 											setCenaF({ ...cenaF, do: undefined });
 										}
 									}}></input>
@@ -207,8 +201,8 @@ const Shopping = ({ props }) => {
 						</div>
 					</div>
 					<div className='filter'>
-						<div className='naslov'>Po popustu</div>
-						<div className='checkbox'>
+						<div className='nasloviFiltrov'>Po popustu</div>
+						<div className='potrditvenoPolje'>
 							<input
 								type='radio'
 								value={0}
@@ -220,7 +214,7 @@ const Shopping = ({ props }) => {
 							/>
 							<label>z in brez popustov</label>
 						</div>
-						<div className='checkbox'>
+						<div className='potrditvenoPolje'>
 							<input
 								type='radio'
 								value={5}
@@ -231,8 +225,7 @@ const Shopping = ({ props }) => {
 							/>
 							<label>več kot 5 % popust</label>
 						</div>
-
-						<div className='checkbox'>
+						<div className='potrditvenoPolje'>
 							<input
 								type='radio'
 								value={10}
@@ -244,7 +237,11 @@ const Shopping = ({ props }) => {
 							<label>več kot 10 % popust</label>
 						</div>
 					</div>
-					<button type='submit'>Filtriraj</button>
+					<div className='filtriranje'>
+						<button className='gumbFiltriranje' type='submit'>
+							Filtriraj <Funnel size={22} style={{ marginLeft: '4px' }} />
+						</button>
+					</div>
 				</form>
 			</div>
 			<ProductsPanel
@@ -259,4 +256,4 @@ const Shopping = ({ props }) => {
 	);
 };
 
-export default Shopping;
+export default Nakupovanje;

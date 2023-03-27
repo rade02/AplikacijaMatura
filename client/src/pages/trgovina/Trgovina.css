@@ -1,194 +1,234 @@
-.shop {
-	display: flex;
-	flex-direction: column;
+/*_____________________ BlagajnaC _____________________*/
+.narocilo {
+	min-width: 650px;
 }
-header {
-	background-color: rgb(223, 223, 223);
+.oddanoNarocilo {
+	font-size: large;
+	margin: 15px;
+	margin-bottom: 35px;
+}
+.podatkiOKupcu {
+	padding: 15px 0px 15px 0px;
+}
+.podatkiOKupcu .podatki {
+}
+.podatki > div {
 	display: flex;
 	flex-direction: row;
+	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 5px 10px grey;
-	margin-top: 20px;
-	margin-bottom: 30px;
-	transition: top 1s ease-out;
-	/*transition: top 0.5s;  Transition effect when sliding down (and up) */
+	margin: 5px 0px 5px 0px;
 }
-.shopNavbar {
-	position: fixed;
-	left: 0;
-	top: 0;
-	z-index: 1000;
-	width: 100%;
-	transition: top 0.3s; /* Transition effect when sliding down (and up) */
-	max-height: 55px;
-	box-shadow: 5px 4px 5px grey;
-	opacity: 1;
-	background-color: rgb(240, 236, 246);
-	color: black;
-	padding: 0px;
-	margin: 0px 0px 25px 0px;
+.podatki > div > div {
+	width: 60px;
+	padding-right: 15px;
+	text-align: right;
 }
-.invisibleNavbar {
-	top: -80px;
-	transition: top 1s ease-in;
-	visibility: hidden;
+.podatkiOKupcu .podatki > div > input {
+	width: 200px;
 }
-
-.shopNavbarHeading {
-	padding: 20px;
-	font-size: 24px;
-	font-weight: bold;
+.divNaslovi {
+	font-size: 20px;
+	font-weight: 600;
+	margin-top: 15px;
+	margin-bottom: 20px;
 }
-.shopNavbarCart {
-	padding: 10px;
-}
-.shopNavbarCart button {
-	background-color: beige;
-	border: 1px solid grey;
-	color: black;
-	border-radius: 5px;
-	display: flex;
-	flex-direction: row;
-	justify-content: left;
-	align-items: center;
-	min-width: 130px;
-	width: fit-content;
-	min-height: 50px;
-	height: fit-content;
-	padding: 10px;
-	padding-left: 13px;
-	font-weight: bold;
-}
-.shopNavbarCart button:hover {
-	box-shadow: 0px 0px 2px 2px rgba(109, 109, 109, 0.616);
-	cursor: pointer;
-}
-
-.shoppingPanel {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: flex-start;
-}
-.filters {
-	min-width: min-content;
-	min-width: 200px;
-	width: auto;
-	height: auto;
-	display: flex;
-	flex-direction: column;
-	justify-items: flex-start;
-	align-items: center;
-	padding: 25px 15px 25px 15px;
+.dodajPrejemnika {
+	padding: 4px;
+	margin: 20px 0px 0px 0px;
+	background-color: transparent;
 	border: 1px solid black;
 }
-.filter {
-	width: 100%;
-	border: 1px solid transparent;
-	border-radius: 18px;
-	margin: 10px 0px 10px 0px;
-	padding: 6px;
-	overflow: hidden;
-	max-width: 160px;
-	background-color: rgba(250, 235, 215, 0.678);
-}
-.checkbox {
-	display: flex;
-	flex-direction: row;
-	overflow: hidden;
-	justify-content: flex-start;
-	align-items: center;
-}
-.checkbox > input:hover {
+.dodajPrejemnika:hover {
 	cursor: pointer;
+	background-color: #e2e2e2;
 }
-.filtriranjePoCeni {
-	display: flex;
-	flex-direction: row;
-	overflow: hidden;
-	justify-content: flex-start;
-	align-items: center;
+.metodaPlacila {
+	background-color: #e2e2e2;
+	padding: 5px;
+	margin: 20px 0px 20px 0px;
 }
-.poljeZaVnosCene {
-	width: 40px;
-	margin: 0px 5px 0px 5px;
-}
-
-.products {
+.nacinDostave {
 	display: flex;
 	flex-direction: column;
-	flex-wrap: wrap;
-	min-width: 600px;
-	max-width: 1140px;
-	margin: 0px;
-	padding: 20px;
 	justify-content: center;
-	background-color: rgb(255, 255, 255);
+	align-items: center;
+	margin: 5px;
+	padding: 10px;
 }
-.productPanel {
+.nacinDostave :nth-child(1) {
+	padding: 7px;
+}
+.nacinDostave :nth-child(2) > div {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: row;
 	justify-content: left;
-	align-items: center;
-	width: auto;
+	align-self: start;
+	padding: 5px;
 }
-
-.productCard {
-	display: inline-block;
+.pregledKosarice {
+	border: 1px solid black;
+	padding: 10px;
+}
+.kratekOpisProdukta {
+	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	border: 1px solid #f0f0f0;
-	margin: 0px;
-	padding: 30px;
-	width: 190px;
-	height: 475px;
-	background-color: white;
-	text-overflow: ellipsis;
 }
-.productCard:hover {
-	box-shadow: 0px 0px 5px 2px rgb(188, 194, 194);
-	border: 1px solid white;
+.glavaTabele > td {
+	font-weight: 600;
+	border-bottom: 1px solid black;
+	padding: 5px 20px 5px 5px;
+}
+.kratekOpisProdukta table {
+	margin-bottom: 20px;
+}
+.kratekOpisProdukta table tbody .vsebinaTabele td {
+	border: transparent;
+	padding: 5px 20px 5px 5px;
+	text-align: left;
+}
+.cenaSkupaj {
+	text-align: right;
+	margin-right: 80px;
+	margin-bottom: 10px;
+}
+.naciniPlacila {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.nazajNaprej {
+	padding: 10px;
+	display: flex;
+	justify-content: space-around;
+}
+.gumbNaprej {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: center;
 	cursor: pointer;
-	z-index: 10;
+	background-color: rgb(23, 68, 152);
+	border: 3px solid transparent;
+	color: white;
+	font-weight: 700;
+	min-width: 90px;
+	width: auto;
+	height: 35px;
 }
-.productCard > div {
+.gumbNaprej:hover {
+	border: 3px solid rgb(22, 0, 119);
+	font-weight: 700;
+}
+.onemogocenGumb {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: center;
+	cursor: auto;
+	background-color: rgba(128, 128, 128, 0.265);
+	border: 1px solid grey;
+	color: rgb(0, 0, 0);
+	font-weight: 700;
+	min-width: 90px;
+	width: auto;
+	height: 35px;
+}
+
+/*_____________________ InformacijeOProduktuC _____________________*/
+.oknoProdukta {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	border: 1px solid rgb(226, 226, 226);
+	padding: 15px;
+}
+.divProdukta {
+	width: auto;
+	display: flex;
+	flex-direction: column;
+}
+.divProdukta2 {
+	background-color: transparent;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
-.productCard .productPicture {
+.divProdukta2 > div {
+	background-color: transparent;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.prostorZaSliko {
+	margin: 30px;
+	width: 270px;
+	min-width: 200px;
+	height: 270px;
+	min-height: 200px;
+	background-color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0px 0px 10px 10px rgb(211, 212, 212);
+	border-radius: 15px;
+}
+.slikaProdukta {
 	width: 160px;
 	height: 160px;
 	background-color: transparent;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 1px 5px 9px rgb(235, 233, 233);
-}
-
-.productInfo {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	height: 215px;
-	text-align: left;
-	align-items: left;
-	position: relative;
-	margin-top: 5px;
-	margin-bottom: 10px;
-	align-items: flex-start;
-}
-.o {
 	background-color: transparent;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: flex-start;
-	height: inherit;
 }
-.category {
+.slikaProdukta:after {
+	content: 'abcdef';
+	color: transparent;
+	position: relative;
+	top: 15px;
+	left: 0px;
+	border-radius: 100%;
+	height: 10px;
+	width: 80px;
+	background-color: rgba(172, 172, 172, 0.774);
+}
+.velikaSlika {
+	max-width: 230px;
+	max-height: 230px;
+	width: 100%;
+	align-self: center;
+}
+.opisProdukta {
+	margin: 15px;
+	margin-left: 35px;
+	padding: 40px 65px 40px 65px;
+	width: auto;
+	max-width: 550px;
+	height: max-content;
+	max-height: 700px;
+	background-color: transparent;
+	align-items: center;
+	text-align: left;
+	background-color: white;
+	border: 1px solid #e2e2e2;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	font-size: 20px;
+	overflow: auto;
+}
+.kategorija {
 	border: 1px solid black;
 	border-radius: 10px;
 	padding: 0px 4px 0px 4px;
@@ -198,89 +238,45 @@ header {
 	font-size: small;
 	text-align: center;
 }
-.productInfoBox {
-	height: 165px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
+.informacijeOProduktu {
+	text-align: justify;
+}
+.majhnaZaloga {
+	color: red;
+	font-weight: bold;
+}
+.dovoljsnjaZaloga {
+	color: transparent;
+	user-select: none;
+	visibility: hidden;
+}
+.informacijeProdukta {
 	text-align: center;
 }
-.productInfoBox div {
-	padding: 5px 0px 5px 0px;
-}
-.linksToProducts {
-	padding: 0px;
-	margin: 0px;
-}
-.linksToProducts:hover {
+.informacijeProdukta b:hover {
 	text-decoration: underline;
 }
-
-.productInformationsName {
-	text-align: left;
-	text-align: center;
-	width: 100%;
-	margin-left: 10px;
-	height: min-content;
-	padding: 0px;
-	margin: 0px;
-}
-.productInformations {
-	text-align: center;
-}
-.productInformations b:hover {
-	text-decoration: underline;
-}
-.discount2 {
-	text-align: right;
-	font-size: 26px;
-	color: rgb(216, 0, 0);
-	font-weight: 600;
-}
-.productPriceStrikethrough {
+.prejsnjaCena {
 	text-align: center;
 	font-size: large;
 	text-decoration: line-through;
 	color: red;
 	margin-right: 8px;
 }
-.prices {
+.popust {
+	text-align: right;
+	font-size: 26px;
+	color: rgb(216, 0, 0);
+	font-weight: 600;
+	margin: 15px 0px 15px 0px;
+}
+.divGumbi {
 	display: flex;
 	flex-direction: row;
-}
-
-.lowQuantity {
-	color: red;
-	font-weight: bold;
-}
-.OKQuantity {
-	color: transparent;
-}
-.discount {
-	position: relative;
-	top: -15px;
-	right: -60px;
-	transform: rotate(-15deg);
-	z-index: 100;
-	background-color: rgb(255, 255, 0);
-	color: red;
-	width: fit-content;
-	padding: 3px;
-	border: 1px solid red;
-	border-radius: 8px;
-}
-
-.productCard .productInfo > div {
-	margin: 5px;
-}
-.productAction {
-	padding: 10px;
-	display: flex;
-	justify-content: center;
+	flex-wrap: nowrap;
 	align-items: center;
-	z-index: 15;
-	background-color: transparent;
+	justify-content: space-between;
+	width: 240px;
 }
 .dodajVKosarico {
 	display: flex;
@@ -316,235 +312,452 @@ header {
 	margin: 10px 0px 0px 0px;
 }
 
-.quantityInCart {
-	font-weight: 400;
-	font-size: smaller;
-}
-.productCard .productAction div {
+/*_____________________ IzdelekVKosariciC _____________________*/
+.produktVKosarici {
+	min-width: 600px;
+	width: auto;
 	display: flex;
-	align-items: center;
+	flex-direction: row;
 	justify-content: center;
-	padding: 1px;
+	align-items: center;
+	border: 1px solid black;
+	border-radius: 6px;
+	padding: 7px 0px 7px 0px;
+	margin: 4px 0px 4px 0px;
+}
+.slikaIzdelkaVKosarici {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 50px;
+	min-height: 50px;
+	margin: 4px 15px 4px 15px;
+	background-color: #e2e2e27a;
+}
+.majhnaSlika {
+	max-width: 60px;
+	max-height: 60px;
+}
+.vrsticneInformacije {
+	display: flex;
+	flex-direction: column;
+	padding: 0px 10px 0px 0px;
+	width: 100%;
+	text-align: left;
+}
+.produktBesedilo {
+	margin: 4px 0px 4px 0px;
+	padding: 2px 0px 2px 0px;
+}
+.produktBesedilo:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+.produktCenaInKosi {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 4px 0px 4px 0px;
+	padding: 2px 30px 2px 30px;
+}
+.produktCenaInKosi > :nth-child(1) {
+	width: 150px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 85px;
+}
+.produktCenaInKosi > :nth-child(2) {
+	width: 150px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 130px;
+}
+.produktCenaInKosi > :nth-child(3) {
+	width: 150px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 160px;
+}
+.plusMinusGumb {
+	background-color: transparent;
+	margin: 0px 6px 0px 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	font-size: medium;
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	border: 1px solid black;
+}
+.plusMinusGumb:hover {
+	cursor: pointer;
+	background-color: rgb(196, 196, 196);
+	border: 1px solid transparent;
 }
 
-.moreProducts {
+/*_____________________ KosaricaC _____________________*/
+.kosarica {
+	min-width: 700px;
+	padding: 20px;
+}
+.vsebinaKosarice {
+	padding: 12px;
+}
+
+/*_____________________ NakupovanjeC _____________________*/
+.filtriInIzdelki {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start;
+}
+.filtri {
+	min-width: min-content;
+	min-width: 200px;
+	width: auto;
+	height: auto;
+	display: flex;
+	flex-direction: column;
+	justify-items: left;
+	align-items: left;
+	padding: 25px 0px 25px 0px;
+	border: 1px solid black;
+}
+.filter {
+	width: auto;
+	border: 1px solid transparent;
+	margin: 0px;
+	padding: 8px 6px 8px 6px;
+	overflow: hidden;
+}
+.nasloviFiltrov {
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-top: 2px solid rgb(0, 0, 0);
+	padding: 4px 0px 4px 0px;
+}
+.potrditvenoPolje {
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 22px;
+}
+.potrditvenoPolje > input:hover {
+	cursor: pointer;
+}
+.kvadrat {
+	height: 17px;
+	width: 17px;
+}
+.filtriranjePoCeni {
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+	justify-content: flex-start;
+	align-items: center;
+}
+.poljeZaVnosCene {
+	width: 40px;
+	margin: 0px 5px 0px 5px;
+}
+.filtrirranje {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: aqua;
+	width: 100%;
+}
+.gumbFiltriranje {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 2px solid black;
+	background-color: white;
+	width: 100px;
+	height: 30px;
+	margin: auto;
+	margin-top: 20px;
+	font-size: 16px;
+}
+.gumbFiltriranje:hover {
+	cursor: pointer;
+	background-color: rgb(215, 242, 255);
+}
+
+/*_____________________ NavigacijaTrgovineC _____________________*/
+.navigacijaZgoraj {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 10px 0px 10px 0px;
+	border: 1px solid transparent;
+	background-color: #e2e2e2;
+	box-shadow: 5px 4px 5px grey;
+}
+.vsebinaNavigacije {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: auto;
+}
+.navigacijaTrgovineSpodaj {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 1000;
+	width: 100%;
+	transition: top 0.3s; /*Transition effect when sliding down (and up) */
+	max-height: 55px;
+	box-shadow: 5px 4px 5px grey;
+	opacity: 1;
+	background-color: #e2e2e2;
+	color: black;
+	padding: 0px;
+	margin: 0px 0px 25px 0px;
+}
+.navigacijaBesedilo {
+	padding: 20px;
+	font-size: 24px;
+	font-weight: bold;
+	width: auto;
+	text-align: right;
+}
+.navigacijaKosarica {
+	padding: 10px;
+	width: auto;
+	padding-left: 35px;
+}
+.gumbZaKosarico {
+	background-color: beige;
+	border: 1px solid grey;
+	color: black;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+	min-width: 130px;
+	width: fit-content;
+	min-height: 50px;
+	height: fit-content;
+	padding: 10px;
+	padding-left: 13px;
+	font-weight: bold;
+}
+.gumbZaKosarico:hover {
+	box-shadow: 0px 0px 2px 2px rgba(109, 109, 109, 0.616);
+	cursor: pointer;
+}
+.gumbZaKosarico > div {
+	width: auto;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.besediloZaKosarico {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+/*_____________________ PrikazProduktovC _____________________*/
+.nalaganje {
+	background-color: rgba(248, 248, 244, 0.74);
+	padding: 60px;
+}
+.produkti {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	min-width: 600px;
+	max-width: 1140px;
+	margin: 0px;
+	padding: 20px;
+	justify-content: center;
+	background-color: rgb(255, 255, 255);
+}
+.prostorZaProdukte {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: left;
+	align-items: center;
+	width: auto;
+}
+.vecProduktov {
 	background-color: rgb(255, 255, 255);
 	margin: 30px 0px 20px 0px;
 	padding: 5px;
 }
-
-/*  PRODUCT INFO COMPONENT  */
-.productsMenu {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	background-color: transparent;
-	border: 1px solid rgb(226, 226, 226);
-	padding: 15px;
-}
-.productDiv {
-	width: auto;
-	display: flex;
-	flex-direction: column;
-}
-.productDiv .productField {
-	background-color: transparent;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-.productDiv .productField > div {
-	background-color: transparent;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-}
-
-.productImage {
-	margin: 30px;
-	width: 270px;
-	height: 270px;
-	background-color: rgb(206, 201, 201);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.productDescription {
-	margin: 15px;
-	margin-left: 35px;
-	padding: 40px 65px 40px 65px;
-	width: 400px;
-	height: max-content;
-	background-color: transparent;
-	align-items: center;
-	text-align: left;
-	background-color: white;
-	border: 1px solid #e2e2e2;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	font-size: 20px;
-}
-.productInfos {
-	text-align: justify;
-}
-.productButtonsDiv {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: space-between;
-	width: 240px;
-}
-.buttonsDiv {
-	padding: 10px;
-	display: flex;
-	justify-content: space-around;
-}
-.backButton {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	background-color: rgb(23, 68, 152);
-	border: 3px solid transparent;
-	color: white;
-	font-weight: 700;
-	min-width: 90px;
-	width: auto;
-	height: 35px;
-}
-.backButton:hover {
-	border: 3px solid rgb(22, 0, 119);
-	font-weight: 700;
-}
-.fwdButton {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	background-color: rgb(23, 68, 152);
-	border: 3px solid transparent;
-	color: white;
-	font-weight: 700;
-	min-width: 90px;
-	width: auto;
-	height: 35px;
-}
-.fwdButton:hover {
-	border: 3px solid rgb(22, 0, 119);
-	font-weight: 700;
-}
-.disabledBtn {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: center;
-	cursor: auto;
-	background-color: rgba(128, 128, 128, 0.265);
-	border: 1px solid grey;
-	color: rgb(0, 0, 0);
-	font-weight: 700;
-	min-width: 90px;
-	width: auto;
-	height: 35px;
-}
-.cartOverview {
+.prikaziVec {
+	background-color: rgb(238, 238, 238);
 	border: 1px solid black;
-	padding: 10px;
-}
-.smallProductDesc {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-}
-.smallProductDesc > div {
-	text-align: left;
-	margin: 20px;
-	padding: 5px;
-}
-.quantityAndPrice {
-	display: flex;
-	flex-direction: row;
-}
-.quantityAndPrice > div {
+	padding: 4px 10px 4px 10px;
+	border-radius: 6px 12px 6px 12px;
 	margin-left: 10px;
 }
-.priceTag {
-	margin-left: 20px;
-}
-
-.priceTotal {
-	text-align: right;
-	margin-right: 80px;
-	margin-bottom: 10px;
-}
-.paymentMethod {
-	background-color: #e2e2e2;
-	padding: 5px;
-	margin: 20px 0px 20px 0px;
-}
-.divTitles {
-	font-size: large;
-	font-weight: 600;
-	margin-top: 15px;
-}
-
-/*  CART PRODUCT COMPONENT  */
-.productLaneInfo {
-	display: flex;
-	flex-direction: column;
-	padding: 0px 10px 0px 10px;
-	width: 100%;
-	text-align: left;
-}
-.productText:hover {
-	text-decoration: underline;
+.prikaziVec:hover {
 	cursor: pointer;
+	background-color: rgb(201, 201, 201);
 }
 
-.cartButton > div {
-	width: auto;
-	height: 100%;
+/*_____________________ ProduktC _____________________*/
+.poljeProdukta {
+	display: inline-block;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid #f0f0f0;
+	margin: 0px;
+	padding: 30px;
+	width: 190px;
+	height: 475px;
+	background-color: white;
+	text-overflow: ellipsis;
+}
+.poljeProdukta:hover {
+	box-shadow: 0px 0px 5px 2px rgb(188, 194, 194);
+	border: 1px solid white;
+	cursor: pointer;
+	z-index: 10;
+}
+.poljeProdukta > div {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
-.cartbuttonText {
+.poljeProdukta hr {
+	border: 0.5px solid rgb(203, 203, 203);
+	outline: none;
 	width: 100%;
-	height: 100%;
+}
+.niNaVoljo {
 	display: flex;
-	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	background-color: rgb(214, 214, 214);
+	min-width: 160px;
+	min-height: 160px;
+}
+.slikaVPoljuProdukta {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	min-width: 160px;
+	min-height: 160px;
+}
+.srednjaSlika {
+	max-width: 160px;
+	max-height: 160px;
+}
+.infoProdukta {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	height: 215px;
+	text-align: left;
+	align-items: left;
+	position: relative;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	align-items: flex-start;
+}
+.predelZaInformacije {
+	background-color: transparent;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	height: inherit;
+}
+.kratkeInformacije {
+	height: 165px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	text-align: center;
+}
+.kratkeInformacije div {
+	padding: 5px 0px 5px 0px;
+}
+.linkProdukta {
+	padding: 0px;
+	margin: 0px;
+}
+.linkProdukta:hover {
+	text-decoration: underline;
+}
+.imenaProduktov {
+	text-align: left;
+	text-align: center;
+	width: 100%;
+	margin-left: 10px;
+	height: min-content;
+	padding: 0px;
+	margin: 0px;
+}
+.kratekOpisProdukta {
+}
+.cene {
+	display: flex;
+	flex-direction: row;
+}
+.popust1 {
+	position: relative;
+	top: -15px;
+	right: -60px;
+	transform: rotate(-15deg);
+	z-index: 100;
+	background-color: rgb(255, 255, 0);
+	color: red;
+	width: fit-content;
+	padding: 3px;
+	border: 1px solid red;
+	border-radius: 8px;
 }
 
-.naVrh::before {
-	content: '^';
-	position: relative;
-	top: 6px;
+/*_____________________ Trgovina _____________________*/
+.trgovina {
+	display: flex;
+	flex-direction: column;
 }
 .naVrh {
 	border-radius: 50%;
-	border: 1px solid black;
-	width: 28px;
-	height: 28px;
+	border: 1px solid transparent;
+	width: 35px;
+	height: 35px;
 	z-index: 100000;
 	position: fixed;
 	top: 88%;
-	left: 96%;
+	left: 92%;
 }
 .naVrh:hover {
 	cursor: pointer;
 	background-color: #e2e2e2;
 }
+
+/*_____________________ VsebinaTrgovineC _____________________*/
