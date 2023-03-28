@@ -3,7 +3,7 @@ import { UserCircle } from 'phosphor-react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UporabniskiKontekst } from '../contexts/UporabniskiKontekst';
-import Logo from './LogotipC';
+import Logotip from './LogotipC';
 
 const NavigacijskaVrstica = () => {
 	const { uporabnik, jeAvtenticiran, setJeAvtenticiran } = useContext(UporabniskiKontekst);
@@ -15,7 +15,7 @@ const NavigacijskaVrstica = () => {
 	return (
 		<div className='navigacija1'>
 			<div className='vrstica1'>
-				<Logo />
+				<Logotip />
 				<div>
 					<Link to='/' className='linki'>
 						Domov

@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import pool from '../../dbConnection.js';
+import pool from '../../povezavaPB.js';
 
 router.get('/', async (req, res) => {
 	let steviloIzdelkov = parseInt(req.query.steviloIzdelkov);
@@ -8,24 +8,24 @@ router.get('/', async (req, res) => {
 
 	if (brezPodvajanja !== null && brezPodvajanja !== undefined) {
 		try {
-			let newProducts = await pool.query(
+			let noviProdukti = await pool.query(
 				`select * from Izdelki where ID_izdelka not in ? and Izdelki.kosov_na_voljo > 0 order by rand() limit ?`,
 				[[brezPodvajanja], steviloIzdelkov]
 			);
-			res.status(200).send(newProducts[0]);
-		} catch (onRejectedError) {
-			console.log(onRejectedError);
+			res.status(200).send(noviProdukti[0]);
+		} catch (napaka) {
+			console.log(napaka);
 			res.status(400).send(`error`);
 		}
 	} else {
 		try {
-			let newProducts = await pool.query(
+			let noviProdukti = await pool.query(
 				`select * from Izdelki where Izdelki.kosov_na_voljo > 0 order by rand() limit ?`,
 				[steviloIzdelkov]
 			);
-			res.status(200).send(newProducts[0]);
-		} catch (onRejectedError) {
-			console.log(onRejectedError);
+			res.status(200).send(noviProdukti[0]);
+		} catch (napaka) {
+			console.log(napaka);
 			res.status(400).send(`error`);
 		}
 	}
@@ -35,22 +35,22 @@ router.get('/naVoljo', async (req, res) => {
 	let id = req.query.ID_izdelka;
 
 	try {
-		let availNumber = await pool.query(`select (kosov_na_voljo) from Izdelki where ID_izdelka = ?`, [id]);
-		res.status(200).send(availNumber[0]);
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		let steviloNaVoljo = await pool.query(`select (kosov_na_voljo) from Izdelki where ID_izdelka = ?`, [id]);
+		res.status(200).send(steviloNaVoljo[0]);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
 router.get('/kategorije', async (req, res) => {
 	try {
-		let result = await pool.query(
+		let rezultat = await pool.query(
 			`select distinct kategorija from Izdelki where Izdelki.kosov_na_voljo > 0`
 		);
-		res.status(200).send(result[0]);
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		res.status(200).send(rezultat[0]);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
@@ -62,8 +62,7 @@ router.get('/filtriranje', async (req, res) => {
 	let popustF = req.query.popustF;
 	let brezPodvajanj = req.query.brezPodvajanj;
 	let sqlQ = '';
-	//'select * from Izdelki where (';
-	//let sqlCount = 'select count(*) from Izdelki where ('
+	//console.log(steviloIzdelkov + ' ' + kategorijeF + ' ' + cenaF + ' ' + popustF + ' ' + brezPodvajanj);
 
 	if (kategorijeF !== undefined && kategorijeF.length > 0) {
 		sqlQ = sqlQ.concat(
@@ -89,34 +88,35 @@ router.get('/filtriranje', async (req, res) => {
 		`and Izdelki.popust >= ${popustF} and Izdelki.kosov_na_voljo > 0) order by rand() limit ${steviloIzdelkov};`
 	);
 
-	//console.log(sqlQ);
+	console.log(sqlQ);
 	try {
-		let newProducts;
+		let noviProdukti;
 		if (brezPodvajanj !== null && brezPodvajanj !== undefined) {
-			newProducts = await pool.query(`select * from Izdelki where (ID_izdelka not in ? and ${sqlQ}`, [
+			noviProdukti = await pool.query(`select * from Izdelki where (ID_izdelka not in ? and ${sqlQ}`, [
 				[brezPodvajanj],
 			]);
 		} else {
-			newProducts = await pool.query(`select * from Izdelki where (${sqlQ}`);
+			noviProdukti = await pool.query(`select * from Izdelki where (${sqlQ}`);
 		}
 		let steviloProduktov = await pool.query(`select count(*) from Izdelki where (${sqlQ}`);
 		//console.log(steviloProduktov[0][0]['count(*)']);
+		//console.log(noviProdukti[0]);
 		res.status(200).send({
-			produkti: newProducts[0],
+			produkti: noviProdukti[0],
 			stProduktovKiUstrezajoFiltru: steviloProduktov[0][0]['count(*)'],
 		});
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
 
 router.get('/stVsehProduktov', async (req, res) => {
 	try {
-		let number = await pool.query(`select distinct count(*) from Izdelki where Izdelki.kosov_na_voljo > 0`);
-		res.status(200).send(number[0][0]['count(*)'].toString());
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		let stevilo = await pool.query(`select distinct count(*) from Izdelki where Izdelki.kosov_na_voljo > 0`);
+		res.status(200).send(stevilo[0][0]['count(*)'].toString());
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
@@ -130,7 +130,7 @@ router.get('/ustvariNarocilo', async (req, res) => {
 
 	try {
 		// dodajanje naročila
-		let response3 = await pool.query(
+		await pool.query(
 			`insert into Narocila (datum, ID_stranke, opravljeno, imeStranke, priimekStranke, naslovDostave, postnina) values ((select current_date() as cd), ?, default, ?, ?, ?, ?);`,
 			[ID_stranke, imeStranke, priimekStranke, naslovDostave, postnina]
 		);
@@ -140,8 +140,8 @@ router.get('/ustvariNarocilo', async (req, res) => {
 			[ID_stranke, imeStranke, priimekStranke, naslovDostave]
 		);
 		res.status(200).send(response22[0][0].IDzadnjegaNarocila.toString());
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
@@ -153,15 +153,15 @@ router.post('/dodajIzdelkeNarocilu', async (req, res) => {
 	const cena = req.body.cena;
 
 	try {
-		let response = await pool.query(`insert into Izdelki_pri_narocilu values (?,?,?,?);`, [
+		await pool.query(`insert into Izdelki_pri_narocilu values (?,?,?,?);`, [
 			ID_narocila,
 			ID_izdelka,
 			kolicina,
 			cena,
 		]);
-		res.status(200).send('update successful');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		res.status(200).send('operacija uspešna');
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });
@@ -171,13 +171,41 @@ router.post('/zmanjsajZalogo', async (req, res) => {
 	const ID_izdelka = req.body.ID_izdelka;
 
 	try {
-		let response = await pool.query(
-			`update Izdelki set kosov_na_voljo = kosov_na_voljo - ? where ID_izdelka = ?`,
-			[kolicina_kupljeno, ID_izdelka]
+		await pool.query(`update Izdelki set kosov_na_voljo = kosov_na_voljo - ? where ID_izdelka = ?`, [
+			kolicina_kupljeno,
+			ID_izdelka,
+		]);
+		res.status(200).send('operacija uspešna');
+	} catch (napaka) {
+		console.log(napaka);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/izdelki', async (req, res) => {
+	const iskalniNiz = req.query.iskalniNiz;
+
+	try {
+		let rezultat = await pool.query(
+			`select ime from Izdelki where ime like '%${iskalniNiz}%' and kosov_na_voljo > 0 order by ime desc limit 6;`
 		);
-		res.status(200).send('update successful');
-	} catch (onRejectedError) {
-		console.log(onRejectedError);
+		//console.log(rezultat[0]);
+		res.status(200).send(rezultat[0]);
+	} catch (napaka) {
+		console.log(napaka);
+		res.status(400).send(`error`);
+	}
+});
+
+router.get('/iskaniIzdelek', async (req, res) => {
+	const ime = req.query.ime;
+
+	try {
+		let rezultat = await pool.query(`select * from Izdelki where ime = ? and kosov_na_voljo > 0;`, [ime]);
+		//console.log(rezultat[0]);
+		res.status(200).send(rezultat[0]);
+	} catch (napaka) {
+		console.log(napaka);
 		res.status(400).send(`error`);
 	}
 });

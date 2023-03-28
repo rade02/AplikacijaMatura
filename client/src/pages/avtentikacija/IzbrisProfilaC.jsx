@@ -9,7 +9,6 @@ const IzbrisProfila = ({ props }) => {
 	const [potrditev, setPotrditev] = useState(null);
 	const [sporocilo, setSporocilo] = useState({ sporociloGeslo: '' });
 	const [napaka, setNapaka] = useState(false);
-
 	const { uporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
 

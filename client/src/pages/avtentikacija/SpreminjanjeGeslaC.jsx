@@ -6,10 +6,8 @@ const SpreminjanjeGesla = ({ props }) => {
 	const { uporabnik, setUporabnik } = useContext(UporabniskiKontekst);
 	const [geslo, setGeslo] = useState('');
 	const [jePravilno, setJePravilno] = useState(null);
-
 	const [OKgeslo, setOKgeslo] = useState(0); // 0 - ni se vnosa, 1 - ni veljavno, 2 - veljavno
 	const [OKponovljeno, setOKponovljeno] = useState(4); // 0 - ni se vnosa, 1 - se ne ujema z geslom, 2 - veljavno
-	const [sporocilo, setSporocilo] = useState('');
 
 	const posljiStaroGeslo = () => {
 		if (uporabnik.geslo === geslo) {
@@ -53,7 +51,6 @@ const SpreminjanjeGesla = ({ props }) => {
 				setOKgeslo(1);
 			}
 		}
-		setSporocilo(sporocilo);
 	};
 
 	const posljiNovoGeslo = async () => {

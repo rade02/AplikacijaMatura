@@ -5,10 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 
 const Registracija = () => {
-	// TODO: enter --> skoči na drugo vnosno polje
-	// TODO: geslu dodaj se obvezne posebne znake (!, ., ...)
-	// TODO: popravi msg: setterje izven eventa (ne dela ce popravljamo)
-
 	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
 
@@ -38,6 +34,7 @@ const Registracija = () => {
 		PSsporocilo: '',
 	});
 	const gesloRef = useRef(null);
+	const obrazec = useRef(null);
 
 	const poslji = async (e) => {
 		try {
@@ -66,23 +63,52 @@ const Registracija = () => {
 				alert(`Registracija NEuspešna: \n${opozorilo}`);
 			} else {
 				//console.log(vneseniPodatki);
-				let odziv = await axios.post(`http://localhost:${global.config.port}/api/avtentikacija/newUser`, {
-					uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
-					geslo: vneseniPodatki.geslo,
-					elektronski_naslov: vneseniPodatki.elektronski_naslov,
-					ime: vneseniPodatki.ime,
-					priimek: vneseniPodatki.priimek,
-					ulica_in_hisna_stevilka: vneseniPodatki.ulica_in_hisna_stevilka,
-					kraj: vneseniPodatki.kraj,
-					postna_stevilka: vneseniPodatki.postna_stevilka,
-					podjetje: vneseniPodatki.podjetje,
-				});
+				let odziv = await axios.post(
+					`http://localhost:${global.config.port}/api/avtentikacija/novUporabnik`,
+					{
+						uporabnisko_ime: vneseniPodatki.uporabnisko_ime,
+						geslo: vneseniPodatki.geslo,
+						elektronski_naslov: vneseniPodatki.elektronski_naslov,
+						ime: vneseniPodatki.ime,
+						priimek: vneseniPodatki.priimek,
+						ulica_in_hisna_stevilka: vneseniPodatki.ulica_in_hisna_stevilka,
+						kraj: vneseniPodatki.kraj,
+						postna_stevilka: vneseniPodatki.postna_stevilka,
+						podjetje: vneseniPodatki.podjetje,
+					}
+				);
 
 				if (odziv.data === 'vnos uspešen') {
 					setJeAvtenticiran(true);
 					setUporabnik(vneseniPodatki);
 				}
 				alert('Registracija uspešna: ' + JSON.stringify(vneseniPodatki));
+				obrazec.current.reset();
+				setVneseniPodatki({
+					uporabnisko_ime: null,
+					geslo: null,
+					elektronski_naslov: null,
+					ime: null,
+					priimek: null,
+					ulica_in_hisna_stevilka: null,
+					kraj: null,
+					postna_stevilka: null,
+					telefonska_stevilka: null,
+					podjetje: null,
+				});
+				setPonovenVnos(false);
+				setOKuporabniskoIme(0);
+				setOKgeslo(0);
+				setOKponovljenoGeslo(4);
+				setOKeposta(0);
+				setOKpostnaSt(0);
+				setSporociloNapaka({
+					UIsporocilo: '',
+					Gsporocilo: '',
+					SGsporocilo: '',
+					ENsporocilo: '',
+					PSsporocilo: '',
+				});
 			}
 		} catch (error) {
 			setPonovenVnos(true);
@@ -105,9 +131,9 @@ const Registracija = () => {
 					setSporociloNapaka({ ...sporociloNapaka, UIsporocilo: pregledanoUI.sporociloNapaka });
 				} else {
 					const preverjenoUI = await axios.get(
-						`http://localhost:${global.config.port}/api/avtentikacija/user`,
+						`http://localhost:${global.config.port}/api/avtentikacija/uporabnik`,
 						{
-							params: { username: uporabniskoIme },
+							params: { uporabnisko_ime: uporabniskoIme },
 						}
 					);
 					if (preverjenoUI.data !== '') {
@@ -204,9 +230,9 @@ const Registracija = () => {
 					setSporociloNapaka({ ...sporociloNapaka, ENsporocilo: pregledanaEP.sporocilo });
 				} else {
 					const preverjenaEP = await axios.get(
-						`http://localhost:${global.config.port}/api/avtentikacija/email`,
+						`http://localhost:${global.config.port}/api/avtentikacija/elektronski_naslov`,
 						{
-							params: { email: eposta },
+							params: { elektronski_naslov: eposta },
 						}
 					);
 					if (preverjenaEP.data !== '') {
@@ -248,6 +274,7 @@ const Registracija = () => {
 		<div className='registracija kartice'>
 			<h2>Registracija</h2>
 			<form
+				ref={obrazec}
 				onSubmit={(e) => {
 					e.preventDefault();
 					poslji(e);

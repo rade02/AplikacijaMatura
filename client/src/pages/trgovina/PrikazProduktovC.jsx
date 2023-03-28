@@ -2,7 +2,18 @@ import Produkt from './ProduktC';
 import KroznoNalaganje from '@mui/material/CircularProgress';
 import Skatla from '@mui/material/Box';
 
-const PrikazProduktov = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF, popustF }) => {
+const PrikazProduktov = ({
+	setFokus1,
+	props,
+	stVsehProduktov,
+	filtriraj,
+	setIzKosarice,
+	filtri,
+	kategorijeF,
+	setKategorijeF,
+	cenaF,
+	popustF,
+}) => {
 	if (props.napaka) {
 		<div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
 	} else if (props.niProduktov) {
@@ -16,7 +27,11 @@ const PrikazProduktov = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF
 		);
 	} else {
 		return (
-			<div className='produkti'>
+			<div
+				className='produkti'
+				onClick={(e) => {
+					setFokus1(false);
+				}}>
 				<div className='prostorZaProdukte'>
 					{props.prikazaniProdukti.map((produkt) => {
 						return (
@@ -28,6 +43,7 @@ const PrikazProduktov = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF
 								taProdukt={produkt} // podatki o posameznem produktu
 								izbranProdukt={props.izbranProdukt}
 								setIzbranProdukt={props.setIzbranProdukt}
+								setIzKosarice={setIzKosarice}
 							/>
 						);
 					})}
@@ -43,7 +59,11 @@ const PrikazProduktov = ({ props, stVsehProduktov, filtriraj, kategorijeF, cenaF
 							className='prikaziVec'
 							onClick={(e) => {
 								e.preventDefault();
-								filtriraj(true);
+								filtri.current.reset();
+								kategorijeF = [];
+								cenaF = { od: undefined, do: undefined };
+								popustF = 0;
+								filtriraj(true, kategorijeF);
 							}}>
 							Prikaži več
 						</button>

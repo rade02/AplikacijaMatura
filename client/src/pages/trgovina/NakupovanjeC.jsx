@@ -1,16 +1,23 @@
 import axios from 'axios';
-import { Funnel } from 'phosphor-react';
+import { ArrowCounterClockwise, Funnel, MagnifyingGlass } from 'phosphor-react';
 import { useState, useEffect, useRef } from 'react';
-import ProductsPanel from './PrikazProduktovC';
+import PrikazProduktov from './PrikazProduktovC';
 
 const Nakupovanje = ({ props }) => {
 	const [kategorijeNaVoljo, setKategorijenaVoljo] = useState([]);
-	const [kategorijeF, setKategorijeF] = useState([]);
-	const [cenaF, setCenaF] = useState({ od: undefined, do: undefined });
-	const [popustF, setPopustF] = useState(0);
+	let [kategorijeF, setKategorijeF] = useState([]);
+	let [cenaF, setCenaF] = useState({ od: undefined, do: undefined });
+	let [popustF, setPopustF] = useState(0);
 	const od = useRef('od');
 	const Do = useRef('do');
 	const [stVsehProduktov, setStVsehProduktov] = useState(null);
+	const filtri = useRef(null);
+	const [iskalniNiz, setIskalniNiz] = useState('');
+	const [tabelaPredlogov, setTabelaPredlogov] = useState([]);
+	const [iskaniIzdelek, setIskaniIzdelek] = useState('');
+	const [posodobiIskalnik, setPosodobiIskalnik] = useState(false);
+	const iskalnoPolje = useRef({});
+	const [fokus1, setFokus1] = useState(false);
 
 	const pridobiSteviloVsehProduktov = async () => {
 		try {
@@ -29,12 +36,12 @@ const Nakupovanje = ({ props }) => {
 			console.log(napaka);
 		}
 	};
-	const filtriraj = async (dodatno) => {
+	const filtriraj = async (dodatno, kategorije) => {
 		try {
 			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/filtriranje`, {
 				params: {
 					steviloIzdelkov: 6,
-					kategorijeF: kategorijeF,
+					kategorijeF: kategorije,
 					cenaF: cenaF,
 					popustF: popustF,
 					brezPodvajanj: props.prikazaniProdukti.map((a) => a.ID_izdelka),
@@ -62,10 +69,66 @@ const Nakupovanje = ({ props }) => {
 				}
 			});
 
-			if (dodatno) {
+			if (dodatno === undefined || dodatno) {
 				props.setPrikazaniProdukti([...props.prikazaniProdukti, ...odziv.data.produkti]);
 			} else {
 				props.setPrikazaniProdukti([...odziv.data.produkti]);
+			}
+		} catch (napaka) {
+			console.log(napaka);
+		}
+	};
+	const pridobiIzdelkePoIskalnemNizu = async () => {
+		try {
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/izdelki`, {
+				params: {
+					iskalniNiz: iskalniNiz,
+				},
+			});
+			setTabelaPredlogov(odziv.data);
+		} catch (napaka) {
+			console.log(napaka);
+		}
+	};
+	const pridobiIzdelek = async () => {
+		try {
+			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/iskaniIzdelek`, {
+				params: {
+					ime: iskaniIzdelek,
+				},
+			});
+
+			if (
+				odziv !== null &&
+				odziv !== undefined &&
+				odziv.data !== null &&
+				odziv.data !== undefined &&
+				odziv.data !== ''
+			) {
+				odziv.data.forEach(async (element) => {
+					let rezultat = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
+						{
+							method: 'get',
+							responseType: 'blob',
+							params: {
+								ID_izdelka: element.ID_izdelka,
+							},
+						}
+					);
+					element.kolicina = 0;
+					if (rezultat.data.size === 0) {
+						element.slika = null;
+					} else {
+						element.slika = URL.createObjectURL(rezultat.data);
+					}
+				});
+				props.setPrikazaniProdukti([...odziv.data]);
+				setStVsehProduktov(odziv.data.length);
+			} else {
+				setIskaniIzdelek('');
+				setTabelaPredlogov([]);
+				setIskalniNiz('');
 			}
 		} catch (napaka) {
 			console.log(napaka);
@@ -75,13 +138,32 @@ const Nakupovanje = ({ props }) => {
 	useEffect(() => {
 		pridobiKategorije();
 		pridobiSteviloVsehProduktov();
+		//setKategorijeF(kategorijeNaVoljo);
 	}, []);
+
+	if (iskalniNiz !== '' && posodobiIskalnik) {
+		pridobiIzdelkePoIskalnemNizu();
+		setPosodobiIskalnik(false);
+	}
+	if (!fokus1) {
+		if (iskalniNiz !== '') {
+			setIskalniNiz('');
+		}
+		if (iskalnoPolje.current !== null && iskalnoPolje.current !== undefined && iskalnoPolje.current !== '') {
+			iskalnoPolje.current.value = '';
+		}
+	}
 
 	return (
 		<div className='filtriInIzdelki'>
-			<div className='filtri'>
+			<div
+				className='filtri'
+				onClick={(e) => {
+					setFokus1(false);
+				}}>
 				<div style={{ fontSize: '24px', fontWeight: '650', maxWidth: '200px' }}>Filtriranje izdelkov</div>
 				<form
+					ref={filtri}
 					onSubmit={(e) => {
 						e.preventDefault();
 						if (cenaF.od !== undefined) {
@@ -104,7 +186,7 @@ const Nakupovanje = ({ props }) => {
 							cenaF.do = undefined;
 						}
 						props.prikazaniProdukti = []; // nujno pred filtrireanjem, da ne vzame prejsnjih izdelkov kot podvojene
-						filtriraj();
+						filtriraj(false, kategorijeF);
 						if (
 							(kategorijeF === undefined || kategorijeF.length === 0) &&
 							(cenaF === undefined || (cenaF.od === undefined && cenaF.do === undefined)) &&
@@ -151,13 +233,6 @@ const Nakupovanje = ({ props }) => {
 									placeholder={cenaF.od === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
-										//console.log((!isNaN(parseInt(e.target.value))).toString());
-										//console.log((parseInt(e.target.value) > 0).toString());
-										//console.log(
-										//	(
-										//		cenaF.do === undefined || parseInt(e.target.value) < parseInt(cenaF.do)
-										//	).toString()
-										//);
 										if (
 											!isNaN(parseInt(e.target.value)) &&
 											parseInt(e.target.value) > 0 &&
@@ -179,13 +254,6 @@ const Nakupovanje = ({ props }) => {
 									placeholder={cenaF.do === undefined ? '-' : undefined}
 									onChange={(e) => {
 										e.preventDefault();
-										/*console.log((!isNaN(parseInt(e.target.value))).toString());
-										console.log((parseInt(e.target.value) > 0).toString());
-										console.log(
-											(
-												cenaF.od === undefined || parseInt(e.target.value) > parseInt(cenaF.od)
-											).toString()
-										);*/
 										if (
 											!isNaN(parseInt(e.target.value)) &&
 											parseInt(e.target.value) > 0 &&
@@ -244,14 +312,114 @@ const Nakupovanje = ({ props }) => {
 					</div>
 				</form>
 			</div>
-			<ProductsPanel
-				props={props}
-				filtriraj={filtriraj}
-				stVsehProduktov={stVsehProduktov}
-				kategorijeF={kategorijeF}
-				cenaF={cenaF}
-				popustF={popustF}
-			/>
+			<div>
+				<div
+					className='iskanjeProduktov'
+					style={{ zIndex: '999999999' }}
+					onFocus={(e) => {
+						e.stopPropagation();
+						setFokus1(true);
+					}}>
+					<div style={{ fontSize: '24px', fontWeight: '650' }}>Iskanje izdelkov</div>
+					<div
+						className='iskanjeIzdelkov'
+						onFocus={(e) => {
+							setFokus1(true);
+						}}>
+						<div>
+							<label className='oznaka'>Ime izdelka:</label>
+						</div>
+
+						<div className={iskalniNiz === '' ? '' : 'iskalnik'}>
+							<input
+								ref={iskalnoPolje}
+								style={{ width: 'auto' }}
+								className='tekstovnoPolje'
+								placeholder='Vsi izdelki'
+								onChange={(e) => {
+									e.preventDefault();
+									setIskalniNiz(e.target.value);
+									setPosodobiIskalnik(true);
+								}}
+								onFocus={(e) => {
+									setFokus1(true);
+								}}></input>
+							<div className={iskalniNiz === '' ? 'nevidniPredlogi' : 'vidniPredlogi'}>
+								{tabelaPredlogov !== null && tabelaPredlogov.length > 0 && iskalniNiz !== '' ? (
+									tabelaPredlogov.map((predlog) => {
+										return (
+											<div
+												title={predlog.ime}
+												key={predlog.ime}
+												className='predlog'
+												onClick={(e) => {
+													e.preventDefault();
+													e.stopPropagation();
+													iskalnoPolje.current.focus();
+													setFokus1(true);
+													setIskaniIzdelek(predlog.ime);
+													setIskalniNiz('');
+													iskalnoPolje.current.value = predlog.ime;
+												}}
+												onFocus={(e) => {
+													iskalnoPolje.current.focus();
+													setFokus1(true);
+												}}>
+												{predlog.ime}
+											</div>
+										);
+									})
+								) : (
+									<></>
+								)}
+							</div>
+						</div>
+						<div className='iskanje2'>
+							<button
+								disabled={props.prikazaniProdukti.length < 0 ? 'disabled' : ''}
+								className='iskanje1'
+								onClick={(e) => {
+									e.preventDefault();
+
+									filtri.current.reset();
+									kategorijeF = [];
+									cenaF = { od: undefined, do: undefined };
+									popustF = 0;
+									if (iskaniIzdelek === '' && iskalnoPolje.current.value === '') {
+										props.prikazaniProdukti = [];
+										filtriraj(false, kategorijeF);
+									} else {
+										pridobiIzdelek();
+									}
+
+									setIskaniIzdelek('');
+									setPosodobiIskalnik(false);
+									setTabelaPredlogov([]);
+									setIskalniNiz('');
+									iskalnoPolje.current.value = '';
+								}}>
+								{iskaniIzdelek === '' && iskalnoPolje.current.value === '' ? (
+									<ArrowCounterClockwise size={22} weight='duotone' />
+								) : (
+									<MagnifyingGlass size={22} weight='duotone' />
+								)}
+							</button>
+						</div>
+					</div>
+				</div>
+				<PrikazProduktov
+					setFokus1={setFokus1}
+					props={props}
+					filtriraj={filtriraj}
+					stVsehProduktov={stVsehProduktov}
+					kategorijeF={kategorijeF}
+					setKategorijeF={setKategorijeF}
+					cenaF={cenaF}
+					popustF={popustF}
+					setIzKosarice={props.setIzKosarice}
+					filtri={filtri}
+				/>
+			</div>
 		</div>
 	);
 };

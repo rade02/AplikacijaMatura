@@ -7,7 +7,7 @@ import Skatla from '@mui/material/Box';
 
 const PregledPB = ({ props }) => {
 	const [stavek, setStavek] = useState(null);
-	const [naslovnaVrstica, setNaslovnaVrstica] = useState([]);
+	const [glava, setGlava] = useState([]);
 
 	return (
 		<>
@@ -51,7 +51,7 @@ const PregledPB = ({ props }) => {
 												}
 											);
 											props.setTabela(odziv.data.data);
-											setNaslovnaVrstica(odziv.data.keys);
+											setGlava(odziv.data.keys);
 										} catch (napaka) {
 											console.log(`Prišlo je do napake: ${napaka}`);
 										}
@@ -62,7 +62,7 @@ const PregledPB = ({ props }) => {
 							<table className='tabela'>
 								<tbody>
 									<tr style={{ backgroundColor: 'rgba(240, 240, 240, 0.727)' }}>
-										{naslovnaVrstica.map((element) => {
+										{glava.map((element) => {
 											return <th key={element}>{element}</th>;
 										})}
 									</tr>
@@ -72,7 +72,7 @@ const PregledPB = ({ props }) => {
 												props={{
 													naslov: props.naslov,
 													element: element,
-													setOseba: props.setOseba,
+													setPredmet: props.setPredmet,
 													setPrejsnjeStanjeAdmin: props.setPrejsnjeStanjeAdmin,
 													stanjeAdmin: props.stanjeAdmin,
 													setStanjeAdmin: props.setStanjeAdmin,

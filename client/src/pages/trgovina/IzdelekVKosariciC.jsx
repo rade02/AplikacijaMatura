@@ -1,16 +1,36 @@
 import { useContext } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
+import { useState, useEffect } from 'react';
 
 const IzdelekVKosarici = ({ props }) => {
 	const { kosarica } = useContext(NakupovalniKontekst);
+	const [izdelek, setIzdelek] = useState(props.produkt);
+
+	useEffect(() => {
+		for (let i = 0; i < kosarica.length; i++) {
+			if (kosarica[i].ID_izdelka === izdelek.ID_izdelka) {
+				kosarica[i] = izdelek;
+				if (izdelek.kolicina <= 0) {
+					props.setKosarica(kosarica.filter((p) => p.ID_izdelka !== izdelek.ID_izdelka));
+				}
+			}
+		}
+		let vsota = 0;
+		kosarica.forEach((element) => {
+			vsota +=
+				element.cena_za_kos * element.kolicina -
+				element.cena_za_kos * element.kolicina * (element.popust / 100.0);
+		});
+		props.setCenaKosarice(vsota);
+	});
 
 	return (
 		<div className='produktVKosarici'>
 			<div className='slikaIzdelkaVKosarici'>
 				<img
-					src={props.product.slika}
+					src={izdelek.slika}
 					className='majhnaSlika'
-					alt={`ni slike ${props.product.slika !== null ? 'Nalaganje...' : ''}`}
+					alt={`ni slike ${izdelek.slika !== null ? 'Nalaganje...' : ''}`}
 				/>
 			</div>
 
@@ -19,66 +39,52 @@ const IzdelekVKosarici = ({ props }) => {
 					className='produktBesedilo'
 					onClick={(e) => {
 						e.preventDefault();
-						//setState({ props: props.product, active: 'product', fromCart: true });
-						props.setIzbranProdukt(props.product);
+						props.setIzbranProdukt(izdelek);
 						props.setIzKosarice(true);
 						props.setPrikazi('produkt');
 					}}>
-					[{props.product.ID_izdelka}] {props.product.ime}{' '}
-					{props.product.kratek_opis !== null ? ` ${props.product.kratek_opis}` : ''}
+					[{izdelek.ID_izdelka}] {izdelek.ime}{' '}
+					{izdelek.kratek_opis !== null ? ` ${izdelek.kratek_opis}` : ''}
 				</div>
 				<div className='produktCenaInKosi'>
-					<div>
-						{parseFloat(props.product.cena_za_kos * (1 - props.product.popust / 100.0)).toFixed(2)} €
-					</div>
+					<div>{parseFloat(izdelek.cena_za_kos * (1 - izdelek.popust / 100.0)).toFixed(2)} €</div>
 
 					<div>
 						<button
 							className='plusMinusGumb'
 							title='odstrani kos'
 							onClick={(e) => {
-								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina--;
+								setIzdelek({ ...izdelek, kolicina: izdelek.kolicina - 1 });
 
 								props.setSporociloOdstranjevanje(
-									// nujno za rerendering cart componenta !!
-									`Odstranjen izdelek: ${props.product.ime} ${
-										props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
+									`Odstranjen izdelek: ${izdelek.ime} ${
+										izdelek.kratek_opis !== null ? izdelek.kratek_opis : ''
 									} `
 								);
-								Math.random().toFixed(3);
 								props.preveriZalogoIzdelkov();
 							}}>
 							-
 						</button>{' '}
-						kos: {props.product.kolicina}{' '}
+						kos: {izdelek.kolicina}{' '}
 						<button
 							className='plusMinusGumb'
 							title='dodaj kos'
-							disabled={
-								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 >
-								kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
-									? 'disabled'
-									: ''
-							}
+							disabled={izdelek.kolicina + 1 > izdelek.kosov_na_voljo ? 'disabled' : ''}
 							onClick={(e) => {
-								if (
-									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina + 1 <=
-									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kosov_na_voljo
-								) {
-									kosarica.filter((p) => p.ID_izdelka === props.product.ID_izdelka)[0].kolicina++;
+								if (izdelek.kolicina + 1 <= izdelek.kosov_na_voljo) {
+									setIzdelek({ ...izdelek, kolicina: izdelek.kolicina + 1 });
 									props.setSporociloOdstranjevanje(
-										`Dodan izdelek: ${props.product.ime} ${
-											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
+										`Dodan izdelek: ${izdelek.ime} ${
+											izdelek.kratek_opis !== null ? izdelek.kratek_opis : ''
 										} `
 									);
 								} else {
 									props.setSporociloOdstranjevanje(
-										`Izdelka: ${props.product.ime} ${
-											props.product.kratek_opis !== null ? 'props.product.kratek_opis' : ''
+										`Izdelka: ${izdelek.ime} ${
+											izdelek.kratek_opis !== null ? izdelek.kratek_opis : ''
 										} ni več na zalogi `
 									);
 								}
-								Math.random().toFixed(3);
 							}}>
 							+
 						</button>
@@ -89,7 +95,7 @@ const IzdelekVKosarici = ({ props }) => {
 							title='preglej izdelek'
 							onClick={(e) => {
 								e.preventDefault();
-								props.setIzbranProdukt(props.product);
+								props.setIzbranProdukt(izdelek);
 								props.setIzKosarice(true);
 								props.setPrikazi('produkt');
 							}}>

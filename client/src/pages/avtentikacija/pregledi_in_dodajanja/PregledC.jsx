@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CaretCircleLeft } from 'phosphor-react';
+import { CaretCircleLeft, X } from 'phosphor-react';
 import { useState } from 'react';
 import TabelskaVrstica from './TabelskaVrsticaC';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -31,7 +31,7 @@ const Pregled = ({ props }) => {
 					</Box>
 				) : (
 					<>
-						{props.opcije === null ? ( // prikazemo moznost filtriranja
+						{props.moznosti === null ? ( // prikazemo moznost filtriranja
 							// za pregled oseb
 							<div className='filtriIskanja'>
 								<div className='iskanje'>
@@ -87,20 +87,22 @@ const Pregled = ({ props }) => {
 						) : props.naslov === 'Pregled uporabnikov' ? (
 							// za pregled uporabnikov
 							<>
-								<select
-									onClick={(e) => {
-										e.preventDefault();
-										props.setFilter(parseInt(e.target.value));
-									}}>
-									{props.opcije.map((o) => {
-										return (
-											<option key={o.vrednost} value={o.vrednost}>
-												{o.ime}
-											</option>
-										);
-									})}
-									)
-								</select>
+								<div className='spustniMeni'>
+									<select
+										onClick={(e) => {
+											e.preventDefault();
+											props.setFilter(parseInt(e.target.value));
+										}}>
+										{props.moznosti.map((o) => {
+											return (
+												<option key={o.vrednost} value={o.vrednost}>
+													{o.ime}
+												</option>
+											);
+										})}
+										)
+									</select>
+								</div>
 							</>
 						) : (
 							// pregled izdelkov

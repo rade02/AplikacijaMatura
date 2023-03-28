@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import pool from '../../dbConnection.js';
+import pool from '../../povezavaPB.js';
 
 router.get('/uporabniki', async (req, res) => {
 	try {

@@ -10,7 +10,6 @@ const Prijava = () => {
 	const [sporocilo, setSporocilo] = useState('');
 	const ui = useRef(null);
 	const geslo = useRef(null);
-
 	const navigate = useNavigate();
 
 	const oddaja = async (vnesenoUporabniskoIme, vnesenoGeslo) => {

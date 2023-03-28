@@ -1,9 +1,24 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useEffect, useState } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
-import { CodesandboxLogo } from 'phosphor-react';
+import KroznoNalaganje from '@mui/material/CircularProgress';
+import VzdolznoNalaganje from '@mui/material/LinearProgress';
+import Skatla from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 const Produkt = ({ setPrikazi, taProdukt, setIzbranProdukt, setIzKosarice, setVidno }) => {
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
+	const [nalaganje, setNalaganje] = useState(true);
+
+	useEffect(() => {
+		const casovnik = setTimeout(() => {
+			setNalaganje(false);
+		}, 1650);
+
+		return () => {
+			clearTimeout(casovnik);
+		};
+	}, []);
 
 	useMemo(() => {
 		setIzbranProdukt(taProdukt);
@@ -20,19 +35,37 @@ const Produkt = ({ setPrikazi, taProdukt, setIzbranProdukt, setIzKosarice, setVi
 				setIzKosarice(false);
 			}}>
 			<div>
-				<div>
-					{taProdukt.slika === null ? (
-						<div className='niNaVoljo'>slika ni na voljo</div>
-					) : (
-						<div className='slikaVPoljuProdukta'>
-							<img
-								src={taProdukt.slika}
-								className='srednjaSlika'
-								alt={`${taProdukt.slika !== null ? 'Nalaganje...' : ''}`}
-							/>
+				{nalaganje ? (
+					<>
+						<div style={{ backgroundColor: 'white' }}>
+							<Stack spacing={1}>
+								<Skeleton variant='rectangular' animation='wave' width={160} height={160} />
+							</Stack>
 						</div>
-					)}
-				</div>
+						<Skatla sx={{ width: '85%' }}>
+							<VzdolznoNalaganje color='inherit' />
+						</Skatla>
+					</>
+				) : (
+					<></>
+				)}
+				{!nalaganje ? (
+					<div>
+						{taProdukt.slika === null ? (
+							<div className='niNaVoljo'>slika ni na voljo</div>
+						) : (
+							<div className='slikaVPoljuProdukta'>
+								<img
+									src={taProdukt.slika}
+									className='srednjaSlika'
+									alt={`${taProdukt.slika !== null ? 'Nalaganje...' : ''}`}
+								/>
+							</div>
+						)}
+					</div>
+				) : (
+					<></>
+				)}
 				<hr></hr>
 				<div className='infoProdukta'>
 					<div className='kategorija'>{taProdukt.kategorija}</div>

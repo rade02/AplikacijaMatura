@@ -428,7 +428,8 @@
 	justify-items: left;
 	align-items: left;
 	padding: 25px 0px 25px 0px;
-	border: 1px solid black;
+	/*border: 1px solid rgb(0, 72, 139);*/
+	background: linear-gradient(265deg, rgb(225, 241, 255), rgb(164, 212, 255), rgb(106, 186, 255));
 }
 .filter {
 	width: auto;
@@ -472,11 +473,10 @@
 	width: 40px;
 	margin: 0px 5px 0px 5px;
 }
-.filtrirranje {
+.filtriranje {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: aqua;
 	width: 100%;
 }
 .gumbFiltriranje {
@@ -495,7 +495,79 @@
 	cursor: pointer;
 	background-color: rgb(215, 242, 255);
 }
+.iskanjeProduktov {
+	/*border: 1px solid rgb(0, 72, 139);
+	border-left: 1px solid transparent;*/
 
+	background: linear-gradient(65deg, rgb(225, 241, 255), rgb(164, 212, 255), rgb(106, 186, 255));
+	background-color: rgb(255, 255, 255);
+	display: flex;
+	flex-direction: column;
+	padding: 15px 0px 15px 0px;
+}
+.iskanjeIzdelkov {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start;
+	margin-top: 10px;
+	padding: 2px;
+	max-height: 20px;
+}
+.iskanje2 {
+	position: relative;
+	top: -4px;
+}
+.iskanje1 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	border: 1px solid transparent;
+	width: 30px;
+	height: 30px;
+	border-radius: 100%;
+	margin-left: 4px;
+	color: white;
+	border-radius: 100%;
+}
+.iskanje1:hover {
+	cursor: pointer;
+	border: 2px solid rgb(255, 255, 255);
+}
+.iskalnik {
+	background-color: rgb(252, 252, 252);
+	padding: 5px 8px 25px 8px;
+	border: 1px solid rgb(172, 172, 172);
+	border-radius: 10px;
+	height: auto;
+	max-height: 250px;
+	overflow: visible;
+	z-index: 10000000;
+}
+.vidniPredlogi {
+	position: relative;
+	top: 6px;
+	width: auto;
+	padding: 2px;
+	z-index: 10000000;
+	height: auto;
+}
+.nevidniPredlogi {
+	user-select: none;
+	pointer-events: none;
+	color: transparent;
+	background-color: transparent;
+}
+.predlog {
+	text-align: left;
+	border-top: 1px solid rgb(139, 139, 139);
+	padding: 2px;
+}
+.predlog:hover {
+	cursor: pointer;
+	background-color: #e2e2e2;
+}
 /*_____________________ NavigacijaTrgovineC _____________________*/
 .navigacijaZgoraj {
 	display: flex;

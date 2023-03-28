@@ -1,6 +1,4 @@
 const PodatkiUporabnika = ({ props }) => {
-	//console.log(props.posodobljenUporabnik);
-
 	return (
 		<table className='tabelaPodatkovUporabnika'>
 			<tbody>

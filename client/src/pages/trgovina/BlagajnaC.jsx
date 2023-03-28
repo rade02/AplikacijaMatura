@@ -21,13 +21,10 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 	const [cenaDostave, setCenaDostave] = useState(0);
 	const [istiKupecInPrejemnik, setIstiKupecInPrejemnik] = useState(true);
 	const [oddano, setOddano] = useState(false);
-
 	const [kupec, setKupec] = useState(null);
 	const [prejemnik, setPrejemnik] = useState(null);
 	const [naslovDostava, setNaslovDostava] = useState(null);
 
-	console.log('uporabniskiPodatki');
-	console.log(uporabniskiPodatki);
 	useEffect(() => {
 		const cenaKosarice = () => {
 			let skupaj = 0;
@@ -46,9 +43,9 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 			const pridobiPodatkeUporabnika = async () => {
 				try {
 					const rezultat = await axios.get(
-						`http://localhost:${global.config.port}/api/avtentikacija/user`,
+						`http://localhost:${global.config.port}/api/avtentikacija/uporabnik`,
 						{
-							params: { username: uporabnik.uporabnisko_ime },
+							params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
 						}
 					);
 
@@ -154,16 +151,6 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 		kosarica.forEach((element) => {
 			element.kolicina = 0;
 		});
-
-		/*if (e.target.paymentMethod.value === 'Po prevzemu') {
-			// gremo nazaj, pošljemo predračun, shranimo v bazo pod čakajoča naročila
-			//narocilo in izdelki pri narocilu
-			
-			
-		} else if (e.target.paymentMethod.value === 'Z debetno kartico') {
-			// TODO: send user data
-			setState({ ...state, props: {}, active: 'cardInput' });
-		}*/
 	};
 
 	if (oddano) {

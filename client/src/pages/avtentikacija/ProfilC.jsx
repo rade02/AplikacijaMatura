@@ -1,17 +1,12 @@
 import axios from 'axios';
 import {
-	Pencil,
-	Password,
-	FloppyDisk,
-	ClockCounterClockwise,
-	SignOut,
 	CaretCircleLeft,
 	Database,
 	MagnifyingGlass,
 	AddressBook,
 	ArchiveBox,
 	ChalkboardTeacher,
-	datotekaText,
+	FileText,
 	UserPlus,
 	ListBullets,
 	ListDashes,
@@ -32,7 +27,6 @@ import Box from '@mui/material/Box';
 
 const Profil = () => {
 	const { uporabnik } = useContext(UporabniskiKontekst);
-
 	const [vloga, setVloga] = useState(null);
 	const [sporocilo, setSporocilo] = useState('');
 	const [stanjeAdmin, setStanjeAdmin] = useState(0);
@@ -166,7 +160,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(6);
 								}}>
-								<datotekaText size={22} style={{ marginRight: '5px' }} />
+								<FileText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 							<button
@@ -206,7 +200,7 @@ const Profil = () => {
 						setTabela: setTabela,
 						filter: filterUporabniki,
 						setFilter: setFilterUporabniki,
-						opcije: [
+						moznosti: [
 							{ ime: 'Vsi', vrednost: -1 },
 							{ ime: 'Administratorji', vrednost: 0 },
 							{ ime: 'Računovodje', vrednost: 3 },
@@ -242,7 +236,7 @@ const Profil = () => {
 						setTabela: setTabela,
 						filter: filterUporabniki,
 						setFilter: setFilterUporabniki,
-						opcije: null,
+						moznosti: null,
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
 						setStanjeAdmin: setStanjeAdmin,
@@ -375,6 +369,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
+							jeStranka: false,
 						}}
 					/>
 					<button
@@ -427,7 +422,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
-							stranka: false,
+							jeStranka: false,
 						}}
 					/>
 					<button
@@ -466,6 +461,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
+							jeStranka: false,
 						}}
 					/>
 					<button
@@ -492,7 +488,7 @@ const Profil = () => {
 					datoteka={datoteka}
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
-					stranka={false}
+					jeStranka={false}
 					predmet={predmet}
 					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
@@ -539,7 +535,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								<datotekaText size={22} style={{ marginRight: '5px' }} />
+								<FileText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 						</div>
@@ -597,7 +593,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
-							stranka: true,
+							jeStranka: true,
 							uporabnisko_ime: uporabnik.uporabnisko_ime,
 						}}
 					/>
@@ -643,6 +639,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
+							jeStranka: true,
 						}}
 					/>
 					<button
@@ -664,7 +661,7 @@ const Profil = () => {
 					datoteka={datoteka}
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
-					stranka={true}
+					jeStranka={true}
 					predmet={predmet}
 					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
@@ -729,7 +726,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(6);
 								}}>
-								<datotekaText size={22} style={{ marginRight: '5px' }} />
+								<FileText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 						</div>
@@ -859,7 +856,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
-							stranka: false,
+							jeStranka: false,
 						}}
 					/>
 					<button
@@ -901,6 +898,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
+							jeStranka: true,
 						}}
 					/>
 					<button
@@ -922,7 +920,7 @@ const Profil = () => {
 					datoteka={datoteka}
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
-					stranka={false}
+					jeStranka={true}
 					predmet={predmet}
 					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
@@ -987,7 +985,7 @@ const Profil = () => {
 									e.preventDefault();
 									setStanjeAdmin(3);
 								}}>
-								<datotekaText size={22} style={{ marginRight: '5px' }} />
+								<FileText size={22} style={{ marginRight: '5px' }} />
 								<div>Pregled računov</div>
 							</button>
 							<button
@@ -1115,6 +1113,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
+							jeStranka: false,
 						}}
 					/>
 					<button
@@ -1167,7 +1166,7 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
-							stranka: false,
+							jeStranka: false,
 						}}
 					/>
 					<button
@@ -1204,7 +1203,7 @@ const Profil = () => {
 						setTabela: setTabela,
 						filter: filterUporabniki,
 						setFilter: setFilterUporabniki,
-						opcije: null,
+						moznosti: null,
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
 						setStanjeAdmin: setStanjeAdmin,
@@ -1218,7 +1217,7 @@ const Profil = () => {
 				<Podrobnosti
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
-					stranka={true}
+					jeStranka={true}
 					predmet={predmet}
 					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}

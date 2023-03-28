@@ -1,10 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import pool from '../../dbConnection.js';
+import pool from '../../povezavaPB.js';
 
 router.get('/', async (req, res) => {
 	const uporabnisko_ime = req.query.uporabnisko_ime;
 	const geslo = req.query.geslo;
+
+	const hash = global.config.cyrb53Hash(geslo, global.config.seed + 53).toString();
 
 	try {
 		let odziv = await pool.query(`select geslo, omogocen from Uporabniki where binary uporabnisko_ime = ?`, [
@@ -12,7 +14,7 @@ router.get('/', async (req, res) => {
 			uporabnisko_ime,
 		]);
 
-		if (odziv[0].length > 0 && geslo === odziv[0][0].geslo) {
+		if (odziv[0].length > 0 && hash === odziv[0][0].geslo) {
 			res.status(200).send(odziv[0][0]);
 		} else {
 			res.status(200).send(false);
@@ -94,7 +96,7 @@ router.post('/posodobitevGesla', async (req, res) => {
 
 router.post('/novUporabnik', async (req, res) => {
 	const uporabnisko_ime = req.body.uporabnisko_ime;
-	const geslo = req.body.geslo;
+	const geslo = global.config.cyrb53Hash(req.body.geslo, global.config.seed + 53);
 	const elektronski_naslov = req.body.elektronski_naslov;
 	const ime = req.body.ime;
 	const priimek = req.body.priimek;
@@ -103,6 +105,7 @@ router.post('/novUporabnik', async (req, res) => {
 	const postna_stevilka = req.body.postna_stevilka;
 	const telefonska_stevilka = req.body.telefonska_stevilka;
 	const podjetje = req.body.podjetje;
+
 	try {
 		await pool.query(`insert into Uporabniki (uporabnisko_ime, geslo) values (?, ?)`, [
 			uporabnisko_ime,

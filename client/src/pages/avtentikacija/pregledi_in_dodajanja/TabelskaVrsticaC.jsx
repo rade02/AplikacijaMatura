@@ -134,27 +134,28 @@ const TabelskaVrstica = ({ props }) => {
 						: props.element.vloga === 1
 						? 'zaposleni'
 						: 'stranka'
-				}>
+				}
+				onClick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+				}}
+				style={{ cursor: 'default' }}>
 				<div>
 					<input
 						disabled={props.element.uporabnisko_ime === 'admin' ? 'disabled' : ''} // komu ne moremo spremeniti vloge
-						onClick={(e) => {
-							e.preventDefault();
-							e.stopPropagation();
-						}}
 						onChange={async (e) => {
 							e.preventDefault();
 							e.stopPropagation();
 							if (e.target.value !== '' && typeof parseInt(e.target.value) === 'number') {
 								try {
 									let odziv = await axios.post(
-										`http://localhost:${global.config.port}/api/administrator/updtVloga`,
+										`http://localhost:${global.config.port}/api/administrator/posodobiVlogo`,
 										{
 											uporabnisko_ime: props.element.uporabnisko_ime,
 											vloga: e.target.value,
 										}
 									);
-									if (odziv.data === 'success') props.setTabela(null);
+									if (odziv.data === 'uspešna operacija') props.setTabela(null);
 								} catch (napaka) {
 									console.log(napaka);
 								}
@@ -162,7 +163,8 @@ const TabelskaVrstica = ({ props }) => {
 						}}
 						type='text'
 						defaultValue={props.element.vloga}
-						maxLength='1'></input>
+						maxLength='1'
+						style={{ width: '30px', textAlign: 'center' }}></input>
 					<div>
 						{props.element.vloga === 0
 							? '(admin)'

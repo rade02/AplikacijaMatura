@@ -3,10 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
+import './config.js';
 dotenv.config();
-const router = express.Router();
 
-import pool from './dbConnection.js';
 import produktiApiRoutes from './routes/api/produktiApi.js';
 import avtentikacijaApiRoutes from './routes/api/avtentikacijaApi.js';
 import administratorApiRoutes from './routes/api/administratorApi.js';
@@ -20,7 +19,6 @@ app.use(express.json());
 app.use(express.static('./public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-//app.use('/images', express.static('images'));
 
 app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));

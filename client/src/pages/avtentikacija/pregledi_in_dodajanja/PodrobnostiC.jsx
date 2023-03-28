@@ -6,7 +6,7 @@ const Podrobnosti = ({
 	niIzbrisa,
 	setDatoteka,
 	naloziDatoteko,
-	stranka,
+	jeStranka,
 	predmet,
 	prejsnjeStanjeAdmin,
 	setStanjeAdmin,
@@ -85,12 +85,12 @@ const Podrobnosti = ({
 				izdelek.ime !== null &&
 				izdelek.ime.length <= 40 &&
 				izdelek.kategorija !== null &&
-				izdelek.kategorija.length <= 20 &&
+				parseInt(izdelek.kategorija.length) <= 20 &&
 				izdelek.cena_za_kos !== null &&
 				!isNaN(parseFloat(izdelek.cena_za_kos)) &&
 				izdelek.kosov_na_voljo !== null &&
 				!isNaN(parseInt(izdelek.kosov_na_voljo)) &&
-				izdelek.kratek_opis.length <= 40 &&
+				(izdelek.kratek_opis === null || parseInt(izdelek.kratek_opis.length) <= 40) &&
 				parseInt(izdelek.popust) >= 0 &&
 				parseInt(izdelek.popust) <= 100 &&
 				!isNaN(parseInt(izdelek.popust))
@@ -140,7 +140,8 @@ const Podrobnosti = ({
 				{(predmet.uporabnisko_ime === null || predmet.uporabnisko_ime === undefined) &&
 				(predmet.ID === null || predmet.ID === undefined) &&
 				niIzbrisa !== null &&
-				!niIzbrisa ? (
+				!niIzbrisa &&
+				!jeStranka ? (
 					<button
 						className='posiljanje'
 						style={{ color: 'red', marginTop: '0px', background: 'white' }}
@@ -410,7 +411,7 @@ const Podrobnosti = ({
 												</button>
 											</td>
 										)
-									) : element === 'opravljeno' && !stranka ? (
+									) : element === 'opravljeno' && !jeStranka ? (
 										<td>
 											{predmet[element] === 1 || opravljeno === true ? (
 												<div>Opravljeno</div>

@@ -77,14 +77,17 @@ const Kosarica = ({
 							<IzdelekVKosarici
 								key={produkt.ID_izdelka}
 								props={{
+									setCenaKosarice: setCenaKosarice,
 									preveriZalogoIzdelkov: preveriZalogoIzdelkov,
 									izKosarice: izKosarice,
 									setIzKosarice: setIzKosarice,
 									izbranProdukt: izbranProdukt,
 									setIzbranProdukt: setIzbranProdukt,
 									setPrikazi: setPrikazi,
-									product: produkt,
+									produkt: produkt,
 									setSporociloOdstranjevanje: setSporociloOdstranjevanje,
+									kosarica: kosarica,
+									setKosarica: setKosarica,
 								}}
 							/>
 						);
@@ -99,6 +102,7 @@ const Kosarica = ({
 						className='gumbNazaj'
 						onClick={(e) => {
 							e.preventDefault();
+							setKosarica([...kosarica]);
 							setPrikazi('nakupovanje');
 							setNiProduktov(true);
 							setIzKosarice(false);
@@ -113,6 +117,7 @@ const Kosarica = ({
 							e.preventDefault();
 							preveriZalogoIzdelkov();
 							if (kosarica.length > 0) {
+								setKosarica([...kosarica]);
 								setPrikazi('blagajna');
 								setSporociloOdstranjevanje('');
 							} else {

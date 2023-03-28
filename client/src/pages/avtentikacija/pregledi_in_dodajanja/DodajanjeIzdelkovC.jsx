@@ -262,7 +262,6 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, popust: e.target.value });
 										try {
-											//console.log(parseFloat(e.target.value));
 											if (isNaN(parseFloat(e.target.value))) {
 												setSporociloONapaki({
 													...sporociloONapaki,

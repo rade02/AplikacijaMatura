@@ -321,7 +321,7 @@ td,
 th {
 	min-width: max-content;
 	margin: 3px;
-	padding: 2px 3px 2px 3px;
+	padding: 2px 5px 2px 5px;
 	text-align: left;
 }
 td input {
@@ -367,6 +367,13 @@ td > div {
 .iskanje {
 	margin: 5px 15px 5px 15px;
 	padding: 8px;
+}
+.spustniMeni {
+	padding: 10px;
+	align-self: center;
+}
+.spustniMeni:hover {
+	cursor: pointer;
 }
 
 /*_____________________ PregledNarocilC _____________________*/
