@@ -12,6 +12,7 @@ const Podrobnosti = ({
 	setStanjeAdmin,
 	tabela,
 	setTabela,
+	SQLstavek,
 }) => {
 	const [placa, setPlaca] = useState(predmet.placa);
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
@@ -67,7 +68,6 @@ const Podrobnosti = ({
 			if (placa < 0 || isNaN(parseFloat(placa))) {
 				setNapaka('Vneseni podatki niso skladni z definicijami polj');
 				console.log('Napaka pri vnosu podatkov');
-				console.log(placa);
 			} else {
 				await axios.post(`http://localhost:${global.config.port}/api/administrator/urediPlaco`, {
 					novaPlaca: placa,
@@ -102,7 +102,6 @@ const Podrobnosti = ({
 			} else {
 				setNapaka('Vneseni podatki niso skladni z definicijami polj');
 				console.log('Napaka pri vnosu podatkov');
-				console.log(izdelek);
 			}
 		} catch (napaka) {
 			console.log(napaka);
@@ -131,7 +130,9 @@ const Podrobnosti = ({
 				onClick={(e) => {
 					e.preventDefault();
 					setStanjeAdmin(prejsnjeStanjeAdmin);
-					setTabela(null);
+					if (SQLstavek === null) {
+						setTabela(null);
+					}
 				}}>
 				<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 				<div>Nazaj</div>
@@ -447,13 +448,19 @@ const Podrobnosti = ({
 				tabela.imenaIzdelkov !== null &&
 				tabela.imenaIzdelkov !== undefined ? (
 					<>
-						<label>Izdelki pri naročilu:</label>
-						<table>
+						<label className='naslov'>Izdelki pri naročilu:</label>
+						<table className='tabela'>
 							<tbody>
 								<tr>
-									<td>Ime izdelka</td>
-									<td>Količina</td>
-									<td>Cena za kos</td>
+									<td>
+										<b>Ime izdelka</b>
+									</td>
+									<td>
+										<b>Količina</b>
+									</td>
+									<td>
+										<b>Cena za kos</b>
+									</td>
 								</tr>
 								{tabela.podatkiOIzdelkih.map((izdelek) => {
 									return (
@@ -465,7 +472,6 @@ const Podrobnosti = ({
 													);
 													return <td key={key + '' + izdelek[key]}>{imeIzdelka[0].ime}</td>;
 												} else if (key === 'cena') {
-													console.log(izdelek);
 													return (
 														<td key={key + '' + izdelek[key]}>
 															{(izdelek[key] / parseFloat(izdelek.kolicina)).toFixed(2)} €

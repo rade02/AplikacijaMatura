@@ -13,7 +13,9 @@ const PregledRacunov = ({ props }) => {
 
 	return (
 		<>
-			<h2 className='naslov'>{props.naslov}</h2>
+			<h2 className='naslov'>
+				{!props.jeStranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnik}
+			</h2>
 			<div>
 				{props.tabela === null ? (
 					<Skatla sx={{ display: 'flex' }} className='nalaganje'>

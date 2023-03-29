@@ -1,6 +1,4 @@
 /*_____________________ AvtentikacijaC _____________________*/
-.authPage {
-}
 
 /*_____________________ IzbrisProfilaC _____________________*/
 
@@ -191,6 +189,20 @@
 	text-align: left;
 }
 /*_____________________ SpreminjanjeGeslaC _____________________*/
+.gumbPotrditev {
+	color: black;
+	padding: 3px;
+	background-color: #faeafa;
+	border: 1px solid grey;
+	margin: 4px 10px 2px 10px;
+}
+.gumbPotrditev:hover {
+	cursor: pointer;
+	background-color: #e2e2e2;
+}
+.opozorilo {
+	color: red;
+}
 /*_____________________ UrejanjeProfilaC _____________________*/
 .urejanjeProfila {
 	padding-left: 20px;
@@ -378,6 +390,25 @@ td > div {
 
 /*_____________________ PregledNarocilC _____________________*/
 /*_____________________ PregledPBC _____________________*/
+.izvedi {
+	background-color: white;
+	border: 1px solid black;
+	margin: 20px;
+	padding: 4px;
+}
+.izvedi:hover {
+	background-color: red;
+}
+.preklici {
+	background-color: white;
+	border: 1px solid black;
+	margin: 20px;
+	padding: 4px;
+}
+.preklici:hover {
+	cursor: pointer;
+	background-color: green;
+}
 /*_____________________ PregledRacunovC _____________________*/
 /*_____________________ TabelskaVrsticaC _____________________*/
 .vrstica:hover {

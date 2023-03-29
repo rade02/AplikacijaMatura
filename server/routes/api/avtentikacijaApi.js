@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 		]);
 
 		if (odziv[0].length > 0 && hash === odziv[0][0].geslo) {
-			res.status(200).send(odziv[0][0]);
+			res.status(200).send(hash);
 		} else {
 			res.status(200).send(false);
 		}
@@ -81,13 +81,15 @@ router.post('/posodobitev', async (req, res) => {
 	}
 });
 
-router.post('/posodobitevGesla', async (req, res) => {
-	const uporabnisko_ime = req.body.uporabnisko_ime;
-	const geslo = req.body.geslo;
+router.get('/posodobitevGesla', async (req, res) => {
+	const uporabnisko_ime = req.query.uporabnisko_ime;
+	const geslo = req.query.geslo;
 
+	const hash = global.config.cyrb53Hash(geslo, global.config.seed + 53).toString();
+	console.log(hash);
 	try {
-		await pool.query(`update Uporabniki set geslo = ? where uporabnisko_ime = ?`, [geslo, uporabnisko_ime]);
-		res.status(200).send('operacija uspešna');
+		await pool.query(`update Uporabniki set geslo = ? where uporabnisko_ime = ?`, [hash, uporabnisko_ime]);
+		res.status(200).send(hash);
 	} catch (napaka) {
 		console.log(napaka);
 		res.status(400).send(`error`);

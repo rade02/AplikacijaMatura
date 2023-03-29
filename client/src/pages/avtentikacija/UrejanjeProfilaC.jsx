@@ -6,7 +6,7 @@ import PodatkiUporabnika from './PodatkiUporabnikaC';
 import SpreminjanjeGesla from './SpreminjanjeGeslaC';
 import IzbrisProfila from './IzbrisProfilaC';
 
-const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
+const UrejanjeProfila = ({ vloga, setSpreminjanjeAliBrisanje }) => {
 	const { uporabnik, setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const [uredi, setUredi] = useState(false);
 	const [urediGeslo, setUrediGeslo] = useState(false);
@@ -28,11 +28,13 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 		}
 	};
 	if (urediGeslo) {
+		setSpreminjanjeAliBrisanje(true);
 		return (
 			<>
 				<h2>Profil: {uporabnik.uporabnisko_ime}</h2>
 				<SpreminjanjeGesla
 					props={{
+						setSpreminjanjeAliBrisanje: setSpreminjanjeAliBrisanje,
 						posodobljenUporabnik: posodobljenUporabnik,
 						setPosodobljenUporabnik: setPosodobljenUporabnik,
 						setUrediGeslo: setUrediGeslo,
@@ -43,14 +45,17 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 	}
 
 	if (izbrisi && vloga === 2) {
+		setSpreminjanjeAliBrisanje(true);
 		return (
 			<IzbrisProfila
 				props={{
+					setSpreminjanjeAliBrisanje: setSpreminjanjeAliBrisanje,
 					setIzbrisi: setIzbrisi,
 				}}
 			/>
 		);
 	}
+
 	return (
 		<div className='urejanjeProfila'>
 			<div className='podatkiOUporabniku'>
@@ -131,15 +136,7 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 					)}
 				</div>
 				<div className='gumbi'>
-					<button
-						className='gumb2'
-						onClick={(e) => {
-							e.preventDefault();
-							setJeAvtenticiran(false);
-						}}>
-						Odjava <SignOut size={22} style={{ marginLeft: '4px' }} />
-					</button>
-					{vloga !== 0 ? (
+					{vloga === 2 ? (
 						<button
 							className='gumb2'
 							onClick={(e) => {
@@ -151,6 +148,14 @@ const UrejanjeProfila = ({ vloga, setStanjeAdmin }) => {
 					) : (
 						<></>
 					)}
+					<button
+						className='gumb2'
+						onClick={(e) => {
+							e.preventDefault();
+							setJeAvtenticiran(false);
+						}}>
+						Odjava <SignOut size={22} style={{ marginLeft: '4px' }} />
+					</button>
 				</div>
 			</div>
 		</div>

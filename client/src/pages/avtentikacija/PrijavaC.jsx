@@ -35,9 +35,13 @@ const Prijava = () => {
 								params: { uporabnisko_ime: vnesenoUporabniskoIme },
 							}
 						);
-						let uporabniskiPodatki = { ...podatki.data, geslo: vnesenoGeslo };
 
-						setUporabnik({ ...uporabniskiPodatki, uporabnisko_ime: vnesenoUporabniskoIme });
+						let uporabniskiPodatki = { ...podatki.data, geslo: odziv.data };
+
+						setUporabnik({
+							...uporabniskiPodatki,
+							uporabnisko_ime: vnesenoUporabniskoIme,
+						});
 						setJeAvtenticiran(true);
 					}
 				} else {

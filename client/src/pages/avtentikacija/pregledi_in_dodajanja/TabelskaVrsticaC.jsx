@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus } from 'phosphor-react';
+import { CircleWavyCheck, UserCircleMinus, XCircle, UserCirclePlus, Image } from 'phosphor-react';
 import '../Avtentikacija.css';
 
 const TabelskaVrstica = ({ props }) => {
@@ -94,6 +94,28 @@ const TabelskaVrstica = ({ props }) => {
 			</tr>
 		);
 	} else if (props.naslov === 'Upravljanje z bazo podatkov') {
+		const pridobiSliko = async () => {
+			let rezultat = await axios.get(
+				`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
+				{
+					method: 'get',
+					responseType: 'blob',
+					params: {
+						ID_izdelka: props.element.ID_izdelka,
+					},
+				}
+			);
+
+			if (rezultat.data.size === 0) {
+				props.element.slika = null;
+			} else {
+				props.element.slika = URL.createObjectURL(rezultat.data);
+			}
+		};
+		if (props.element.slika !== null && props.element.slika !== undefined) {
+			pridobiSliko();
+		}
+
 		return (
 			<tr
 				key={props.element}
@@ -106,9 +128,9 @@ const TabelskaVrstica = ({ props }) => {
 				}}>
 				{Object.keys(props.element).map((key) => {
 					if (key === 'slika') {
-						return <td></td>;
+						return <td key={key}>{props.element[key] === null ? <>/</> : <Image size={22} />}</td>;
 					}
-					return <td>{props.element[key]}</td>;
+					return <td key={key}>{props.element[key]}</td>;
 				})}
 			</tr>
 		);

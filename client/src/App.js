@@ -11,7 +11,7 @@ import Error from './pages/Error';
 import Noga from './pages/NogaC';
 // context:
 import { UporabniskiKontekstProvider } from './contexts/UporabniskiKontekst';
-import Avtentikacija from './pages/avtentikacija/AvtentikacijaC';
+import Avtentikacija from './pages/avtentikacija/Avtentikacija';
 
 // EXPORTS AND IMPORTS:
 // export ---> import {} from ... (can export many values from single file)

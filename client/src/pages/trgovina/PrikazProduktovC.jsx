@@ -2,18 +2,7 @@ import Produkt from './ProduktC';
 import KroznoNalaganje from '@mui/material/CircularProgress';
 import Skatla from '@mui/material/Box';
 
-const PrikazProduktov = ({
-	setFokus1,
-	props,
-	stVsehProduktov,
-	filtriraj,
-	setIzKosarice,
-	filtri,
-	kategorijeF,
-	setKategorijeF,
-	cenaF,
-	popustF,
-}) => {
+const PrikazProduktov = ({ setFokus1, props, stVsehProduktov, filtriraj, filtri, kategorijeF }) => {
 	if (props.napaka) {
 		<div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
 	} else if (props.niProduktov) {
@@ -36,14 +25,12 @@ const PrikazProduktov = ({
 					{props.prikazaniProdukti.map((produkt) => {
 						return (
 							<Produkt
-								setVidno={props.setVidno}
-								prikazi={props.prikazi}
-								setPrikazi={props.setPrikazi}
 								key={produkt.ID_izdelka}
+								setVidno={props.setVidno}
+								setPrikazi={props.setPrikazi}
 								taProdukt={produkt} // podatki o posameznem produktu
-								izbranProdukt={props.izbranProdukt}
 								setIzbranProdukt={props.setIzbranProdukt}
-								setIzKosarice={setIzKosarice}
+								setIzKosarice={props.setIzKosarice}
 							/>
 						);
 					})}
@@ -61,8 +48,6 @@ const PrikazProduktov = ({
 								e.preventDefault();
 								filtri.current.reset();
 								kategorijeF = [];
-								cenaF = { od: undefined, do: undefined };
-								popustF = 0;
 								filtriraj(true, kategorijeF);
 							}}>
 							Prikaži več

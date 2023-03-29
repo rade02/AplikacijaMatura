@@ -7,7 +7,6 @@ import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 const Registracija = () => {
 	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
 	const navigate = useNavigate();
-
 	const [vneseniPodatki, setVneseniPodatki] = useState({
 		uporabnisko_ime: null,
 		geslo: null,
@@ -62,7 +61,6 @@ const Registracija = () => {
 				}
 				alert(`Registracija NEuspešna: \n${opozorilo}`);
 			} else {
-				//console.log(vneseniPodatki);
 				let odziv = await axios.post(
 					`http://localhost:${global.config.port}/api/avtentikacija/novUporabnik`,
 					{
@@ -82,7 +80,7 @@ const Registracija = () => {
 					setJeAvtenticiran(true);
 					setUporabnik(vneseniPodatki);
 				}
-				alert('Registracija uspešna: ' + JSON.stringify(vneseniPodatki));
+				alert('Registracija uspešna: '); // + JSON.stringify(vneseniPodatki));
 				obrazec.current.reset();
 				setVneseniPodatki({
 					uporabnisko_ime: null,
@@ -110,13 +108,13 @@ const Registracija = () => {
 					PSsporocilo: '',
 				});
 			}
-		} catch (error) {
+		} catch (napaka) {
 			setPonovenVnos(true);
 			setSporociloNapaka({
 				...sporociloNapaka,
-				sporociloNapaka: `${error.code} (${error.response.status})`,
+				sporociloNapaka: `${napaka.code} (${napaka.response.status})`,
 			});
-			console.log(error);
+			console.log(napaka);
 		}
 	};
 
@@ -143,14 +141,14 @@ const Registracija = () => {
 					}
 				}
 			}
-		} catch (error) {
+		} catch (napaka) {
 			setOKuporabniskoIme(2);
 			setPonovenVnos(true);
 			setSporociloNapaka({
 				...sporociloNapaka,
-				sporociloNapaka: `${error.code} (${error.response.status})`,
+				sporociloNapaka: `${napaka.code} (${napaka.response.status})`,
 			});
-			console.log(error);
+			console.log(napaka);
 		}
 	};
 	const preveriUstreznostUI = (uporabniskoIme) => {
@@ -223,8 +221,6 @@ const Registracija = () => {
 			if (eposta === '') setOKeposta(0);
 			else {
 				let pregledanaEP = preveriUstreznostEP(eposta);
-				//console.log(pregledanaEP.jeUstrezna.toString());
-				//console.log(pregledanaEP.sporocilo);
 				if (!pregledanaEP.jeUstrezna) {
 					setOKeposta(1);
 					setSporociloNapaka({ ...sporociloNapaka, ENsporocilo: pregledanaEP.sporocilo });
@@ -242,14 +238,14 @@ const Registracija = () => {
 					}
 				}
 			}
-		} catch (error) {
+		} catch (napaka) {
 			setOKuporabniskoIme(3);
 			setPonovenVnos(true);
 			setSporociloNapaka({
 				...sporociloNapaka,
-				sporociloNapaka: `${error.code} (${error.response.status})`,
+				sporociloNapaka: `${napaka.code} (${napaka.response.status})`,
 			});
-			console.log(error);
+			console.log(napaka);
 		}
 	};
 	const preveriUstreznostEP = (eposta) => {
@@ -500,7 +496,6 @@ const Registracija = () => {
 									setVneseniPodatki({ ...vneseniPodatki, postna_stevilka: e.target.value });
 									setPonovenVnos(false);
 								} else if (e.target.value === '') {
-									console.log(e.target.value);
 									setVneseniPodatki({ ...vneseniPodatki, postna_stevilka: null });
 									setSporociloNapaka({ ...sporociloNapaka, PSsporocilo: '' });
 									setPonovenVnos(false);

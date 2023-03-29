@@ -177,11 +177,9 @@ const Nakupovanje = ({ props }) => {
 							Do.current.value = '';
 						}
 
-						//console.log(parseFloat(cenaF.od));
 						if (isNaN(parseFloat(cenaF.od)) || parseFloat(cenaF.od) < 0) {
 							cenaF.od = undefined;
 						}
-						//console.log(parseFloat(cenaF.do));
 						if (isNaN(parseFloat(cenaF.do)) || parseFloat(cenaF.do) < 0) {
 							cenaF.do = undefined;
 						}
@@ -223,7 +221,7 @@ const Nakupovanje = ({ props }) => {
 					</div>
 					<div className='filter'>
 						<div className='nasloviFiltrov'>Po ceni</div>
-						<div className='potrditvenoPolje' style={{ flexDirection: 'column' }}>
+						<div className='potrditvenoPolje' style={{ flexDirection: 'row' }}>
 							<div className='filtriranjePoCeni'>
 								Od
 								<input
@@ -413,10 +411,6 @@ const Nakupovanje = ({ props }) => {
 					filtriraj={filtriraj}
 					stVsehProduktov={stVsehProduktov}
 					kategorijeF={kategorijeF}
-					setKategorijeF={setKategorijeF}
-					cenaF={cenaF}
-					popustF={popustF}
-					setIzKosarice={props.setIzKosarice}
 					filtri={filtri}
 				/>
 			</div>

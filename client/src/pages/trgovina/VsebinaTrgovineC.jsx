@@ -94,12 +94,12 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 				props={{
 					izKosarice: izKosarice,
 					setIzKosarice: setIzKosarice,
+					prikazi: prikazi,
 					setPrikazi: setPrikazi,
 					prikazaniProdukti: prikazaniProdukti,
 					setPrikazaniProdukti: setPrikazaniProdukti,
 					niProduktov: niProduktov,
 					napaka: napaka,
-					pridobiProdukte: pridobiProdukte,
 					izbranProdukt: izbranProdukt,
 					setIzbranProdukt: setIzbranProdukt,
 					setVidno: setVidno,
@@ -115,7 +115,6 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 				izKosarice={izKosarice}
 				setIzKosarice={setIzKosarice}
 				setCenaKosarice={setCenaKosarice}
-				pridobiProdukte={pridobiProdukte}
 				prikazaniProdukti={prikazaniProdukti}
 				setPrikazaniProdukti={setPrikazaniProdukti}
 				sporociloOdstranjevanje={sporociloOdstranjevanje}
@@ -129,18 +128,11 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 				setPrikazi={setPrikazi}
 				sporociloOdstranjevanje={sporociloOdstranjevanje}
 				setSporociloOdstranjevanje={setSporociloOdstranjevanje}
-				pridobiProdukte={pridobiProdukte}
 			/>
 		);
 	} else if (prikazi === 'produkt') {
 		return (
-			<InformacijeOProduktu
-				izKosarice={izKosarice}
-				setIzKosarice={setIzKosarice}
-				izbranProdukt={izbranProdukt}
-				setIzbranProdukt={setIzbranProdukt}
-				setPrikazi={setPrikazi}
-			/>
+			<InformacijeOProduktu izKosarice={izKosarice} izbranProdukt={izbranProdukt} setPrikazi={setPrikazi} />
 		);
 	} else {
 		return <Error />;

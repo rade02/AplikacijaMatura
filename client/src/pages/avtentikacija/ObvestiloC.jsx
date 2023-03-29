@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const Obvestilo = ({ besedilo }) => {
-	const lokacija = useLocation();
+	const location = useLocation();
 	const [obvestilo, setObvestilo] = useState(besedilo);
 
 	useEffect(() => {
-		setObvestilo(lokacija.state.sporocilo); // iz NavigacijskaVrsticaC
+		setObvestilo(location.state.sporocilo); // iz NavigacijskaVrsticaC
 		const casovnik = setTimeout(() => {
 			setObvestilo('');
 		}, 2500);
 		return () => {
-			setObvestilo(lokacija.state.sporocilo);
+			setObvestilo(location.state.sporocilo);
 			clearTimeout(casovnik);
 		};
-	}, [lokacija.state.sporocilo]);
+	}, [location.state.sporocilo]);
 
 	return obvestilo === '' ? <></> : <div className='obvestilo'>Obvestilo: {obvestilo}</div>;
 };

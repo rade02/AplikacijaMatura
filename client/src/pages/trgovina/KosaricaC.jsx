@@ -86,8 +86,6 @@ const Kosarica = ({
 									setPrikazi: setPrikazi,
 									produkt: produkt,
 									setSporociloOdstranjevanje: setSporociloOdstranjevanje,
-									kosarica: kosarica,
-									setKosarica: setKosarica,
 								}}
 							/>
 						);

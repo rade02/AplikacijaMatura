@@ -32,9 +32,12 @@ const Profil = () => {
 	const [stanjeAdmin, setStanjeAdmin] = useState(0);
 	const [prejsnjeStanjeAdmin, setPrejsnjeStanjeAdmin] = useState(0);
 	const [tabela, setTabela] = useState(null);
-	const [filterUporabniki, setFilterUporabniki] = useState(-1);
+	const [filter, setFilter] = useState(-1);
 	const [predmet, setPredmet] = useState(null); // podatki o osebi
 	const [datoteka, setDatoteka] = useState(null); // za dodajanjeIzdelkov in datotekaUpload
+	const [SQLstavek, setSQLstavek] = useState(null);
+	const [glava, setGlava] = useState([]);
+	const [spreminjanjeAliBrisanje, setSpreminjanjeAliBrisanje] = useState(false);
 
 	const naloziDatoteko = async (e, ID_izdelka) => {
 		const podatki = new FormData();
@@ -47,8 +50,8 @@ const Profil = () => {
 					'Content-Type': 'multipart/form-data',
 				},
 			});
-		} catch (error) {
-			console.log(error);
+		} catch (napaka) {
+			console.log(napaka);
 		}
 	};
 
@@ -61,8 +64,8 @@ const Profil = () => {
 					},
 				});
 				setVloga(parseInt(odziv.data));
-			} catch (error) {
-				console.log(error);
+			} catch (napaka) {
+				console.log(napaka);
 			}
 		};
 		pridobiVlogo();
@@ -99,81 +102,85 @@ const Profil = () => {
 							: ''}
 					</h2>
 					<div className='moznostiProfila'>
-						<div className='funkcije'>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(1);
-								}}>
-								<AddressBook size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled uporabnikov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(2);
-								}}>
-								<ChalkboardTeacher size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled oseb</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(3);
-								}}>
-								<UserPlus size={22} style={{ marginRight: '5px' }} />
-								<div>Dodajanje uporabnikov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(4);
-								}}>
-								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
-								<div>Dodajanje izdelkov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(5);
-								}}>
-								<ListBullets size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled izdelkov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(7);
-								}}>
-								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled naročil</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(6);
-								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled računov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(8);
-								}}>
-								<Database size={22} style={{ marginRight: '5px' }} />
-								<div>Upravljanje s PB</div>
-							</button>
-						</div>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
+						{spreminjanjeAliBrisanje ? (
+							<></>
+						) : (
+							<div className='funkcije'>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(1);
+									}}>
+									<AddressBook size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled uporabnikov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(2);
+									}}>
+									<ChalkboardTeacher size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled oseb</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(3);
+									}}>
+									<UserPlus size={22} style={{ marginRight: '5px' }} />
+									<div>Dodajanje uporabnikov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(4);
+									}}>
+									<ArchiveBox size={22} style={{ marginRight: '5px' }} />
+									<div>Dodajanje izdelkov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(5);
+									}}>
+									<ListBullets size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled izdelkov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(7);
+									}}>
+									<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled naročil</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(6);
+									}}>
+									<FileText size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled računov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(8);
+									}}>
+									<Database size={22} style={{ marginRight: '5px' }} />
+									<div>Upravljanje s PB</div>
+								</button>
+							</div>
+						)}
+						<UrejanjeProfila vloga={vloga} setSpreminjanjeAliBrisanje={setSpreminjanjeAliBrisanje} />
 					</div>
 				</>
 			);
@@ -185,9 +192,9 @@ const Profil = () => {
 						`http://localhost:${global.config.port}/api/administrator/uporabniki`
 					);
 					setTabela(odziv.data);
-				} catch (error) {
+				} catch (napaka) {
 					console.log('Prišlo je do napake');
-					console.log(error);
+					console.log(napaka);
 				}
 			};
 			if (tabela === null) pridobiInfoOUporabnikih();
@@ -198,8 +205,8 @@ const Profil = () => {
 						naslovnaVrstica: ['Uporabniško ime', 'Geslo', 'Vloga', 'Omogocen', 'Spremeni'],
 						tabela: tabela,
 						setTabela: setTabela,
-						filter: filterUporabniki,
-						setFilter: setFilterUporabniki,
+						filter: filter,
+						setFilter: setFilter,
 						moznosti: [
 							{ ime: 'Vsi', vrednost: -1 },
 							{ ime: 'Administratorji', vrednost: 0 },
@@ -234,8 +241,8 @@ const Profil = () => {
 						naslovnaVrstica: ['ID', 'Uporabniško ime', 'Elektronski naslov', 'Ime', 'Priimek'],
 						tabela: tabela,
 						setTabela: setTabela,
-						filter: filterUporabniki,
-						setFilter: setFilterUporabniki,
+						filter: filter,
+						setFilter: setFilter,
 						moznosti: null,
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
@@ -315,8 +322,8 @@ const Profil = () => {
 						}
 					});
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 
@@ -332,8 +339,8 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
@@ -350,8 +357,8 @@ const Profil = () => {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoORacunih();
@@ -363,13 +370,14 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Datum izdaje'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: false,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -395,8 +403,8 @@ const Profil = () => {
 						}
 					);
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoONarocilih();
@@ -416,13 +424,14 @@ const Profil = () => {
 							],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: false,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -444,8 +453,8 @@ const Profil = () => {
 						`http://localhost:${global.config.port}/api/administrator/PBzacetna`
 					);
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoOPB();
@@ -461,7 +470,12 @@ const Profil = () => {
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
+							setFilter: setFilter,
 							jeStranka: false,
+							SQLstavek: SQLstavek,
+							setSQLstavek: setSQLstavek,
+							glava: glava,
+							setGlava: setGlava,
 						}}
 					/>
 					<button
@@ -470,6 +484,8 @@ const Profil = () => {
 							e.preventDefault();
 							setStanjeAdmin(0);
 							setTabela(null);
+							setSQLstavek(null);
+							setGlava([]);
 						}}>
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 						<div>Nazaj</div>
@@ -485,16 +501,15 @@ const Profil = () => {
 			return (
 				<Podrobnosti
 					niIzbrisa={niIzbrisa}
-					datoteka={datoteka}
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					jeStranka={false}
 					predmet={predmet}
-					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
 					setTabela={setTabela}
+					SQLstavek={SQLstavek}
 				/>
 			);
 		}
@@ -519,27 +534,31 @@ const Profil = () => {
 							: ''}
 					</h2>
 					<div className='moznostiProfila'>
-						<div className='funkcije'>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(1);
-								}}>
-								<ListDashes size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled naročil</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(3);
-								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled računov</div>
-							</button>
-						</div>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
+						{spreminjanjeAliBrisanje ? (
+							<></>
+						) : (
+							<div className='funkcije'>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(1);
+									}}>
+									<ListDashes size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled naročil</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(3);
+									}}>
+									<FileText size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled računov</div>
+								</button>
+							</div>
+						)}
+						<UrejanjeProfila vloga={vloga} setSpreminjanjeAliBrisanje={setSpreminjanjeAliBrisanje} />
 					</div>
 				</>
 			);
@@ -565,8 +584,8 @@ const Profil = () => {
 						}
 					);
 					setTabela(odziv1.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 
@@ -587,14 +606,14 @@ const Profil = () => {
 							],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: true,
-							uporabnisko_ime: uporabnik.uporabnisko_ime,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -620,8 +639,8 @@ const Profil = () => {
 						}
 					);
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiRacuneUporabnika();
@@ -633,13 +652,14 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Datum izdaje'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: true,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -658,12 +678,10 @@ const Profil = () => {
 			// prikazi osebo
 			return (
 				<Podrobnosti
-					datoteka={datoteka}
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					jeStranka={true}
 					predmet={predmet}
-					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -692,45 +710,49 @@ const Profil = () => {
 							: ''}
 					</h2>
 					<div className='moznostiProfila'>
-						<div className='funkcije'>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(1);
-								}}>
-								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
-								<div>Dodajanje izdelkov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(2);
-								}}>
-								<ListBullets size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled izdelkov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(3);
-								}}>
-								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled naročil</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(6);
-								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled računov</div>
-							</button>
-						</div>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
+						{spreminjanjeAliBrisanje ? (
+							<></>
+						) : (
+							<div className='funkcije'>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(1);
+									}}>
+									<ArchiveBox size={22} style={{ marginRight: '5px' }} />
+									<div>Dodajanje izdelkov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(2);
+									}}>
+									<ListBullets size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled izdelkov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(3);
+									}}>
+									<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled naročil</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(6);
+									}}>
+									<FileText size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled računov</div>
+								</button>
+							</div>
+						)}
+						<UrejanjeProfila vloga={vloga} setSpreminjanjeAliBrisanje={setSpreminjanjeAliBrisanje} />
 					</div>
 				</>
 			);
@@ -785,8 +807,8 @@ const Profil = () => {
 						}
 					});
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoOIzdelkih();
@@ -798,8 +820,8 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
@@ -829,8 +851,8 @@ const Profil = () => {
 						}
 					);
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoONarocilih();
@@ -850,13 +872,14 @@ const Profil = () => {
 							],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: false,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -873,17 +896,20 @@ const Profil = () => {
 			);
 		} else if (parseInt(stanjeAdmin) === 6) {
 			// PREGLED RAČUNOV ZAPOSLENEGA
-			const pridobiInfoORacunih = async () => {
+			const pridobiRacuneUporabnika = async () => {
 				try {
-					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/racuni`, {
-						params: { iskalniKriterij: 1, iskalniNiz: 1 },
-					});
+					let odziv = await axios.get(
+						`http://localhost:${global.config.port}/api/administrator/racuniUporabnika`,
+						{
+							params: { uporabnisko_ime: uporabnik.uporabnisko_ime },
+						}
+					);
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
-			if (tabela === null) pridobiInfoORacunih();
+			if (tabela === null) pridobiRacuneUporabnika();
 			return (
 				<>
 					<PregledRacunov
@@ -892,13 +918,14 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Datum izdaje'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: true,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -917,12 +944,10 @@ const Profil = () => {
 			// prikazi osebo
 			return (
 				<Podrobnosti
-					datoteka={datoteka}
 					setDatoteka={setDatoteka}
 					naloziDatoteko={naloziDatoteko}
 					jeStranka={true}
 					predmet={predmet}
-					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}
@@ -951,54 +976,58 @@ const Profil = () => {
 							: ''}
 					</h2>
 					<div className='moznostiProfila'>
-						<div className='funkcije'>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(5);
-								}}>
-								<ChalkboardTeacher size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled oseb</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(1);
-								}}>
-								<ArchiveBox size={22} style={{ marginRight: '5px' }} />
-								<div>Dodajanje izdelkov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(2);
-								}}>
-								<ListBullets size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled izdelkov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(3);
-								}}>
-								<FileText size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled računov</div>
-							</button>
-							<button
-								className='gumbZaFunkcije'
-								onClick={(e) => {
-									e.preventDefault();
-									setStanjeAdmin(4);
-								}}>
-								<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
-								<div>Pregled naročil</div>
-							</button>
-						</div>
-						<UrejanjeProfila uporabnisko_ime={uporabnik.uporabnisko_ime} vloga={vloga} />
+						{spreminjanjeAliBrisanje ? (
+							<></>
+						) : (
+							<div className='funkcije'>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(5);
+									}}>
+									<ChalkboardTeacher size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled oseb</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(1);
+									}}>
+									<ArchiveBox size={22} style={{ marginRight: '5px' }} />
+									<div>Dodajanje izdelkov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(2);
+									}}>
+									<ListBullets size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled izdelkov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(3);
+									}}>
+									<FileText size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled računov</div>
+								</button>
+								<button
+									className='gumbZaFunkcije'
+									onClick={(e) => {
+										e.preventDefault();
+										setStanjeAdmin(4);
+									}}>
+									<MagnifyingGlass size={22} style={{ marginRight: '5px' }} />
+									<div>Pregled naročil</div>
+								</button>
+							</div>
+						)}
+						<UrejanjeProfila vloga={vloga} setSpreminjanjeAliBrisanje={setSpreminjanjeAliBrisanje} />
 					</div>
 				</>
 			);
@@ -1053,8 +1082,8 @@ const Profil = () => {
 						}
 					});
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoOIzdelkih();
@@ -1066,8 +1095,8 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'Ime', 'Kategorija', 'Cena za kos', 'Kosov', 'popust'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
@@ -1094,8 +1123,8 @@ const Profil = () => {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoORacunih();
@@ -1107,13 +1136,14 @@ const Profil = () => {
 							naslovnaVrstica: ['ID', 'ID naročila', 'Kupec', 'Za plačilo', 'Plačano'],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: false,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -1139,8 +1169,8 @@ const Profil = () => {
 						}
 					);
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoONarocilih();
@@ -1160,13 +1190,14 @@ const Profil = () => {
 							],
 							tabela: tabela,
 							setTabela: setTabela,
-							filter: filterUporabniki,
-							setFilter: setFilterUporabniki,
+							filter: filter,
+							setFilter: setFilter,
 							setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 							stanjeAdmin: stanjeAdmin,
 							setStanjeAdmin: setStanjeAdmin,
 							setPredmet: setPredmet,
 							jeStranka: false,
+							uporabnik: uporabnik.uporabnisko_ime,
 						}}
 					/>
 					<button
@@ -1189,8 +1220,8 @@ const Profil = () => {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
 					});
 					setTabela(odziv.data);
-				} catch (error) {
-					console.log(`Prišlo je do napake: ${error}`);
+				} catch (napaka) {
+					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
 			if (tabela === null) pridobiInfoOpredmeth();
@@ -1201,8 +1232,8 @@ const Profil = () => {
 						naslovnaVrstica: ['ID', 'Uporabniško ime', 'Elektronski naslov', 'Ime', 'Priimek'],
 						tabela: tabela,
 						setTabela: setTabela,
-						filter: filterUporabniki,
-						setFilter: setFilterUporabniki,
+						filter: filter,
+						setFilter: setFilter,
 						moznosti: null,
 						setPrejsnjeStanjeAdmin: setPrejsnjeStanjeAdmin,
 						stanjeAdmin: stanjeAdmin,
@@ -1219,7 +1250,6 @@ const Profil = () => {
 					naloziDatoteko={naloziDatoteko}
 					jeStranka={true}
 					predmet={predmet}
-					setPredmet={setPredmet}
 					prejsnjeStanjeAdmin={prejsnjeStanjeAdmin}
 					setStanjeAdmin={setStanjeAdmin}
 					tabela={tabela}

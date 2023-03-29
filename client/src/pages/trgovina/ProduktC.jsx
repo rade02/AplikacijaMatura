@@ -1,6 +1,5 @@
 import { useContext, useMemo, useEffect, useState } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
-import KroznoNalaganje from '@mui/material/CircularProgress';
 import VzdolznoNalaganje from '@mui/material/LinearProgress';
 import Skatla from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';

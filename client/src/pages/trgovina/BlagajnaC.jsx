@@ -1,12 +1,4 @@
-import {
-	CaretCircleLeft,
-	CaretCircleRight,
-	CreditCard,
-	Money,
-	Package,
-	PaperPlaneRight,
-	Truck,
-} from 'phosphor-react';
+import { CaretCircleLeft, CreditCard, Money, PaperPlaneRight, Truck } from 'phosphor-react';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useContext, useEffect, useState } from 'react';

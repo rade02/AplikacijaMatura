@@ -8,16 +8,16 @@ import Prijava from './PrijavaC';
 import Profil from './ProfilC';
 
 const Avtentikacija = () => {
-	const lokacija = useLocation();
+	const location = useLocation();
 	const { jeAvtenticiran } = useContext(UporabniskiKontekst);
 
 	return (
-		<div className='authPage'>
+		<div>
 			{jeAvtenticiran ? (
 				<Profil />
-			) : lokacija.state.prikazAvtentikacija === 'prijava' ? (
+			) : location.state.prikazAvtentikacija === 'prijava' ? (
 				<Prijava />
-			) : lokacija.state.prikazAvtentikacija === 'registracija' ? (
+			) : location.state.prikazAvtentikacija === 'registracija' ? (
 				<Registracija />
 			) : (
 				<Error />

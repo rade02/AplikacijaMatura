@@ -3,7 +3,7 @@ import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import { useState, useEffect } from 'react';
 
 const IzdelekVKosarici = ({ props }) => {
-	const { kosarica } = useContext(NakupovalniKontekst);
+	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
 	const [izdelek, setIzdelek] = useState(props.produkt);
 
 	useEffect(() => {
@@ -11,7 +11,7 @@ const IzdelekVKosarici = ({ props }) => {
 			if (kosarica[i].ID_izdelka === izdelek.ID_izdelka) {
 				kosarica[i] = izdelek;
 				if (izdelek.kolicina <= 0) {
-					props.setKosarica(kosarica.filter((p) => p.ID_izdelka !== izdelek.ID_izdelka));
+					setKosarica(kosarica.filter((p) => p.ID_izdelka !== izdelek.ID_izdelka));
 				}
 			}
 		}

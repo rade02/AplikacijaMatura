@@ -52,8 +52,9 @@ const IzbrisProfila = ({ props }) => {
 			<div>
 				<h2>Izbris računa {uporabnik.uporabnisko_ime}</h2>
 				<div>
-					<label>Vnesite geslo: </label>
+					<label className='oznaka'>Vnesite geslo: </label>
 					<input
+						className='tekstovnoPolje'
 						type='password'
 						key='1'
 						onChange={(e) => {
@@ -63,23 +64,30 @@ const IzbrisProfila = ({ props }) => {
 							setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 						}}></input>
 				</div>
-
+				{napaka ? (
+					<label className='opozorilo'>{sporocilo.sporociloNapaka}</label>
+				) : (
+					<label className='opozorilo'>{sporocilo.sporociloGeslo}</label>
+				)}
+				<br />
 				<button
+					className='gumbPotrditev'
 					onClick={(e) => {
 						e.preventDefault();
 						props.setIzbrisi(false);
+						props.setSpreminjanjeAliBrisanje(false);
 					}}>
 					Nazaj na profil
 				</button>
+				<br />
 				<button
+					className='gumbPotrditev'
 					onClick={(e) => {
 						e.preventDefault();
 						preveriObstojece(e.target.value);
 					}}>
 					Potrdi
 				</button>
-
-				{napaka ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
 			</div>
 		);
 	}
@@ -87,9 +95,10 @@ const IzbrisProfila = ({ props }) => {
 		<div>
 			<h2>Izbris računa {uporabnik.uporabnisko_ime}</h2>
 			<div>
-				<label>Vnesite 'briši račun {uporabnik.uporabnisko_ime}': </label>
+				<label className='oznaka'>Vnesite 'briši račun {uporabnik.uporabnisko_ime}': </label>
 				<input
 					type='text'
+					className='tekstovnoPolje'
 					key='2'
 					onChange={(e) => {
 						e.preventDefault();
@@ -98,13 +107,31 @@ const IzbrisProfila = ({ props }) => {
 						setSporocilo({ ...sporocilo, sporociloGeslo: `` });
 					}}></input>
 			</div>
+			{napaka ? (
+				<label className='opozorilo'>{sporocilo.sporociloNapaka}</label>
+			) : (
+				<label className='opozorilo'>{sporocilo.sporociloGeslo}</label>
+			)}
+			<br />
 			<button
+				className='gumbPotrditev'
+				onClick={(e) => {
+					e.preventDefault();
+					props.setIzbrisi(false);
+					props.setSpreminjanjeAliBrisanje(false);
+				}}>
+				Nazaj na profil
+			</button>
+			<br />
+			<button
+				className='gumbPotrditev'
 				onClick={(e) => {
 					e.preventDefault();
 					if (potrditev === `briši račun ${uporabnik.uporabnisko_ime}`) {
 						izbrisi();
 						if (!napaka) {
 							setJeAvtenticiran(false);
+							props.setSpreminjanjeAliBrisanje(false);
 							navigate('/', { state: { sporocilo: `račun ${uporabnik.uporabnisko_ime} izbrisan` } });
 						} else {
 							console.log('Napaka');
@@ -118,14 +145,6 @@ const IzbrisProfila = ({ props }) => {
 				}}>
 				Potrdi
 			</button>
-			<button
-				onClick={(e) => {
-					e.preventDefault();
-					props.setIzbrisi(false);
-				}}>
-				Nazaj na profil
-			</button>
-			{napaka ? <label>{sporocilo.sporociloNapaka}</label> : sporocilo.sporociloGeslo}
 		</div>
 	);
 };

@@ -61,7 +61,6 @@ const Trgovina = ({ Ref }) => {
 					setVidno={setVidno}
 					prikazi={prikazi}
 					setPrikazi={setPrikazi}
-					cenaKosarice={cenaKosarice}
 					setCenaKosarice={setCenaKosarice}
 				/>
 				{prikazi === 'nakupovanje' && (prejsnjiOdmik.current > 450 || vidno === 2) ? (

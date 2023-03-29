@@ -26,9 +26,17 @@ const Pregled = ({ props }) => {
 					<div>Nazaj</div>
 				</button>
 				{props.tabela === null ? (
-					<Box sx={{ display: 'flex' }} className='nalaganje'>
-						<CircularProgress color='inherit' />
-					</Box>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							alignSelf: 'center',
+						}}>
+						<Box sx={{ display: 'flex' }} className='nalaganje'>
+							<CircularProgress color='inherit' />
+						</Box>
+					</div>
 				) : (
 					<>
 						{props.moznosti === null ? ( // prikazemo moznost filtriranja
@@ -147,8 +155,8 @@ const Pregled = ({ props }) => {
 													}
 												);
 												props.setTabela(r.data);
-											} catch (error) {
-												console.log(`Prišlo je do napake: ${error}`);
+											} catch (napaka) {
+												console.log(`Prišlo je do napake: ${napaka}`);
 											}
 										}}>
 										Išči

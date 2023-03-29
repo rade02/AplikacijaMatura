@@ -4,6 +4,7 @@ SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE table_name = 'Uporabniki' AND 
 show tables;
 
 /**** CREATE TABLES ****/
+update Uporabniki set geslo = '5426335489528441' where uporabnisko_ime = 'andrez123';
 create table if not exists Uporabniki(
     uporabnisko_ime varchar(150) primary key, 
     geslo varchar(150) not null,
@@ -75,6 +76,7 @@ create table if not exists Narocila(
 		foreign key (ID_stranke)
         references Stranke_in_zaposleni(ID)
 );
+alter table Narocila add column postnina double default 0;
 alter table Narocila add foreign key (ID_stranke)
         references Stranke_in_zaposleni(ID) on delete cascade on update cascade;
 desc Narocila;
@@ -132,6 +134,8 @@ drop table racuni;
 alter table Racuni drop column datum_valute;
 alter table Racuni add foreign key (ID_narocila)
         references Narocila(ID_narocila) on delete cascade on update cascade;
+desc Racuni;
+alter table Racuni rename column placano to datumIzdaje;
 
 select * from Izdelki where (ID_izdelka not in (1, 2) and Izdelki.kategorija in ('televizor', 'telefon') and (Izdelki.cena_za_kos between 100 and 5000) and Izdelki.popust < 15) order by rand() limit 5;
 select * from Izdelki;
@@ -163,6 +167,8 @@ select count(*) from Izdelki;
 select distinct kategorija from Izdelki;
 update Izdelki set kosov_na_voljo = 0 where cena_za_kos = 154.90;
 alter table Izdelki modify slika blob;
+select ime from Izdelki where ime like '%Sams%' order by ime desc;
+select * from Izdelki where Izdelki.cena_za_kos * (1.0 - Izdelki.popust / 100.0) between 36 and 39;
 
 
 create table if not exists Izdelki_pri_narocilu(
@@ -254,6 +260,8 @@ update Izdelki set slika = default;
 
 
 
+
+
 select distinct ID_stranke from Racuni inner join Narocila on Racuni.ID_narocila = Narocila.ID_narocila where ID_stranke is not null;
 select ID from Stranke_in_zaposleni where uporabnisko_ime = 'Aleš';
 
@@ -262,8 +270,11 @@ select * from Racuni where ID_narocila in (select ID_narocila from Narocila wher
 select slika from Izdelki where ID_izdelka = 37;
 desc Izdelki;
 
-
-
-
+select * from Izdelki where (Izdelki.cena_za_kos <= 500 and Izdelki.popust >= 0 and Izdelki.kosov_na_voljo > 0) order by rand();
+select * from Izdelki where (Izdelki.cena_za_kos between 100 and 200 and Izdelki.popust >= 0 and Izdelki.kosov_na_voljo > 0) order by rand() limit 6;
+select ID from Stranke_in_zaposleni where uporabnisko_ime = 'admin';
+select * from stranke_in_zaposleni;
+desc Stranke_in_zaposleni;
+insert into Stranke_in_zaposleni(uporabnisko_ime, elektronski_naslov, ime, priimek) values('admin','admin@gmail.com','admin','admin');
 
 

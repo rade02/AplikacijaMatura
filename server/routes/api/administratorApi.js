@@ -13,7 +13,7 @@ router.get('/uporabniki', async (req, res) => {
 	}
 });
 
-router.post('/updtVloga', async (req, res) => {
+router.post('/posodobiVlogo', async (req, res) => {
 	const uporabnisko_ime = req.body.uporabnisko_ime;
 	const vloga = req.body.vloga;
 

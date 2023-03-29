@@ -73,7 +73,7 @@ router.get('/filtriranje', async (req, res) => {
 	}
 
 	if (cenaF !== undefined && (cenaF.od !== undefined || cenaF.do !== undefined)) {
-		sqlQ = sqlQ.concat(' Izdelki.cena_za_kos');
+		sqlQ = sqlQ.concat(' Izdelki.cena_za_kos * (1.0 - Izdelki.popust / 100.0)');
 		if (cenaF.od !== undefined && cenaF.do !== undefined) {
 			sqlQ = sqlQ.concat(` between ${cenaF.od} and ${cenaF.do} `);
 		} else if (cenaF.od === undefined) {
@@ -88,7 +88,7 @@ router.get('/filtriranje', async (req, res) => {
 		`and Izdelki.popust >= ${popustF} and Izdelki.kosov_na_voljo > 0) order by rand() limit ${steviloIzdelkov};`
 	);
 
-	console.log(sqlQ);
+	//console.log(sqlQ);
 	try {
 		let noviProdukti;
 		if (brezPodvajanj !== null && brezPodvajanj !== undefined) {

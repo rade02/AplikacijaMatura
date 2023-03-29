@@ -14,7 +14,7 @@ const PregledNarocil = ({ props }) => {
 	return (
 		<>
 			<h2 className='naslov'>
-				{!props.stranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnisko_ime}
+				{!props.jeStranka ? props.naslov : props.naslov + ' stranke ' + props.uporabnik}
 			</h2>
 			<div>
 				{props.tabela === null ? (
@@ -23,7 +23,7 @@ const PregledNarocil = ({ props }) => {
 					</Skatla>
 				) : (
 					<>
-						<div>
+						<div className='pregled'>
 							<button
 								className='gumbNazaj'
 								onClick={(e) => {
@@ -133,7 +133,7 @@ const PregledNarocil = ({ props }) => {
 									</button>
 								</div>
 							)}
-							<table className='tabela'>
+							<table className='tabela' style={{ alignSelf: 'center' }}>
 								<tbody>
 									{props.tabela.length === 0 ? (
 										<tr>
