@@ -145,6 +145,7 @@ const Pregled = ({ props }) => {
 										}}
 										placeholder='Vnesite iskalni niz'></input>
 									<button
+										className='potrdi'
 										onClick={async (e) => {
 											e.preventDefault();
 											try {

@@ -1,6 +1,7 @@
 // TODO: naredi ER diagram podatkovne baze
 // TODO: pri poskusi ponovno ciklanje v loopu pri nalaganju izdelkov
 // TODO: izbriši neuporabljane module
+// napaka: iz pregleda narocila ven pri stranki
 
 // ------------ testiranje -------------
 // TODO: vnose števila preverjaj z metodo isNaN(št)
