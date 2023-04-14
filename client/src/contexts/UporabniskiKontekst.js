@@ -6,8 +6,6 @@ export const UporabniskiKontekstProvider = ({ children }) => {
 	const [uporabnik, setUporabnik] = useState({ uporabnisko_ime: 'gost' });
 	const [jeAvtenticiran, setJeAvtenticiran] = useState(false);
 
-	// user profile picture
-
 	useEffect(() => {
 		if (!jeAvtenticiran) {
 			setUporabnik({ uporabnisko_ime: 'gost' });

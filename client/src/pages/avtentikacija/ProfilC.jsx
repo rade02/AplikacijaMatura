@@ -22,8 +22,8 @@ import PregledRacunov from './pregledi_in_dodajanja/PregledRacunovC';
 import PregledNarocil from './pregledi_in_dodajanja/PregledNarocilC';
 import PregledPB from './pregledi_in_dodajanja/PregledPBC';
 import DodajanjeIzdelkov from './pregledi_in_dodajanja/DodajanjeIzdelkovC';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import KrožnoNalaganje from '@mui/material/CircularProgress';
+import Skatla from '@mui/material/Box';
 
 const Profil = () => {
 	const { uporabnik } = useContext(UporabniskiKontekst);
@@ -76,9 +76,9 @@ const Profil = () => {
 		return (
 			<>
 				<label>Nalaganje profila ...</label>
-				<Box sx={{ display: 'flex' }} className='nalaganje'>
-					<CircularProgress color='inherit' />
-				</Box>
+				<Skatla sx={{ display: 'flex' }} className='nalaganje'>
+					<KrožnoNalaganje color='inherit' />
+				</Skatla>
 			</>
 		);
 	}

@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { CaretCircleLeft, CaretCircleRight, PaperPlaneRight } from 'phosphor-react';
+import { CaretCircleLeft, PaperPlaneRight } from 'phosphor-react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import IzdelekVKosarici from './IzdelekVKosariciC';
 
 const Kosarica = ({

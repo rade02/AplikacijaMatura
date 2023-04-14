@@ -20,12 +20,12 @@ const Trgovina = ({ Ref }) => {
 				}
 				let odmikOdVrha = window.pageYOffset;
 
-				if (odmikOdVrha < 250) {
+				if (odmikOdVrha < 265) {
 					setVidno(0);
 				} else if (naVrh) {
 					setVidno(0);
 				} else {
-					if (prejsnjiOdmik.current < odmikOdVrha && (vidno === 2 || vidno === 0)) {
+					if (prejsnjiOdmik.current < odmikOdVrha) {
 						setVidno(2);
 					} else {
 						setVidno(0);
