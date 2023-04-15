@@ -1,6 +1,6 @@
 import './App.css';
 import { useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // elements:
 import NavigacijskaVrstica from './pages/NavigacijskaVrsticaC';
@@ -19,20 +19,11 @@ import Avtentikacija from './pages/avtentikacija/Avtentikacija';
 
 /*
 Always use the setter for useState.
-Always put a dependency array on useEffect, useCallback and useMemo.
+Always put a dependency array on useEffect
 To run useEffect only once use an empty array.
 Do not depend on data you set.
 Always add all the state you read from to the depoendency array.
 */
-
-// ------------------------
-// TODO: problem če gremo na detalje izdelka in potem damo add to cart in potem zelimo nazaj na cart
-// TODO: loading spinner
-// TODO: upoštevaj popust pri ceni
-// ^^^^^^^^^^^^^^^^^^^^^^^^
-
-// v state imamo cart, drugace passamo productInfo kot prop
-// productInfo je kot prostor za izdelek, ki ga trenutno prikazujemo
 
 function App() {
 	// TODO: LOG file for all the actions (esp. user loging and changing infos)
@@ -42,9 +33,9 @@ function App() {
 	// ostalo pa so stalne komponente
 	const zgoraj = useRef('zgoraj');
 
-	// TA; KJER SO ROUTE TAM SO PAGES, na pages so komponente
+	// TAM KJER SO ROUTE TAM SO PAGES, na pages so komponente
 	return (
-		<Router>
+		<BrowserRouter>
 			<UporabniskiKontekstProvider>
 				<div className='vsebina' ref={zgoraj}>
 					<NavigacijskaVrstica />
@@ -54,13 +45,13 @@ function App() {
 							<Route path='/oNas' element={<ONas />} />
 							<Route path='/avtentikacija' element={<Avtentikacija />} />
 							<Route path='/trgovina' element={<Trgovina Ref={zgoraj} />} />
-							<Route path='*' element={<Error />} />
+							<Route path='/*' element={<Error />} />
 						</Routes>
 					</div>
 					<Noga />
 				</div>
 			</UporabniskiKontekstProvider>
-		</Router>
+		</BrowserRouter>
 	);
 }
 

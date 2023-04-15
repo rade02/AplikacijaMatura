@@ -13,7 +13,6 @@ router.get('/', async (req, res) => {
 			// binary omogoči case sensitive query ker primerja po bajtih
 			uporabnisko_ime,
 		]);
-
 		if (odziv[0].length > 0 && hash === odziv[0][0].geslo) {
 			res.status(200).send(hash);
 		} else {

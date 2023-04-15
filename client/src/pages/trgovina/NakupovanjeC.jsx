@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ArrowCounterClockwise, Funnel, MagnifyingGlass } from 'phosphor-react';
-import { useState, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PrikazProduktov from './PrikazProduktovC';
 
 const Nakupovanje = ({ props }) => {
@@ -135,7 +135,8 @@ const Nakupovanje = ({ props }) => {
 		}
 	};
 
-	useLayoutEffect(() => {
+	useEffect(() => {
+		console.log('effecting');
 		pridobiKategorije();
 		pridobiSteviloVsehProduktov();
 		//setKategorijeF(kategorijeNaVoljo);

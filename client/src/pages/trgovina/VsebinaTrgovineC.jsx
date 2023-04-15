@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useCallback } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import Nakupovanje from './NakupovanjeC';
 import Kosarica from './KosaricaC';
@@ -18,7 +18,7 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 	const [izKosarice, setIzKosarice] = useState(null);
 	const [sporociloOdstranjevanje, setSporociloOdstranjevanje] = useState('');
 
-	const pridobiProdukte = async () => {
+	const pridobiProdukte = useCallback(async () => {
 		try {
 			let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/`, {
 				params: {
@@ -52,7 +52,7 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 			console.log(napaka);
 			setNapaka(true);
 		}
-	};
+	});
 
 	useEffect(() => {
 		let vsota = 0;
@@ -66,7 +66,7 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 			setPrikazaniProdukti([]);
 			pridobiProdukte();
 		}
-	});
+	}, [kosarica, setCenaKosarice, niProduktov, pridobiProdukte]);
 
 	if (napaka) {
 		return (

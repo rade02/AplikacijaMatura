@@ -1,5 +1,5 @@
 import './Trgovina.css';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { NakupovalniKontekstProvider } from '../../contexts/NakupovalniKontekst';
 import VsebinaTrgovine from './VsebinaTrgovineC';
 import NavigacijaTrgovine from './NavigacijaTrgovineC';
@@ -20,7 +20,7 @@ const Trgovina = ({ Ref }) => {
 				}
 				let odmikOdVrha = window.pageYOffset;
 
-				if (odmikOdVrha < 265) {
+				if (odmikOdVrha < 235) {
 					setVidno(0);
 				} else if (naVrh) {
 					setVidno(0);
@@ -41,7 +41,7 @@ const Trgovina = ({ Ref }) => {
 		}
 	});
 
-	useMemo(() => {
+	useEffect(() => {
 		if (naVrh) {
 			Ref.current.scrollIntoView({ behaviour: 'smooth' });
 		}
