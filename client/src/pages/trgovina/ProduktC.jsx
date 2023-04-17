@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 
 const Produkt = (props) => {
 	const { kosarica, setKosarica } = useContext(NakupovalniKontekst);
-	const [nalaganje, setNalaganje] = useState(true);
+	let [nalaganje, setNalaganje] = useState(true);
 
 	useEffect(() => {
 		const casovnik = setTimeout(() => {
@@ -16,12 +16,24 @@ const Produkt = (props) => {
 
 		return () => {
 			clearTimeout(casovnik);
+			setNalaganje(true);
 		};
 	}, []);
 
-	/*useMemo(() => {
-		setIzbranProdukt(taProdukt);
-	}, [taProdukt, setIzbranProdukt]);*/
+	useEffect(() => {
+		if (props.nalaganjeSlikeIzdelka) {
+			setNalaganje(true);
+
+			const casovnik2 = setTimeout(() => {
+				setNalaganje(false);
+				props.setNalaganjeSlikeIzdelka(null);
+			}, 1650);
+
+			return () => {
+				clearTimeout(casovnik2);
+			};
+		}
+	}, [props.nalaganjeSlikeIzdelka, props.setNalaganjeSlikeIzdelka]);
 
 	return (
 		<div
@@ -54,11 +66,7 @@ const Produkt = (props) => {
 							<div className='niNaVoljo'>slika ni na voljo</div>
 						) : (
 							<div className='slikaVPoljuProdukta'>
-								<img
-									src={props.taProdukt.slika}
-									className='srednjaSlika'
-									alt={`${props.taProdukt.slika !== null ? 'Nalaganje...' : ''}`}
-								/>
+								<img src={props.taProdukt.slika} className='srednjaSlika' alt='Nalaganje...' />
 							</div>
 						)}
 					</div>

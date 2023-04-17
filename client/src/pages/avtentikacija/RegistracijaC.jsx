@@ -80,7 +80,7 @@ const Registracija = () => {
 					setJeAvtenticiran(true);
 					setUporabnik(vneseniPodatki);
 				}
-				alert('Registracija uspešna: '); // + JSON.stringify(vneseniPodatki));
+				alert('Registracija uspešna'); // + JSON.stringify(vneseniPodatki));
 				obrazec.current.reset();
 				setVneseniPodatki({
 					uporabnisko_ime: null,

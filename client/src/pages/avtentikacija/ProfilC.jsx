@@ -1214,7 +1214,7 @@ const Profil = () => {
 			);
 		} else if (parseInt(stanjeAdmin) === 5) {
 			// pregled oseb
-			const pridobiInfoOpredmeth = async () => {
+			const pridobiInfoOosebah = async () => {
 				try {
 					let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/osebe`, {
 						params: { iskalniKriterij: 1, iskalniNiz: 1 },
@@ -1224,7 +1224,7 @@ const Profil = () => {
 					console.log(`Prišlo je do napake: ${napaka}`);
 				}
 			};
-			if (tabela === null) pridobiInfoOpredmeth();
+			if (tabela === null) pridobiInfoOosebah();
 			return (
 				<Pregled
 					props={{

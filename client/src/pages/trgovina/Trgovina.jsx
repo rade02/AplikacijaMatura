@@ -11,6 +11,7 @@ const Trgovina = ({ Ref }) => {
 	const [cenaKosarice, setCenaKosarice] = useState(0);
 	const [naVrh, setNaVrh] = useState(false);
 	const prejsnjiOdmik = useRef(0);
+	const [niProduktov, setNiProduktov] = useState(true);
 
 	useEffect(() => {
 		if (prikazi === 'nakupovanje') {
@@ -62,6 +63,8 @@ const Trgovina = ({ Ref }) => {
 					prikazi={prikazi}
 					setPrikazi={setPrikazi}
 					setCenaKosarice={setCenaKosarice}
+					niProduktov={niProduktov}
+					setNiProduktov={setNiProduktov}
 				/>
 				{prikazi === 'nakupovanje' && (prejsnjiOdmik.current > 450 || vidno === 2) ? (
 					<div

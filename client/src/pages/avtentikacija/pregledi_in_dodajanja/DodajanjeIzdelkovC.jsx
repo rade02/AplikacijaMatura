@@ -94,7 +94,7 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 								style={{ minWidth: '300px' }}
 								type='file'
 								encType='multipart/form-data'
-								name='image'
+								name='slika'
 								accept='image/gif, image/jpeg, image/png'
 								onChange={(e) => {
 									setDatoteka(e.target.files[0]);
@@ -277,7 +277,7 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 													...sporociloONapaki,
 													popust: 'Popust mora biti manjši od 100',
 												});
-											} else if (parseFloat(e.target.value) <= 0) {
+											} else if (parseFloat(e.target.value) < 0) {
 												setSporociloONapaki({
 													...sporociloONapaki,
 													popust: 'Popust mora biti med 0 in 100',

@@ -14,6 +14,8 @@ const Podrobnosti = ({
 	setTabela,
 	SQLstavek,
 }) => {
+	const [oddelek, setOddelek] = useState(predmet.oddelek);
+	const poljeOddelek = useRef(null);
 	const [placa, setPlaca] = useState(predmet.placa);
 	const [uporabniskoIme, setUporabniskoIme] = useState(null);
 	const poljePlaca = useRef(null);
@@ -63,6 +65,22 @@ const Podrobnosti = ({
 		}
 	};
 
+	const spremeniOddelek = async () => {
+		try {
+			if (oddelek.length <= 100) {
+				await axios.post(`http://localhost:${global.config.port}/api/administrator/urediOddelek`, {
+					noviOddelek: oddelek,
+					uporabnisko_ime: uporabniskoIme,
+				});
+				setNapaka('Podatki spremenjeni');
+			} else {
+				setNapaka('Vneseni podatki niso skladni z definicijami polj');
+				console.log('Napaka pri vnosu podatkov');
+			}
+		} catch (napaka) {
+			console.log(napaka);
+		}
+	};
 	const spremeniPlaco = async () => {
 		try {
 			if (placa < 0 || isNaN(parseFloat(placa))) {
@@ -129,8 +147,9 @@ const Podrobnosti = ({
 				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
+					console.log('prvi');
 					setStanjeAdmin(prejsnjeStanjeAdmin);
-					if (SQLstavek === null) {
+					if (SQLstavek === null || SQLstavek === undefined) {
 						setTabela(null);
 					}
 				}}>
@@ -207,7 +226,33 @@ const Podrobnosti = ({
 												Potrdi
 											</button>
 										</td>
-									) : element === 'ime' ? (
+									) : element === 'oddelek' ? (
+										<td>
+											<input
+												ref={poljeOddelek}
+												type='text'
+												defaultValue={predmet[element]}
+												style={{ minWidth: '60px' }}
+												onChange={(e) => {
+													e.preventDefault();
+													if (poljeOddelek.current.value.length <= 100) {
+														setOddelek(poljeOddelek.current.value);
+														setUporabniskoIme(predmet.uporabnisko_ime);
+														setNapaka(null);
+													}
+												}}></input>
+											<button
+												className='potrdi'
+												onClick={(e) => {
+													e.preventDefault();
+
+													spremeniOddelek();
+												}}>
+												Potrdi
+											</button>
+										</td>
+									) : element === 'ime' &&
+									  (predmet.uporabnisko_ime === null || predmet.uporabnisko_ime === undefined) ? (
 										<td>
 											<input
 												type='text'
@@ -359,7 +404,7 @@ const Podrobnosti = ({
 													style={{ minWidth: '300px' }}
 													type='file'
 													encType='multipart/form-data'
-													name='image'
+													name='slika'
 													accept='image/gif, image/jpeg, image/png'
 													onChange={(e) => {
 														setDatoteka(e.target.files[0]);
@@ -391,7 +436,7 @@ const Podrobnosti = ({
 													style={{ minWidth: '300px' }}
 													type='file'
 													encType='multipart/form-data'
-													name='image'
+													name='slika'
 													accept='image/gif, image/jpeg, image/png'
 													onChange={(e) => {
 														setDatoteka(e.target.files[0]);
@@ -496,6 +541,7 @@ const Podrobnosti = ({
 				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
+					console.log('drugi');
 					setStanjeAdmin(prejsnjeStanjeAdmin);
 					setTabela(null);
 				}}>

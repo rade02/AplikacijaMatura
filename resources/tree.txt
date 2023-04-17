@@ -1,0 +1,133 @@
+Folder PATH listing
+Volume serial number is 76B1-AA6C
+C:.
+|   .gitignore
+|   package-lock.json
+|   package.json
+|   README.md
+|   SQLstavkiZacetnaBaza.sql
+|   SQLzaBazoSPodatki.sql
+|   Todo.txt
+|   tree.txt
+|   
++---.vscode
+|       settings.json
+|       
++---client
+|   |   .gitignore
+|   |   package-lock.json
+|   |   package.json
+|   |   README.md
+|   |   
+|   +---build
+|   |   |   asset-manifest.json
+|   |   |   index.html
+|   |   |   manifest.json
+|   |   |   
+|   |   \---static
+|   |       +---css
+|   |       |       main.0fa34192.css
+|   |       |       main.0fa34192.css.map
+|   |       |       
+|   |       \---js
+|   |               main.95d331fc.js
+|   |               main.95d331fc.js.LICENSE.txt
+|   |               main.95d331fc.js.map
+|   |               
+|   +---node_modules
+|   |   | ...
+|   |           
+|   +---public
+|   |       index.html
+|   |       manifest.json
+|   |       
+|   \---src
+|       |   App.css
+|       |   App.js
+|       |   config.js
+|       |   index.js
+|       |   
+|       +---assets
+|       |       Logotip.png
+|       |       PSlogotip.png
+|       |       Uporabnik.png
+|       |       
+|       +---contexts
+|       |       NakupovalniKontekst.js
+|       |       UporabniskiKontekst.js
+|       |       
+|       \---pages
+|           |   Domov.jsx
+|           |   Error.jsx
+|           |   LogotipC.jsx
+|           |   NavigacijskaVrsticaC.jsx
+|           |   NogaC.jsx
+|           |   ONas.jsx
+|           |   
+|           +---avtentikacija
+|           |   |   Avtentikacija.css
+|           |   |   Avtentikacija.jsx
+|           |   |   IzbrisProfilaC.jsx
+|           |   |   ObvestiloC.jsx
+|           |   |   PodatkiUporabnikaC.jsx
+|           |   |   PrijavaC.jsx
+|           |   |   ProfilC.jsx
+|           |   |   RegistracijaC.jsx
+|           |   |   SpreminjanjeGeslaC.jsx
+|           |   |   UrejanjeProfilaC.jsx
+|           |   |   
+|           |   \---pregledi_in_dodajanja
+|           |           DodajanjeIzdelkovC.jsx
+|           |           DodajanjeUporabnikovC.jsx
+|           |           PodrobnostiC.jsx
+|           |           PregledC.jsx
+|           |           PregledNarocilC.jsx
+|           |           PregledPBC.jsx
+|           |           PregledRacunovC.jsx
+|           |           TabelskaVrsticaC.jsx
+|           |           
+|           \---trgovina
+|                   BlagajnaC.jsx
+|                   InformacijeOProduktuC.jsx
+|                   IzdelekVKosariciC.jsx
+|                   KosaricaC.jsx
+|                   NakupovanjeC.jsx
+|                   NavigacijaTrgovineC.jsx
+|                   PrikazProduktovC.jsx
+|                   ProduktC.jsx
+|                   Trgovina.css
+|                   Trgovina.jsx
+|                   VsebinaTrgovineC.jsx
+|                   
+\---server
+    |   .env
+    |   config.js
+    |   index.js
+    |   package-lock.json
+    |   package.json
+    |   povezavaPB.js
+    |   
+    +---build
+    |   |   asset-manifest.json
+    |   |   index.html
+    |   |   manifest.json
+    |   |   
+    |   \---static
+    |       +---css
+    |       |       main.0fa34192.css
+    |       |       main.0fa34192.css.map
+    |       |       
+    |       \---js
+    |               main.95d331fc.js
+    |               main.95d331fc.js.LICENSE.txt
+    |               main.95d331fc.js.map
+    |               
+    +---node_modules
+    |   |...
+    |
+    \---routes
+        \---api
+                administratorApi.js
+                avtentikacijaApi.js
+                produktiApi.js
+                

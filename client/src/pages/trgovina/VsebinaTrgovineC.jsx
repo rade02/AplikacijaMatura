@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useState, useCallback } from 'react';
+import { useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { NakupovalniKontekst } from '../../contexts/NakupovalniKontekst';
 import Nakupovanje from './NakupovanjeC';
 import Kosarica from './KosaricaC';
@@ -8,11 +8,11 @@ import Error from '../Error';
 import InformacijeOProduktu from './InformacijeOProduktuC';
 import { WarningCircle } from 'phosphor-react';
 
-const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => {
+const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno, niProduktov, setNiProduktov }) => {
 	const { kosarica } = useContext(NakupovalniKontekst);
 
-	const [prikazaniProdukti, setPrikazaniProdukti] = useState([]);
-	const [niProduktov, setNiProduktov] = useState(true);
+	let [prikazaniProdukti, setPrikazaniProdukti] = useState([]);
+	let stNalaganj = useRef(0);
 	const [napaka, setNapaka] = useState(false);
 	const [izbranProdukt, setIzbranProdukt] = useState({}); // za prikaz na product info page ce pridemo iz product component
 	const [izKosarice, setIzKosarice] = useState(null);
@@ -26,8 +26,17 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 					brezPodvajanja: prikazaniProdukti.map((a) => a.ID_izdelka),
 				},
 			});
-			// dodamo vsakemu izdelku kolicino v kosarici in sliko
+
 			odziv = odziv.data;
+			if (odziv.length === 0) {
+				setNiProduktov(true);
+				setNapaka(true);
+			}
+			if (odziv.length > 0) {
+				setNiProduktov(false);
+				setNapaka(false);
+			}
+			// dodamo vsakemu izdelku kolicino v kosarici in sliko
 			odziv.forEach(async (element) => {
 				let rezultat = await axios.get(
 					`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
@@ -47,12 +56,12 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 				}
 			});
 			setPrikazaniProdukti([...prikazaniProdukti, ...odziv]);
-			setNiProduktov(false);
 		} catch (napaka) {
 			console.log(napaka);
 			setNapaka(true);
+			setPrikazaniProdukti([]);
 		}
-	});
+	}, [prikazaniProdukti, setNiProduktov]);
 
 	useEffect(() => {
 		let vsota = 0;
@@ -62,24 +71,39 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 				element.cena_za_kos * element.kolicina * (element.popust / 100.0);
 		});
 		setCenaKosarice(vsota);
+
 		if (niProduktov) {
-			setPrikazaniProdukti([]);
-			pridobiProdukte();
+			if (stNalaganj.current === 0) {
+				setPrikazaniProdukti([]);
+				stNalaganj.current++;
+				pridobiProdukte();
+			}
 		}
-	}, [kosarica, setCenaKosarice, niProduktov, pridobiProdukte]);
+	}, [kosarica, setCenaKosarice, niProduktov, pridobiProdukte, stNalaganj, napaka, setNiProduktov]);
 
 	if (napaka) {
 		return (
 			<>
-				<div>
-					<WarningCircle size={25} />
+				<div
+					style={{
+						margin: '20px',
+						display: 'flex',
+						alignSelf: 'center',
+						justifyContent: 'center',
+						alignItems: 'center',
+						color: 'red',
+					}}>
+					<WarningCircle size={25} style={{ marginRight: '5px', color: 'red' }} />
 					Napaka pri nalaganju izdelkov
 				</div>
+				<p>Napaka strežnika: preverite delovanje strežnika in ga ponovno zaženite.</p>
 				<div>
 					<button
+						className='ponovno'
 						onClick={(e) => {
 							e.preventDefault();
 							setNapaka(false);
+							setNiProduktov(true);
 							pridobiProdukte();
 						}}>
 						Poskusi ponovno
@@ -99,7 +123,9 @@ const VsebinaTrgovine = ({ prikazi, setPrikazi, setCenaKosarice, setVidno }) => 
 					prikazaniProdukti: prikazaniProdukti,
 					setPrikazaniProdukti: setPrikazaniProdukti,
 					niProduktov: niProduktov,
+					setNiProduktov: setNiProduktov,
 					napaka: napaka,
+					setNapaka: setNapaka,
 					izbranProdukt: izbranProdukt,
 					setIzbranProdukt: setIzbranProdukt,
 					setVidno: setVidno,

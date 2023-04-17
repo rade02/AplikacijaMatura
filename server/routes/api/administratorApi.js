@@ -197,8 +197,10 @@ router.post('/dodajUporabnika', async (req, res) => {
 	const oddelek = req.body.oddelek;
 	const placa = req.body.placa;
 
+	const hash = global.config.cyrb53Hash(geslo, global.config.seed + 53).toString();
+
 	try {
-		await pool.query(`insert into Uporabniki values (?,?,?,?)`, [uporabnisko_ime, geslo, vloga, omogocen]);
+		await pool.query(`insert into Uporabniki values (?,?,?,?)`, [uporabnisko_ime, hash, vloga, omogocen]);
 		await pool.query(`insert into Stranke_in_zaposleni values (default,?,?,?,?,?,?,?,?,?,?,?)`, [
 			uporabnisko_ime,
 			elektronski_naslov,
@@ -263,6 +265,22 @@ router.post('/urediPlaco', async (req, res) => {
 	try {
 		await pool.query(`update Stranke_in_zaposleni set placa = ? where uporabnisko_ime = ?;`, [
 			novaPlaca,
+			uporabnisko_ime,
+		]);
+
+		res.status(200).send('uspešna operacija');
+	} catch (napaka) {
+		console.log(napaka);
+		res.status(400).send(`error`);
+	}
+});
+router.post('/urediOddelek', async (req, res) => {
+	const noviOddelek = req.body.noviOddelek;
+	const uporabnisko_ime = req.body.uporabnisko_ime;
+
+	try {
+		await pool.query(`update Stranke_in_zaposleni set oddelek = ? where uporabnisko_ime = ?;`, [
+			noviOddelek,
 			uporabnisko_ime,
 		]);
 

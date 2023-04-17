@@ -18,15 +18,15 @@ app.listen(process.env.PORT, () => {
 });
 app.use(cors()); // da je naš strežnik dostopen na katerikoli domeni, ki zaprosijo za vir strežnika prek brskalnika: https://stackoverflow.com/questions/46024363/what-does-app-usecors-do
 app.use(express.json()); // razčleni zahteve v formatu JSON, temelji na bodyParserju: https://expressjs.com/en/api.html
+app.use(express.urlencoded({ extended: true }));
 //app.use(express.static('./public')); // za statično oddajanje (root mapa, od koder oddaja statična sredstva): https://expressjs.com/en/starter/static-files.html
 
 // za naslednje link: https://stackoverflow.com/questions/55558402/what-is-the-meaning-of-bodyparser-urlencoded-extended-true-and-bodypar
-app.use(bodyParser.json()); // npm modul za procesiranje podatkov, poslanih z HTTP request body: https://www.simplilearn.com/tutorials/nodejs-tutorial/body-parser-in-express-js
-app.use(bodyParser.urlencoded({ extended: true })); // enako kot zgoraj, le da za URL kodirane zahteve, vsak tip vrednosti, ne le nizi
+//app.use(bodyParser.json()); // npm modul za procesiranje podatkov, poslanih z HTTP request body: https://www.simplilearn.com/tutorials/nodejs-tutorial/body-parser-in-express-js
+//app.use(bodyParser.urlencoded({ extended: true })); // enako kot zgoraj, le da za URL kodirane zahteve, vsak tip vrednosti, ne le nizi
 
 app.use(fileUpload()); // za nalaganje datotek (dostopne prek req.files.foo): https://dev.to/divuzki/express-js-file-uploading-using-express-fileupload-42bh
 // izbrisi? :https://stackoverflow.com/questions/55692084/what-is-the-difference-between-nodes-bodyparser-and-expresss-urlencoded-middle
-app.use(express.urlencoded({ extended: true }));
 
 // products api routes
 app.use('/api/produkti', produktiApi);

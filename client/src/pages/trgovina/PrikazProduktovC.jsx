@@ -2,9 +2,18 @@ import Produkt from './ProduktC';
 import KroznoNalaganje from '@mui/material/CircularProgress';
 import Skatla from '@mui/material/Box';
 
-const PrikazProduktov = ({ setFokus1, props, stVsehProduktov, filtriraj, filtri, kategorijeF }) => {
+const PrikazProduktov = ({
+	setFokus1,
+	props,
+	stVsehProduktov,
+	filtriraj,
+	filtri,
+	kategorijeF,
+	nalaganjeSlikeIzdelka,
+	setNalaganjeSlikeIzdelka,
+}) => {
 	if (props.napaka) {
-		<div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
+		return <div>Prišlo je do napake pri nalaganju izdelkov ({JSON.stringify(props.napaka)})</div>;
 	} else if (props.niProduktov) {
 		return (
 			<div className='nalaganje'>
@@ -31,6 +40,8 @@ const PrikazProduktov = ({ setFokus1, props, stVsehProduktov, filtriraj, filtri,
 								taProdukt={produkt} // podatki o posameznem produktu
 								setIzbranProdukt={props.setIzbranProdukt}
 								setIzKosarice={props.setIzKosarice}
+								nalaganjeSlikeIzdelka={nalaganjeSlikeIzdelka}
+								setNalaganjeSlikeIzdelka={setNalaganjeSlikeIzdelka}
 							/>
 						);
 					})}

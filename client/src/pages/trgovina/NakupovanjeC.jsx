@@ -18,6 +18,7 @@ const Nakupovanje = ({ props }) => {
 	const [posodobiIskalnik, setPosodobiIskalnik] = useState(false);
 	const iskalnoPolje = useRef({});
 	const [fokus1, setFokus1] = useState(false);
+	const [nalaganjeSlikeIzdelka, setNalaganjeSlikeIzdelka] = useState(null);
 
 	const pridobiSteviloVsehProduktov = async () => {
 		try {
@@ -25,6 +26,8 @@ const Nakupovanje = ({ props }) => {
 			setStVsehProduktov(odziv.data);
 		} catch (napaka) {
 			console.log(napaka);
+			props.setNapaka(true);
+			props.setPrikazaniProdukti([]);
 		}
 	};
 	const pridobiKategorije = async () => {
@@ -34,6 +37,8 @@ const Nakupovanje = ({ props }) => {
 			setKategorijenaVoljo([...odziv.data]);
 		} catch (napaka) {
 			console.log(napaka);
+			props.setNapaka(true);
+			props.setPrikazaniProdukti([]);
 		}
 	};
 	const filtriraj = async (dodatno, kategorije) => {
@@ -48,7 +53,11 @@ const Nakupovanje = ({ props }) => {
 				},
 			});
 			setStVsehProduktov(odziv.data.stProduktovKiUstrezajoFiltru);
-
+			if (odziv.data.produkti.length > 0) {
+				props.setNiProduktov(false);
+			} else {
+				props.setNiProduktov(true);
+			}
 			odziv.data.produkti.forEach(async (element) => {
 				let rezultat = await axios.get(
 					`http://localhost:${global.config.port}/api/administrator/pridobiSliko`,
@@ -68,7 +77,7 @@ const Nakupovanje = ({ props }) => {
 					element.slika = URL.createObjectURL(rezultat.data);
 				}
 			});
-
+			setNalaganjeSlikeIzdelka(true);
 			if (dodatno === undefined || dodatno) {
 				props.setPrikazaniProdukti([...props.prikazaniProdukti, ...odziv.data.produkti]);
 			} else {
@@ -76,6 +85,8 @@ const Nakupovanje = ({ props }) => {
 			}
 		} catch (napaka) {
 			console.log(napaka);
+			props.setNapaka(true);
+			props.setPrikazaniProdukti([]);
 		}
 	};
 	const pridobiIzdelkePoIskalnemNizu = async () => {
@@ -88,6 +99,8 @@ const Nakupovanje = ({ props }) => {
 			setTabelaPredlogov(odziv.data);
 		} catch (napaka) {
 			console.log(napaka);
+			props.setNapaka(true);
+			props.setPrikazaniProdukti([]);
 		}
 	};
 	const pridobiIzdelek = async () => {
@@ -130,13 +143,15 @@ const Nakupovanje = ({ props }) => {
 				setTabelaPredlogov([]);
 				setIskalniNiz('');
 			}
+			setNalaganjeSlikeIzdelka(true);
 		} catch (napaka) {
 			console.log(napaka);
+			props.setNapaka(true);
+			props.setPrikazaniProdukti([]);
 		}
 	};
 
 	useEffect(() => {
-		console.log('effecting');
 		pridobiKategorije();
 		pridobiSteviloVsehProduktov();
 		//setKategorijeF(kategorijeNaVoljo);
@@ -386,6 +401,7 @@ const Nakupovanje = ({ props }) => {
 									popustF = 0;
 									if (iskaniIzdelek === '' && iskalnoPolje.current.value === '') {
 										props.prikazaniProdukti = [];
+										props.setNiProduktov(true);
 										filtriraj(false, kategorijeF);
 									} else {
 										pridobiIzdelek();
@@ -413,6 +429,8 @@ const Nakupovanje = ({ props }) => {
 					stVsehProduktov={stVsehProduktov}
 					kategorijeF={kategorijeF}
 					filtri={filtri}
+					nalaganjeSlikeIzdelka={nalaganjeSlikeIzdelka}
+					setNalaganjeSlikeIzdelka={setNalaganjeSlikeIzdelka}
 				/>
 			</div>
 		</div>
