@@ -39,7 +39,7 @@ function App() {
 			<UporabniskiKontekstProvider>
 				<div className='vsebina' ref={zgoraj}>
 					<NavigacijskaVrstica />
-					<div>
+					<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 						<Routes>
 							<Route path='/' element={<Domov />} />
 							<Route path='/oNas' element={<ONas />} />

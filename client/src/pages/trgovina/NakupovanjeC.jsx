@@ -56,7 +56,7 @@ const Nakupovanje = ({ props }) => {
 			if (odziv.data.produkti.length > 0) {
 				props.setNiProduktov(false);
 			} else {
-				props.setNiProduktov(true);
+				//props.setNiProduktov(true);
 			}
 			odziv.data.produkti.forEach(async (element) => {
 				let rezultat = await axios.get(

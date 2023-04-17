@@ -71,6 +71,9 @@
 	margin: 25px 120px 25px 120px;
 	padding: 40px;
 	text-align: left;
+	max-width: 75%;
+	max-width: 1000px;
+	align-self: center;
 }
 
 /*_____________________ Error _____________________*/

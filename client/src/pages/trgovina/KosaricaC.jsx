@@ -102,7 +102,7 @@ const Kosarica = ({
 							e.preventDefault();
 							setKosarica([...kosarica]);
 							setPrikazi('nakupovanje');
-							setNiProduktov(true);
+							//setNiProduktov(true);
 							setIzKosarice(false);
 						}}>
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />

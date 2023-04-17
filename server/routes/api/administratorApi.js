@@ -388,7 +388,7 @@ router.get('/pridobiSliko', async (req, res) => {
 				res.status(200).send(odziv[0][0].slika);
 			}
 		} else {
-			res.status(200).send('uspešna operacija');
+			res.status(200).send('uspešna operacija'); // ni slike izdelka
 		}
 	} catch (napaka) {
 		console.log(napaka);
