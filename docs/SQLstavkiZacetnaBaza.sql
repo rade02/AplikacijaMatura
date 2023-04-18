@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS Racuni (
     datumIzdaje DATE,
     CONSTRAINT fk_idnarocila FOREIGN KEY (ID_narocila)
         REFERENCES Narocila (ID_narocila)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS Izdelki (
     ID_izdelka INT PRIMARY KEY AUTO_INCREMENT,

@@ -147,7 +147,6 @@ const Podrobnosti = ({
 				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
-					console.log('prvi');
 					setStanjeAdmin(prejsnjeStanjeAdmin);
 					if (SQLstavek === null || SQLstavek === undefined) {
 						setTabela(null);
@@ -541,7 +540,6 @@ const Podrobnosti = ({
 				className='gumbNazaj'
 				onClick={(e) => {
 					e.preventDefault();
-					console.log('drugi');
 					setStanjeAdmin(prejsnjeStanjeAdmin);
 					setTabela(null);
 				}}>

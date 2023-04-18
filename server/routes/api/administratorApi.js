@@ -50,7 +50,7 @@ router.get('/osebe', async (req, res) => {
 	const niz = req.query.iskalniNiz;
 
 	try {
-		let odziv = await pool.query(`select * from Stranke_in_zaposleni where ${kriterij} = ?`, [niz]);
+		let odziv = await pool.query(`select * from Stranke_in_zaposleni where ${kriterij} like '%${niz}%'`);
 
 		res.status(200).send(odziv[0]);
 	} catch (napaka) {
@@ -154,12 +154,17 @@ router.get('/PBzacetna', async (req, res) => {
 	}
 });
 
-router.get('/PB', async (req, res) => {
-	const poizvedba = req.query.poizvedba;
+router.post('/PB', async (req, res) => {
+	const poizvedba = req.body.poizvedba;
 
 	try {
 		let odziv = await pool.query(`${poizvedba}`);
-		res.status(200).send({ data: odziv[0], keys: Object.keys(odziv[0][0]) });
+
+		if (odziv[0].length === 0) {
+			res.status(200).send({ data: null, keys: null });
+		} else {
+			res.status(200).send({ data: odziv[0], keys: Object.keys(odziv[0][0]) });
+		}
 	} catch (napaka) {
 		console.log(napaka);
 		res.status(400).send(`error`);

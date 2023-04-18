@@ -129,8 +129,9 @@ const TabelskaVrstica = ({ props }) => {
 				{Object.keys(props.element).map((key) => {
 					if (key === 'slika') {
 						return <td key={key}>{props.element[key] === null ? <>/</> : <Image size={22} />}</td>;
+					} else if (key !== 'informacije') {
+						return <td key={key}>{props.element[key]}</td>;
 					}
-					return <td key={key}>{props.element[key]}</td>;
 				})}
 			</tr>
 		);
@@ -218,7 +219,8 @@ const TabelskaVrstica = ({ props }) => {
 											omogoci: !props.element.omogocen,
 										}
 									);
-									if (rezultat.data === 'success') props.setTabela(null);
+									console.log(rezultat.data);
+									if (rezultat.data === 'uspešna operacija') props.setTabela(null);
 								} catch (napaka) {
 									console.log(napaka);
 								}
@@ -249,7 +251,7 @@ const TabelskaVrstica = ({ props }) => {
 										omogoci: !props.element.omogocen,
 									}
 								);
-								if (odziv.data === 'success') props.setTabela(null);
+								if (odziv.data === 'uspešna operacija') props.setTabela(null);
 							} catch (napaka) {
 								console.log(napaka);
 							}

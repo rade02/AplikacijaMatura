@@ -54,11 +54,8 @@ const Kosarica = ({
 		};
 		for (let produkt of kosarica) {
 			vsota +=
-				produkt.cena_za_kos *
-				produkt.kolicina *
-				-produkt.cena_za_kos *
-				produkt.kolicina *
-				(produkt.popust / 100.0);
+				produkt.cena_za_kos * produkt.kolicina -
+				produkt.cena_za_kos * produkt.kolicina * (produkt.popust / 100.0);
 
 			if (!(await preveriCeJeNaVoljo(produkt))) {
 				setKosarica(kosarica.filter((p) => p.ID_izdelka !== produkt.ID_izdelka));

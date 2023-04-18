@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { CaretCircleLeft } from 'phosphor-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import KroznoNalaganje from '@mui/material/CircularProgress';
+import Skatla from '@mui/material/Box';
 
 const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 	const [vneseniPodatki, setVneseniPodatki] = useState({
@@ -20,6 +22,25 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 		kratekOpis: '',
 		popust: '',
 	});
+
+	useEffect(() => {
+		if (sporociloONapaki.dbS === 'nalaganje') {
+			const casovnik = setTimeout(() => {
+				setSporociloONapaki({
+					ime: '',
+					kategorija: '',
+					cenaZaKos: '',
+					kosovNaVoljo: '',
+					kratekOpis: '',
+					popust: '',
+					dbS: 'Napaka pri vnosu v bazo podatkov, poskusite znova kasneje',
+				});
+			}, 3000);
+			return () => {
+				clearTimeout(casovnik);
+			};
+		}
+	}, [sporociloONapaki.dbS]);
 
 	return (
 		<div>
@@ -47,7 +68,8 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 						sporociloONapaki.kosovNaVoljo === '' &&
 						sporociloONapaki.kratekOpis === '' &&
 						sporociloONapaki.popust === '' &&
-						sporociloONapaki.dbS === ''
+						(sporociloONapaki.dbS === '' ||
+							sporociloONapaki.dbS === 'Napaka pri vnosu v bazo podatkov, poskusite znova kasneje')
 					) {
 						const formData = new FormData();
 						formData.append('slika', datoteka);
@@ -60,6 +82,10 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 						formData.append('popust', vneseniPodatki.popust);
 
 						const posodobiVlogo = async () => {
+							setSporociloONapaki({
+								...sporociloONapaki,
+								dbS: 'nalaganje',
+							});
 							try {
 								await axios.post(
 									`http://localhost:${global.config.port}/api/administrator/dodajIzdelek`,
@@ -68,18 +94,24 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 										headers: { 'Content-Type': 'multipart/form-data' },
 									}
 								);
+								setSporociloONapaki({
+									...sporociloONapaki,
+									dbS: `Zapis izdelka ${vneseniPodatki.ime} uspešen`,
+								});
+								e.target.reset();
 							} catch (napaka) {
 								setSporociloONapaki({
 									...sporociloONapaki,
-									dbS: 'Napaka pri vnosu v bazo podatkov',
+									dbS: 'Napaka pri vnosu v bazo podatkov, poskusite znova kasneje',
 								});
 								console.log('Prišlo je do napake: ' + napaka.toString());
 							}
 						};
 
 						posodobiVlogo();
-						e.target.reset();
-					} else {
+					} else if (
+						!(sporociloONapaki.dbS === 'Napaka pri vnosu v bazo podatkov, poskusite znova kasneje')
+					) {
 						setSporociloONapaki({
 							...sporociloONapaki,
 							dbS: 'Neustrezni podatki',
@@ -164,7 +196,7 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 									onChange={(e) => {
 										e.preventDefault();
 										setVneseniPodatki({ ...vneseniPodatki, cena_za_kos: e.target.value });
-										if (isNaN(parseInt(e.target.value))) {
+										if (isNaN(parseInt(e.target.value)) || isNaN(parseFloat(e.target.value))) {
 											setSporociloONapaki({
 												...sporociloONapaki,
 												cenaZaKos: 'Cena za kos mora biti število',
@@ -306,7 +338,18 @@ const DodajanjeIzdelkov = ({ props, datoteka, setDatoteka }) => {
 				<button type='submit' className='posiljanje'>
 					Vnesi
 				</button>
-				{sporociloONapaki.dbS !== null ? <div>{sporociloONapaki.dbS}</div> : <></>}
+				{sporociloONapaki.dbS === 'nalaganje' ? (
+					<Skatla sx={{ display: 'flex' }}>
+						<KroznoNalaganje color='inherit' />
+					</Skatla>
+				) : (
+					<></>
+				)}
+				{sporociloONapaki.dbS !== null && sporociloONapaki.dbS !== 'nalaganje' ? (
+					<div>{sporociloONapaki.dbS}</div>
+				) : (
+					<></>
+				)}
 			</form>
 		</div>
 	);

@@ -122,18 +122,46 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 			);
 			IDnarocila = rezultat.data;
 
+			const preveriCeJeNaVoljo = async (produkt) => {
+				try {
+					let odziv = await axios.get(`http://localhost:${global.config.port}/api/produkti/naVoljo`, {
+						params: {
+							ID_izdelka: produkt.ID_izdelka,
+						},
+					});
+					console.log(odziv.data);
+					if (odziv.data[0].kosov_na_voljo <= 0) {
+						return false;
+					} else {
+						return true;
+					}
+				} catch (napaka) {
+					console.log(napaka);
+				}
+			};
+
 			for (let element of kosarica) {
-				await axios.post(`http://localhost:${global.config.port}/api/produkti/dodajIzdelkeNarocilu`, {
-					ID_narocila: IDnarocila,
-					ID_izdelka: element.ID_izdelka,
-					kolicina: element.kolicina,
-					cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
-				});
-				// zmanjšanje zaloge
-				await axios.post(`http://localhost:${global.config.port}/api/produkti/zmanjsajZalogo`, {
-					kolicina_kupljeno: element.kolicina,
-					ID_izdelka: element.ID_izdelka,
-				});
+				let jeNaVoljo = await preveriCeJeNaVoljo(element);
+				console.log(jeNaVoljo);
+				if (jeNaVoljo) {
+					await axios.post(`http://localhost:${global.config.port}/api/produkti/dodajIzdelkeNarocilu`, {
+						ID_narocila: IDnarocila,
+						ID_izdelka: element.ID_izdelka,
+						kolicina: element.kolicina,
+						cena: (element.cena_za_kos * (1 - element.popust / 100.0)).toFixed(2),
+					});
+					// zmanjšanje zaloge
+					await axios.post(`http://localhost:${global.config.port}/api/produkti/zmanjsajZalogo`, {
+						kolicina_kupljeno: element.kolicina,
+						ID_izdelka: element.ID_izdelka,
+					});
+					setOddano(true);
+				} else {
+					setSporociloOdstranjevanje(
+						'Izdelek iz naročila je bil odstranjen, ker ga nimamo več na zalogi.'
+					);
+					setOddano(false);
+				}
 			}
 		} catch (napaka) {
 			setOddano(false);
@@ -185,69 +213,15 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 	}
 	return (
 		<div className='narocilo'>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					oddajaNarocila(e);
-					setOddano(true);
-					setKosarica([]);
-				}}>
-				<div className='podatkiOKupcu'>
-					<div>{sporociloOdstranjevanje === '' ? '' : sporociloOdstranjevanje}</div>
-					<div className='divNaslovi'>Podatki o kupcu:</div>
-					<div className='podatki'>
-						<div>
-							<div>Ime: </div>
-							<input
-								type='text'
-								required
-								defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.ime : ''}
-								onChange={(e) => {
-									e.preventDefault();
-									setKupec({ ...kupec, ime: e.target.value });
-								}}></input>
-						</div>
-						<div>
-							<div>Priimek: </div>
-							<input
-								type='text'
-								required
-								defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.priimek : ''}
-								onChange={(e) => {
-									e.preventDefault();
-									setKupec({ ...kupec, priimek: e.target.value });
-								}}></input>
-						</div>
-						<div>
-							<div>Naslov: </div>
-							<input
-								type='text'
-								required
-								defaultValue={uporabniskiPodatki !== null ? naslovDostava : ''}
-								onChange={(e) => {
-									e.preventDefault();
-									setKupec({ ...kupec, naslov: e.target.value });
-								}}></input>
-						</div>
-					</div>
-					<button
-						className='dodajPrejemnika'
-						onClick={(e) => {
-							e.preventDefault();
-							if (!istiKupecInPrejemnik) {
-								setPrejemnik(kupec);
-							}
-							setIstiKupecInPrejemnik(!istiKupecInPrejemnik);
-						}}>
-						{istiKupecInPrejemnik ? 'Dodaj' : 'Odstrani'} drugega prejemnika
-					</button>
-				</div>
-				<br />
-				{istiKupecInPrejemnik ? (
-					<></>
-				) : (
+			{sporociloOdstranjevanje === '' ? (
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						oddajaNarocila(e);
+						setKosarica([]);
+					}}>
 					<div className='podatkiOKupcu'>
-						<div className='divNaslovi'>Podatki o prejemniku:</div>
+						<div className='divNaslovi'>Podatki o kupcu:</div>
 						<div className='podatki'>
 							<div>
 								<div>Ime: </div>
@@ -257,7 +231,7 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 									defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.ime : ''}
 									onChange={(e) => {
 										e.preventDefault();
-										setPrejemnik({ ...prejemnik, ime: e.target.value });
+										setKupec({ ...kupec, ime: e.target.value });
 									}}></input>
 							</div>
 							<div>
@@ -268,7 +242,7 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 									defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.priimek : ''}
 									onChange={(e) => {
 										e.preventDefault();
-										setPrejemnik({ ...prejemnik, priimek: e.target.value });
+										setKupec({ ...kupec, priimek: e.target.value });
 									}}></input>
 							</div>
 							<div>
@@ -279,148 +253,222 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 									defaultValue={uporabniskiPodatki !== null ? naslovDostava : ''}
 									onChange={(e) => {
 										e.preventDefault();
-										setPrejemnik({ ...prejemnik, naslov: e.target.value });
+										setKupec({ ...kupec, naslov: e.target.value });
 									}}></input>
 							</div>
 						</div>
+						<button
+							className='dodajPrejemnika'
+							onClick={(e) => {
+								e.preventDefault();
+								if (!istiKupecInPrejemnik) {
+									setPrejemnik(kupec);
+								}
+								setIstiKupecInPrejemnik(!istiKupecInPrejemnik);
+							}}>
+							{istiKupecInPrejemnik ? 'Dodaj' : 'Odstrani'} drugega prejemnika
+						</button>
 					</div>
-				)}
-				<div>
-					<div className='metodaPlacila'>
-						<div className='divNaslovi'>Naslov za dostavo:</div>
-						<div className='podatki'>
-							<div>
-								<div style={{ width: '150px' }}>Naslov za dostavo:</div>
-								{uporabniskiPodatki === null ? (
+					<br />
+					{istiKupecInPrejemnik ? (
+						<></>
+					) : (
+						<div className='podatkiOKupcu'>
+							<div className='divNaslovi'>Podatki o prejemniku:</div>
+							<div className='podatki'>
+								<div>
+									<div>Ime: </div>
 									<input
 										type='text'
 										required
-										defaultValue={naslovDostava}
+										defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.ime : ''}
 										onChange={(e) => {
 											e.preventDefault();
-											setNaslovDostava(e.target.value);
+											setPrejemnik({ ...prejemnik, ime: e.target.value });
 										}}></input>
-								) : (
+								</div>
+								<div>
+									<div>Priimek: </div>
 									<input
 										type='text'
 										required
-										defaultValue={uporabniskiPodatki.naslov}
+										defaultValue={uporabniskiPodatki !== null ? uporabniskiPodatki.priimek : ''}
 										onChange={(e) => {
 											e.preventDefault();
-											setNaslovDostava(e.target.value);
+											setPrejemnik({ ...prejemnik, priimek: e.target.value });
 										}}></input>
-								)}
-							</div>
-						</div>
-						<div className='nacinDostave'>
-							<div>Način dostave:</div>
-							<div>
-								<div>
-									<input
-										type='radio'
-										id='PS'
-										onClick={(e) => {
-											e.preventDefault();
-											setCenaDostave(0);
-										}}
-										required
-										checked={cenaDostave === 0}
-										name='deliveryOption'
-										value='PS'></input>
-									<label>Pošta Slovenije</label>
-									<img
-										src={PostaSlovenije}
-										alt=''
-										style={{ marginRight: '5px', marginLeft: '5px' }}></img>
-									<label>+ 0.00 €</label>
 								</div>
 								<div>
+									<div>Naslov: </div>
 									<input
-										type='radio'
-										id='HP'
-										onClick={(e) => {
-											e.preventDefault();
-											setCenaDostave(3);
-										}}
-										checked={cenaDostave === 3}
+										type='text'
 										required
-										name='deliveryOption'
-										value='Hitra posta'></input>
-									<label>Hitra pošta</label>
-									<Truck size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
-									<label>+ 3.00 €</label>
+										defaultValue={uporabniskiPodatki !== null ? naslovDostava : ''}
+										onChange={(e) => {
+											e.preventDefault();
+											setPrejemnik({ ...prejemnik, naslov: e.target.value });
+										}}></input>
+								</div>
+							</div>
+						</div>
+					)}
+					<div>
+						<div className='metodaPlacila'>
+							<div className='divNaslovi'>Naslov za dostavo:</div>
+							<div className='podatki'>
+								<div>
+									<div style={{ width: '150px' }}>Naslov za dostavo:</div>
+									{uporabniskiPodatki === null ? (
+										<input
+											type='text'
+											required
+											defaultValue={naslovDostava}
+											onChange={(e) => {
+												e.preventDefault();
+												setNaslovDostava(e.target.value);
+											}}></input>
+									) : (
+										<input
+											type='text'
+											required
+											defaultValue={uporabniskiPodatki.naslov}
+											onChange={(e) => {
+												e.preventDefault();
+												setNaslovDostava(e.target.value);
+											}}></input>
+									)}
+								</div>
+							</div>
+							<div className='nacinDostave'>
+								<div>Način dostave:</div>
+								<div>
+									<div>
+										<input
+											type='radio'
+											id='PS'
+											onClick={(e) => {
+												e.preventDefault();
+												setCenaDostave(0);
+											}}
+											required
+											checked={cenaDostave === 0}
+											name='deliveryOption'
+											value='PS'></input>
+										<label>Pošta Slovenije</label>
+										<img
+											src={PostaSlovenije}
+											alt=''
+											style={{ marginRight: '5px', marginLeft: '5px' }}></img>
+										<label>+ 0.00 €</label>
+									</div>
+									<div>
+										<input
+											type='radio'
+											id='HP'
+											onClick={(e) => {
+												e.preventDefault();
+												setCenaDostave(3);
+											}}
+											checked={cenaDostave === 3}
+											required
+											name='deliveryOption'
+											value='Hitra posta'></input>
+										<label>Hitra pošta</label>
+										<Truck size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+										<label>+ 3.00 €</label>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className='pregledKosarice'>
-					<div className='divNaslovi'>Pregled košarice</div>
+					<div className='pregledKosarice'>
+						<div className='divNaslovi'>Pregled košarice</div>
 
-					<div className='kratekOpisProdukta'>
-						<table>
-							<tbody>
-								<tr className='glavaTabele'>
-									<td>Produkt</td>
-									<td>Količina</td>
-									<td>Cena/kos</td>
-								</tr>
-								{kosarica.map((produkt) => {
-									return (
-										<tr className='vsebinaTabele'>
-											{' '}
-											<td>
-												{produkt.kratek_opis !== '' && produkt.kratek_opis !== null
-													? `${produkt.ime}, ${produkt.kratek_opis}`
-													: produkt.ime}
-											</td>
-											<td>{produkt.kolicina}</td>{' '}
-											<td>
-												{(
-													produkt.cena_za_kos -
-													produkt.cena_za_kos * (produkt.popust / 100.0)
-												).toFixed(2)}{' '}
-												€
-											</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
-					</div>
-					<div className='cenaSkupaj'>
-						<div>Stroški dostave: {cenaDostave > 0 ? cenaDostave.toFixed(2) : 0.0} €</div>
-						<div>
-							Za plačilo:{' '}
-							<big>
-								<b>{skupajCena.toFixed(2)} €</b>
-							</big>
+						<div className='kratekOpisProdukta'>
+							<table>
+								<tbody>
+									<tr className='glavaTabele'>
+										<td>Produkt</td>
+										<td>Količina</td>
+										<td>Cena/kos</td>
+									</tr>
+									{kosarica.map((produkt) => {
+										return (
+											<tr className='vsebinaTabele'>
+												{' '}
+												<td>
+													{produkt.kratek_opis !== '' && produkt.kratek_opis !== null
+														? `${produkt.ime}, ${produkt.kratek_opis}`
+														: produkt.ime}
+												</td>
+												<td>{produkt.kolicina}</td>{' '}
+												<td>
+													{(
+														produkt.cena_za_kos -
+														produkt.cena_za_kos * (produkt.popust / 100.0)
+													).toFixed(2)}{' '}
+													€
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
+						<div className='cenaSkupaj'>
+							<div>Stroški dostave: {cenaDostave > 0 ? cenaDostave.toFixed(2) : 0.0} €</div>
+							<div>
+								Za plačilo:{' '}
+								<big>
+									<b>{skupajCena.toFixed(2)} €</b>
+								</big>
+							</div>
 						</div>
 					</div>
-				</div>
-				<br />
-				<div>
-					<div className='metodaPlacila'>
-						<div className='divNaslovi'>Način plačila:</div>
-						{uporabniskiPodatki === null ? (
-							<></>
-						) : (
+					<br />
+					<div>
+						<div className='metodaPlacila'>
+							<div className='divNaslovi'>Način plačila:</div>
+							{uporabniskiPodatki === null ? (
+								<></>
+							) : (
+								<div className='naciniPlacila'>
+									<input type='radio' required name='metodaPlacila' value='Z debetno kartico'></input>
+									Z debetno kartico
+									<CreditCard size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+								</div>
+							)}
 							<div className='naciniPlacila'>
-								<input type='radio' required name='metodaPlacila' value='Z debetno kartico'></input>
-								Z debetno kartico
-								<CreditCard size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
+								<input type='radio' required name='metodaPlacila' value='Po prevzemu'></input>
+								Po prevzemu
+								<Money size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
 							</div>
-						)}
-						<div className='naciniPlacila'>
-							<input type='radio' required name='metodaPlacila' value='Po prevzemu'></input>
-							Po prevzemu
-							<Money size={22} style={{ marginRight: '5px', marginLeft: '5px' }} />
 						</div>
 					</div>
-				</div>
-				<br />
+					<br />
 
-				<div className='nazajNaprej'>
+					<div className='nazajNaprej'>
+						<button
+							className='gumbNazaj'
+							onClick={(e) => {
+								e.preventDefault();
+								setPrikazi('kosarica');
+							}}>
+							<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
+							<div>Nazaj</div>
+						</button>
+						<button
+							className={kosarica.length === 0 ? 'onemogocenGumb' : 'gumbNaprej'}
+							type='submit'
+							disabled={kosarica.length === 0 ? 'disabled' : ''}>
+							<div>Oddaj naročilo</div>
+							<PaperPlaneRight size={25} style={{ marginLeft: '5px' }} />
+						</button>
+					</div>
+				</form>
+			) : (
+				<>
+					<div>{sporociloOdstranjevanje}</div>
 					<button
 						className='gumbNazaj'
 						onClick={(e) => {
@@ -430,15 +478,8 @@ const Blagajna = ({ setPrikazi, sporociloOdstranjevanje, setSporociloOdstranjeva
 						<CaretCircleLeft size={25} style={{ marginRight: '5px' }} />
 						<div>Nazaj</div>
 					</button>
-					<button
-						className={kosarica.length === 0 ? 'onemogocenGumb' : 'gumbNaprej'}
-						type='submit'
-						disabled={kosarica.length === 0 ? 'disabled' : ''}>
-						<div>Oddaj naročilo</div>
-						<PaperPlaneRight size={25} style={{ marginLeft: '5px' }} />
-					</button>
-				</div>
-			</form>
+				</>
+			)}
 		</div>
 	);
 };

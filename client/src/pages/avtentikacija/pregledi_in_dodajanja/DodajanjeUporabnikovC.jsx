@@ -168,9 +168,12 @@ const DodajanjeUporabnikov = ({ props }) => {
 															setOKuporabniskoIme(3);
 														}
 													}
+													setNapakaPriVnosu(null);
 												}
 											} catch (napaka) {
-												setNapakaPriVnosu('Napaka pri vnosu podatkov v podatkovno bazo');
+												setNapakaPriVnosu(
+													'Napaka pri povezovanju s podatkovno bazo, poskusite znova kasneje'
+												);
 												console.log(napaka);
 											}
 										};
@@ -646,7 +649,7 @@ const DodajanjeUporabnikov = ({ props }) => {
 					Vnesi
 				</button>
 				{sporociloONapaki.dbS !== null ? <div>{sporociloONapaki.dbS}</div> : <></>}
-				{napakaPriVnosu !== null ? <div>{napakaPriVnosu}</div> : <></>}
+				{napakaPriVnosu !== null ? <div style={{ color: 'red' }}>{napakaPriVnosu}</div> : <></>}
 			</form>
 		</div>
 	);

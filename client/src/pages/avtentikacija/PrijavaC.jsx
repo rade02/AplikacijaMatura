@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UporabniskiKontekst } from '../../contexts/UporabniskiKontekst';
+import KroznoNalaganje from '@mui/material/CircularProgress';
+import Skatla from '@mui/material/Box';
 
 const Prijava = () => {
 	const { setUporabnik, setJeAvtenticiran } = useContext(UporabniskiKontekst);
@@ -12,6 +14,23 @@ const Prijava = () => {
 	const geslo = useRef(null);
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		if (sporocilo === 'Nalaganje..') {
+			const casovnik = setTimeout(() => {
+				console.log(sporocilo);
+				if (sporocilo === 'Nalaganje..') {
+					setSporocilo('Napaka na strežniku, poskusite znova kasneje');
+					console.log(sporocilo);
+				}
+			}, 4500);
+
+			return () => {
+				//setObvestilo(location.state.sporocilo);
+				clearTimeout(casovnik);
+			};
+		}
+	}, [sporocilo]);
+
 	const oddaja = async (vnesenoUporabniskoIme, vnesenoGeslo) => {
 		try {
 			if (vnesenoUporabniskoIme !== '' && vnesenoGeslo !== '') {
@@ -21,6 +40,7 @@ const Prijava = () => {
 						geslo: vnesenoGeslo,
 					},
 				});
+				setSporocilo('Nalaganje...');
 				if (typeof odziv.data !== 'boolean') {
 					if (odziv.data.omogocen === 0) {
 						setVnesenoUporabniskoIme('');
@@ -55,7 +75,7 @@ const Prijava = () => {
 				setSporocilo('Vnesite uporabniško ime in geslo');
 			}
 		} catch (napaka) {
-			setSporocilo(napaka.code + ' (' + napaka.response.status + ')');
+			setSporocilo(`Napaka na strežniku [${napaka.code}], poskusite znova kasneje`);
 			console.log(napaka);
 		}
 	};
@@ -63,10 +83,26 @@ const Prijava = () => {
 	return (
 		<div className='kartice prijava'>
 			<h2>Prijava</h2>
+			{sporocilo !== null && sporocilo !== '' && sporocilo !== '' ? (
+				<div>
+					<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+						{sporocilo !== 'Nalaganje..' ? (
+							<></>
+						) : (
+							<Skatla sx={{ display: 'flex' }}>
+								<KroznoNalaganje color='inherit' />
+							</Skatla>
+						)}
+					</div>
+				</div>
+			) : (
+				<></>
+			)}
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
 					oddaja(vnesenoUporabniskoIme, vnesenoGeslo);
+					setSporocilo('Nalaganje..');
 				}}>
 				<label>Uporabniško ime:</label>
 				<br />
@@ -94,14 +130,17 @@ const Prijava = () => {
 			</form>
 			<button
 				className='gumb1'
+				style={{ marginBottom: '2px' }}
 				onClick={(e) => {
 					navigate('/avtentikacija', { state: { prikazAvtentikacija: 'registracija' } });
 				}}>
 				Registriracija
 			</button>
-			{sporocilo !== null && sporocilo !== '' ? (
+			{sporocilo !== null && sporocilo !== '' && sporocilo !== '' ? (
 				<div className='sporociloNapake'>
-					<i>{sporocilo}</i>
+					<div style={{ marginBottom: '8px' }}>
+						<i>{sporocilo}</i>
+					</div>
 				</div>
 			) : (
 				<></>

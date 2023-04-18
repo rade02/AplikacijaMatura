@@ -202,7 +202,7 @@ const Profil = () => {
 				<Pregled
 					props={{
 						naslov: 'Pregled uporabnikov',
-						naslovnaVrstica: ['Uporabniško ime', 'Geslo', 'Vloga', 'Omogocen', 'Spremeni'],
+						naslovnaVrstica: ['Uporabniško ime', 'Geslo', 'Vloga', 'Omogočen', 'Spremeni'],
 						tabela: tabela,
 						setTabela: setTabela,
 						filter: filter,

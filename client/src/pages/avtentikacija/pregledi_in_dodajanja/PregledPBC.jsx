@@ -10,11 +10,11 @@ const PregledPB = ({ props }) => {
 
 	const izvedi = async () => {
 		try {
-			let odziv = await axios.get(`http://localhost:${global.config.port}/api/administrator/PB`, {
-				params: { poizvedba: props.SQLstavek },
+			let odziv = await axios.post(`http://localhost:${global.config.port}/api/administrator/PB`, {
+				poizvedba: props.SQLstavek,
 			});
 			props.setTabela(odziv.data.data);
-			props.setGlava(odziv.data.keys);
+			props.setGlava(odziv.data.keys.filter((key) => key !== 'informacije'));
 		} catch (napaka) {
 			console.log(`Prišlo je do napake: ${napaka}`);
 		}
@@ -22,9 +22,14 @@ const PregledPB = ({ props }) => {
 
 	if (potrjevanje) {
 		return (
-			<div style={{ border: '2px solid red', padding: '35px', margin: '20px' }}>
+			<div style={{ border: '2px solid red', padding: '35px', margin: '20px', maxWidth: '900px' }}>
 				<label className='opozorilo'>
-					Vnesli ste ukaz {props.SQLstavek}, ki lahko spremeni vsebino podatkovne baze.
+					Vnesli ste ukaz
+					<br />
+					<b>
+						<i>{props.SQLstavek}</i>
+					</b>
+					<br /> ki lahko spremeni vsebino podatkovne baze. Ali želite nadaljevati?
 				</label>
 				<br />
 				<button
@@ -126,6 +131,7 @@ const PregledPB = ({ props }) => {
 										})}
 									</tr>
 									{props.tabela.map((element) => {
+										console.log(element);
 										return (
 											<TabelskaVrstica
 												props={{
