@@ -32,7 +32,7 @@ Zagon produkcijske različice:
 
 <details><summary>Slika strukture</summary>
 
-![Struktura korenske mape](/image/sample.png 'This is a sample image.')
+![Struktura korenske mape](https://github.com/rade02/AplikacijaMatura/blob/main/Root.png 'Struktura korenske mape.')
 
 </details>
 <details><summary>Drevo strukture</summary>
@@ -188,7 +188,7 @@ C:.
 
 <details><summary>Slika strukture</summary>
 
-![Struktura mape client](/image/sample.png 'This is a sample image.')
+![Struktura mape client](https://github.com/rade02/AplikacijaMatura/blob/main/Client.png 'Struktura mape client.')
 
 </details>
 <details><summary>Drevo strukture</summary>
@@ -291,7 +291,7 @@ C:.
 
 <details><summary>Slika strukture</summary>
 
-![Struktura korenske mape](/image/sample.png 'This is a sample image.')
+![Struktura korenske mape](https://github.com/rade02/AplikacijaMatura/blob/main/Docs.png 'Struktura mape docs.')
 
 </details>
 <details><summary>Drevo strukture</summary>
@@ -320,7 +320,7 @@ No subfolders exist
 
 <details><summary>Slika strukture</summary>
 
-![Struktura mape server](/image/sample.png 'This is a sample image.')
+![Struktura mape server](https://github.com/rade02/AplikacijaMatura/blob/main/Server.png 'Struktura mape server.')
 
 </details>
 <details><summary>Drevo strukture</summary>
