@@ -37,6 +37,151 @@ Zagon produkcijske različice:
 </details>
 <details><summary>Drevo strukture</summary>
 
+```
+Folder PATH listing
+Volume serial number is 76B1-AA6C
+C:.
+|   .gitignore
+|   drevo.txt
+|   package-lock.json
+|   package.json
+|   README.md
+|
++---.vscode
+|       settings.json
+|
++---client
+|   |   .gitignore
+|   |   drevoClient.txt
+|   |   package-lock.json
+|   |   package.json
+|   |
+|   +---build
+|   |   |   asset-manifest.json
+|   |   |   index.html
+|   |   |   manifest.json
+|   |   |
+|   |   \---static
+|   |       +---css
+|   |       |       main.6b70e014.css
+|   |       |       main.6b70e014.css.map
+|   |       |
+|   |       \---js
+|   |               main.bea9bb94.js
+|   |               main.bea9bb94.js.LICENSE.txt
+|   |               main.bea9bb94.js.map
+|   |
+|   +---node_modules
+|   |   | ...
+|   |
+|   +---public
+|   |       index.html
+|   |       manifest.json
+|   |
+|   \---src
+|       |   App.css
+|       |   App.js
+|       |   config.js
+|       |   index.js
+|       |
+|       +---assets
+|       |       Logotip.png
+|       |       PSlogotip.png
+|       |       Uporabnik.png
+|       |
+|       +---contexts
+|       |       NakupovalniKontekst.js
+|       |       UporabniskiKontekst.js
+|       |
+|       \---pages
+|           |   Domov.jsx
+|           |   Error.jsx
+|           |   LogotipC.jsx
+|           |   NavigacijskaVrsticaC.jsx
+|           |   NogaC.jsx
+|           |   ONas.jsx
+|           |
+|           +---avtentikacija
+|           |   |   Avtentikacija.css
+|           |   |   Avtentikacija.jsx
+|           |   |   IzbrisProfilaC.jsx
+|           |   |   ObvestiloC.jsx
+|           |   |   PodatkiUporabnikaC.jsx
+|           |   |   PrijavaC.jsx
+|           |   |   ProfilC.jsx
+|           |   |   RegistracijaC.jsx
+|           |   |   SpreminjanjeGeslaC.jsx
+|           |   |   UrejanjeProfilaC.jsx
+|           |   |
+|           |   \---pregledi_in_dodajanja
+|           |           DodajanjeIzdelkovC.jsx
+|           |           DodajanjeUporabnikovC.jsx
+|           |           PodrobnostiC.jsx
+|           |           PregledC.jsx
+|           |           PregledNarocilC.jsx
+|           |           PregledPBC.jsx
+|           |           PregledRacunovC.jsx
+|           |           TabelskaVrsticaC.jsx
+|           |
+|           \---trgovina
+|                   BlagajnaC.jsx
+|                   InformacijeOProduktuC.jsx
+|                   IzdelekVKosariciC.jsx
+|                   KosaricaC.jsx
+|                   NakupovanjeC.jsx
+|                   NavigacijaTrgovineC.jsx
+|                   PrikazProduktovC.jsx
+|                   ProduktC.jsx
+|                   Trgovina.css
+|                   Trgovina.jsx
+|                   VsebinaTrgovineC.jsx
+|
++---docs
+|       DiagramProgramaZaMaturo.drawio
+|       DiagramProgramaZaMaturo.drawio.svg
+|       drevoDocs.txt
+|       MSračunalništvo.docx
+|       MSračunalništvo.pdf
+|       SQLstavkiZacetnaBaza.sql
+|       SQLzaBazoSPodatki.sql
+|
+\---server
+    |   .env
+    |   config.js
+    |   drevoServer.txt
+    |   index.js
+    |   package-lock.json
+    |   package.json
+    |   povezavaPB.js
+    |
+    +---build
+    |   |   asset-manifest.json
+    |   |   index.html
+    |   |   manifest.json
+    |   |
+    |   \---static
+    |       +---css
+    |       |       main.0fa34192.css
+    |       |       main.0fa34192.css.map
+    |       |
+    |       \---js
+    |               main.95d331fc.js
+    |               main.95d331fc.js.LICENSE.txt
+    |               main.95d331fc.js.map
+    |
+    +---node_modules
+    |   | ...
+    |
+    \---routes
+        \---api
+                administratorApi.js
+                avtentikacijaApi.js
+                produktiApi.js
+
+
+
+```
+
 </details>
 
 ### <u>Struktura mape client</u>
@@ -48,6 +193,127 @@ Zagon produkcijske različice:
 </details>
 <details><summary>Drevo strukture</summary>
 
+```
+
+Folder PATH listing
+Volume serial number is 76B1-AA6C
+C:.
+|   .gitignore
+|   drevoClient.txt
+|   package-lock.json
+|   package.json
+|
++---build
+|   |   asset-manifest.json
+|   |   index.html
+|   |   manifest.json
+|   |
+|   \---static
+|       +---css
+|       |       main.6b70e014.css
+|       |       main.6b70e014.css.map
+|       |
+|       \---js
+|               main.bea9bb94.js
+|               main.bea9bb94.js.LICENSE.txt
+|               main.bea9bb94.js.map
+|
++---node_modules
+|   | ...
+|
++---public
+|       index.html
+|       manifest.json
+|
+\---src
+    |   App.css
+    |   App.js
+    |   config.js
+    |   index.js
+    |
+    +---assets
+    |       Logotip.png
+    |       PSlogotip.png
+    |       Uporabnik.png
+    |
+    +---contexts
+    |       NakupovalniKontekst.js
+    |       UporabniskiKontekst.js
+    |
+    \---pages
+        |   Domov.jsx
+        |   Error.jsx
+        |   LogotipC.jsx
+        |   NavigacijskaVrsticaC.jsx
+        |   NogaC.jsx
+        |   ONas.jsx
+        |
+        +---avtentikacija
+        |   |   Avtentikacija.css
+        |   |   Avtentikacija.jsx
+        |   |   IzbrisProfilaC.jsx
+        |   |   ObvestiloC.jsx
+        |   |   PodatkiUporabnikaC.jsx
+        |   |   PrijavaC.jsx
+        |   |   ProfilC.jsx
+        |   |   RegistracijaC.jsx
+        |   |   SpreminjanjeGeslaC.jsx
+        |   |   UrejanjeProfilaC.jsx
+        |   |
+        |   \---pregledi_in_dodajanja
+        |           DodajanjeIzdelkovC.jsx
+        |           DodajanjeUporabnikovC.jsx
+        |           PodrobnostiC.jsx
+        |           PregledC.jsx
+        |           PregledNarocilC.jsx
+        |           PregledPBC.jsx
+        |           PregledRacunovC.jsx
+        |           TabelskaVrsticaC.jsx
+        |
+        \---trgovina
+                BlagajnaC.jsx
+                InformacijeOProduktuC.jsx
+                IzdelekVKosariciC.jsx
+                KosaricaC.jsx
+                NakupovanjeC.jsx
+                NavigacijaTrgovineC.jsx
+                PrikazProduktovC.jsx
+                ProduktC.jsx
+                Trgovina.css
+                Trgovina.jsx
+                VsebinaTrgovineC.jsx
+
+```
+
+</details>
+
+### <u>Struktura mape docs</u>
+
+<details><summary>Slika strukture</summary>
+
+![Struktura korenske mape](/image/sample.png 'This is a sample image.')
+
+</details>
+<details><summary>Drevo strukture</summary>
+
+```
+
+Folder PATH listing
+Volume serial number is 76B1-AA6C
+C:.
+    DiagramProgramaZaMaturo.drawio
+    DiagramProgramaZaMaturo.drawio.svg
+    drevoDocs.txt
+    MSračunalništvo.docx
+    MSračunalništvo.pdf
+    SQLstavkiZacetnaBaza.sql
+    SQLzaBazoSPodatki.sql
+
+No subfolders exist
+
+
+```
+
 </details>
 
 ### <u>Struktura mape server</u>
@@ -58,6 +324,45 @@ Zagon produkcijske različice:
 
 </details>
 <details><summary>Drevo strukture</summary>
+
+```
+
+Folder PATH listing
+Volume serial number is 76B1-AA6C
+C:.
+|   .env
+|   config.js
+|   drevoServer.txt
+|   index.js
+|   package-lock.json
+|   package.json
+|   povezavaPB.js
+|
++---build
+|   |   asset-manifest.json
+|   |   index.html
+|   |   manifest.json
+|   |
+|   \---static
+|       +---css
+|       |       main.0fa34192.css
+|       |       main.0fa34192.css.map
+|       |
+|       \---js
+|               main.95d331fc.js
+|               main.95d331fc.js.LICENSE.txt
+|               main.95d331fc.js.map
+|
++---node_modules
+|   | ...
+|
+\---routes
+    \---api
+            administratorApi.js
+            avtentikacijaApi.js
+            produktiApi.js
+
+```
 
 </details>
 
