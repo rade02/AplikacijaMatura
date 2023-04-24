@@ -6,7 +6,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const Pregled = ({ props }) => {
-	const [iskalniKriterij, setIskalniKriterij] = useState('ID');
+	const [iskalniKriterij, setIskalniKriterij] = useState(
+		props.moznosti === null ? 'ID' : props.naslov === 'Pregled izdelkov' ? 'ID_izdelka' : null
+	);
 	const [iskalniNiz, setIskalniNiz] = useState(0);
 
 	return (

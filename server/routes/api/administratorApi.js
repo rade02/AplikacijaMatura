@@ -87,7 +87,7 @@ router.get('/izdelki', async (req, res) => {
 	const niz = req.query.iskalniNiz;
 
 	try {
-		let odziv = await pool.query(`select * from Izdelki where ${kriterij} = ?`, [niz]);
+		let odziv = await pool.query(`select * from Izdelki where ${kriterij}  like '%${niz}%'`);
 
 		res.status(200).send(odziv[0]);
 	} catch (napaka) {
