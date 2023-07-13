@@ -18,13 +18,17 @@ Uporabljena orodja:
 
 Zagon v razvijalskem načinu:
 
-1. `\AplikacijaMatura\server>node index.js` za zagon strežnika
-2. `\AplikacijaMatura\client>npm start` za zagon React aplikacije
+1. `\AplikacijaMatura\server> node index.js` za zagon strežnika
+2. `\AplikacijaMatura\client> npm start` za zagon React aplikacije
 
 Zagon produkcijske različice:
 
-1. `\AplikacijaMatura\server>node index.js` za zagon strežnika
-2. `\AplikacijaMatura\server>serve -s build -l 3010` za zagon React aplikacije
+1. `\AplikacijaMatura\server> node index.js` za zagon strežnika
+2. `\AplikacijaMatura\client> npm run build` za izgradnjo optimizirane različice
+3. `\AplikacijaMatura\client> npm i -g serve` za prenos paketa za globalni strežnik za oddajanje statične spletne strani
+4. `\AplikacijaMatura\client> serve -s build -l 3010` za zagon React aplikacije
+(Error: cannot be loaded because running scripts is disabled 
+on this system --> PowerShell as Admin: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser)
 
 ---
 
