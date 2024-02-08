@@ -1,4 +1,4 @@
-# Aplikacija matura
+# Spletna trgovina - maturitetna naloga
 
 ## Programska koda za aplikacijo pri predmetu računalništvo na splošni maturi
 
